@@ -2,15 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectRow from '../components/ProjectRow.astro';
 import OssRow from '../components/OssRow.astro';
-import PostRow from '../components/PostRow.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { site, experience, ossProjects } from '../data/site';
+import { site, experience, ossProjects, skillGroups } from '../data/site';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
-const posts = (await getCollection('blog')).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
-const latest = posts.slice(0, 3);
 const categories = [
   { key: 'all', label: '全部' },
   { key: 'ai', label: 'AI 应用' },
@@ -55,8 +50,8 @@ const categoryLabels = Object.fromEntries(
     <div class="wrap hero-inner">
       <div class="hero-copy">
         <h1 class="hero-title">
-          <span>前端工程师，</span>
-          <span>做界面，也做基建。</span>
+          <span>全栈工程师，</span>
+          <span>做界面，也做系统。</span>
         </h1>
         <p class="hero-intro">{site.intro}</p>
         <p class="hero-now">
@@ -70,7 +65,7 @@ const categoryLabels = Object.fromEntries(
         <ul class="hero-stats" aria-label="概览">
           <li>
             <strong>3 年</strong>
-            <span>前端开发经验</span>
+            <span>开发经验</span>
           </li>
           <li>
             <strong>4 个</strong>
@@ -177,7 +172,7 @@ const categoryLabels = Object.fromEntries(
     </div>
   </section>
 
-  <section class="section wrap">
+  <section id="experience" class="section wrap">
     <div class="section-head">
       <h2>经历</h2>
       <a class="section-link" href="/about/">完整经历</a>
@@ -194,15 +189,45 @@ const categoryLabels = Object.fromEntries(
     </ul>
   </section>
 
-  <section class="section wrap">
+  <section id="stack" class="section wrap">
     <div class="section-head">
-      <h2>文章</h2>
-      {latest.length > 0 && <a class="section-link" href="/blog/">全部文章</a>}
+      <h2>常用技术与研究工具</h2>
+      <p class="section-note">日常开发、工程交付与 AI 研究</p>
     </div>
-    <div class="post-list">
-      {latest.length > 0
-        ? latest.map((post) => <PostRow post={post} />)
-        : <p class="section-note">还没有文章。</p>}
+    <div class="tool-grid">
+      {skillGroups.map((group) => (
+        <section class="tool-group">
+          <h3>{group.group}</h3>
+          <p class="tool-note">{group.note}</p>
+          <ul>
+            {group.items.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </section>
+
+  <section id="cooperate" class="section wrap">
+    <div class="section-head">
+      <h2>合作方式</h2>
+      <a class="section-link" href="/services/">查看交付方式</a>
+    </div>
+    <div class="coop-grid">
+      <div class="coop-item">
+        <span class="coop-index">01</span>
+        <h3>全职现场</h3>
+        <p>接受全职 offer，可到岗。方向偏中后台、前端基建与 AI 应用。</p>
+      </div>
+      <div class="coop-item">
+        <span class="coop-index">02</span>
+        <h3>远程协作</h3>
+        <p>远程全职或长期协作，按周同步，以文档、代码和演示推进。</p>
+      </div>
+      <div class="coop-item">
+        <span class="coop-index">03</span>
+        <h3>项目制私活</h3>
+        <p>需求明确的页面、系统、组件库或 AI 应用，按阶段交付与验收。</p>
+      </div>
     </div>
   </section>
 
@@ -210,7 +235,9 @@ const categoryLabels = Object.fromEntries(
     <div class="contact">
       <div>
         <h2>聊聊</h2>
-        <p class="contact-lead">如果对我的项目或经历感兴趣，欢迎来信；也欢迎在 GitHub 上交流。</p>
+        <p class="contact-lead">
+          目前接受全职现场、远程协作与项目制合作。如果对我的项目或经历感兴趣，欢迎来信；也欢迎在 GitHub 上交流。
+        </p>
       </div>
       <div class="contact-links">
         <a href={`mailto:${site.email}`}>{site.email}</a>
@@ -756,6 +783,67 @@ const categoryLabels = Object.fromEntries(
     line-height: 1.65;
   }
 
+  /* Tech stack ----------------------------------------------------- */
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem 2.5rem;
+  }
+
+  .tool-group h3 {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .tool-note {
+    margin-top: 0.25rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+
+  .tool-group ul {
+    margin: 0.75rem 0 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+    list-style: none;
+  }
+
+  .tool-group li {
+    padding: 0.42rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.86rem;
+  }
+
+  /* Cooperation ---------------------------------------------------- */
+  .coop-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+  }
+
+  .coop-item {
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .coop-index {
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+  }
+
+  .coop-item h3 {
+    margin-top: 0.4rem;
+    font-size: 1.08rem;
+  }
+
+  .coop-item p {
+    margin-top: 0.45rem;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
   /* Contact ------------------------------------------------------- */
   .contact {
     display: flex;
@@ -810,6 +898,10 @@ const categoryLabels = Object.fromEntries(
 
     .feature-step + .feature-step::before {
       display: none;
+    }
+
+    .tool-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
@@ -866,6 +958,16 @@ const categoryLabels = Object.fromEntries(
     .job-desc {
       grid-column: 1;
       margin-top: 0.2rem;
+    }
+
+    .tool-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.6rem 1.2rem;
+    }
+
+    .coop-grid {
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
     }
   }
 </style>

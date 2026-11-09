@@ -1,14 +1,15 @@
 export const site = {
   name: '榕',
   nameEn: 'RickRone',
-  title: '前端工程师 · 工程化与 AI 应用',
+  title: '全栈工程师 · 工程化与 AI 应用',
   location: '安徽',
   github: 'https://github.com/RickShota',
   email: 'rickrone@qq.com',
   avatar: '/images/headportrait.jpg',
   intro:
-    '3 年前端开发经验。做过中后台、组件库、低代码与跨端应用，从页面一直做到工程化基建；近一年主要把 AI 能力接进业务系统。',
-  now: '前端岗在职，负责中后台与前端基建，关注大模型应用与 Agent。',
+    '3 年开发经验，Vue / React 双栈，能从前端页面做到 Node / BFF 与工程化基建；近一年主要把 AI 能力接进业务系统。',
+  now: '在职，负责中后台与前端基建，向全栈与 AI 应用延伸；关注大模型应用与 Agent。',
+  availability: '接受全职现场、远程协作与项目制合作',
 };
 
 export interface ExperienceItem {
@@ -22,7 +23,7 @@ export interface ExperienceItem {
 export const experience: ExperienceItem[] = [
   {
     company: '某企业软件服务商',
-    role: '前端开发工程师',
+    role: '前端开发工程师 · 全栈方向',
     period: '2025.04 — 至今',
     summary: '负责应用级产品线前端与团队工程化基建，推动 TypeScript、Composition API 与微前端落地。',
     points: [
@@ -33,7 +34,7 @@ export const experience: ExperienceItem[] = [
   },
   {
     company: '某企业信息化服务公司',
-    role: '前端开发工程师',
+    role: '前端开发工程师 · 全栈方向',
     period: '2023.02 — 2025.04',
     summary: '负责公共服务业务线前端架构，建设卡片编排系统与 Monorepo 工程体系。',
     points: [
@@ -68,7 +69,7 @@ export const skillGroups = [
   {
     group: '工程化',
     note: '构建、协作与交付',
-    items: ['Vite / Webpack', 'Monorepo（pnpm / Lerna）', 'CI/CD（GitHub Actions / GitLab CI）', '私有 NPM', 'Storybook', 'Vitest'],
+    items: ['Vite / Webpack', 'Monorepo（pnpm / Lerna）', 'CI/CD（GitHub Actions / GitLab CI）', '私有 NPM', 'Storybook', 'Vitest', 'Git Flow'],
   },
   {
     group: '服务端',
@@ -81,9 +82,9 @@ export const skillGroups = [
     items: ['Cursor / Claude / Copilot 深度使用', '大模型 API 集成', 'SSE 流式输出', 'AI Agent / MCP（关注）'],
   },
   {
-    group: '可视化与其他',
-    note: '图表与部署',
-    items: ['ECharts', 'Docker', 'Git Flow'],
+    group: '可视化与部署',
+    note: '图表、地图与交付',
+    items: ['ECharts', '高德地图 SDK', 'Docker'],
   },
 ];
 

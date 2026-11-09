@@ -1,8 +1,9 @@
-# 榕的Blog · RickRone
+# 榕的个人站 · RickRone
 
-个人网站与博客，基于 [Astro](https://astro.build/) 构建，部署在 GitHub Pages。
+个人网站与作品集，基于 [Astro](https://astro.build/) 构建，部署在 GitHub Pages。
 
 - 线上地址：<https://rickshota.github.io/>
+- 内容：项目案例、工作经历、常用技术与研究工具、合作与交付方式
 - 技术栈：Astro 7 · TypeScript · 原生 CSS · Markdown 内容集合
 
 ## 本地开发
@@ -20,22 +21,11 @@ npm run preview  # 预览构建结果
 | --- | --- |
 | 个人信息、工作经历、技能、开源项目 | `src/data/site.ts` |
 | 项目案例（Markdown + frontmatter） | `src/content/projects/` |
-| 文章（Markdown + frontmatter） | `src/content/blog/` |
+| 合作与交付方式文案 | `src/pages/services.astro` |
 | 图片资源 | `public/images/` |
 | 页面样式 | `src/styles/global.css`、各组件内 scoped style |
 
 > `docs/` 目录用于存放不公开的个人资料（简历等），已在 `.gitignore` 中忽略，不会上传。
-
-文章 frontmatter 字段：
-
-```yaml
----
-title: 文章标题
-description: 一句话摘要，用于列表与 SEO
-pubDate: 2026-01-01
-tags: ['标签']
----
-```
 
 项目案例 frontmatter 字段（案例页按「问题与约束 → 核心链路 → 架构取舍 → 结果 → 验证关注点 → 职责」组织）：
 
@@ -62,12 +52,11 @@ order: 1
 
 ```text
 src/
-  components/      导航、页脚、项目行、文章行
-  content/blog/    文章 Markdown
+  components/      导航、页脚、项目行、开源项目行
+  content/projects/ 项目案例 Markdown
   data/site.ts     站点与个人信息
   layouts/         页面骨架（head/SEO/主题初始化）
-  lib/             工具函数
-  pages/           首页、文章、关于、404、RSS
+  pages/           首页、项目案例、关于我、交付方式、404
   styles/          全局样式与设计 token
 public/
   images/          静态图片

@@ -3,18 +3,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { site, experience, education, skillGroups, focus } from '../data/site';
 ---
 <BaseLayout
-  title="关于"
-  description="榕（RickRone），前端工程师，3 年经验，专注工程化与 AI 应用。"
+  title="关于我"
+  description="榕（RickRone），全栈工程师，3 年经验，前端为主，覆盖 Node / BFF、工程化与 AI 应用。"
 >
   <article class="about wrap">
     <header class="about-head">
-      <h1>关于</h1>
-      <p class="about-lead">榕 · 前端工程师 · 3 年经验</p>
+      <h1>关于我</h1>
+      <p class="about-lead">榕 · 全栈工程师 · 3 年经验</p>
     </header>
 
     <div class="about-intro">
       <p>
-        我是榕（RickRone），安徽人。3 年前端开发经验，做过中后台、组件库、低代码与跨端应用，现在在一家企业软件服务商负责中后台与前端基建。
+        我是榕（RickRone），安徽人。3 年开发经验，做过中后台、组件库、低代码与跨端应用，现在在一家企业软件服务商负责中后台与前端基建，向全栈方向延伸。
       </p>
       <p>
         我的工作大致分三块：把业务系统做稳（中后台、数据可视化、工作流），把重复的事工程化（Monorepo、组件库、CI/CD），把 AI 真正用进研发流程（大模型接入、AI 应用前端）。
@@ -22,6 +22,11 @@ import { site, experience, education, skillGroups, focus } from '../data/site';
     </div>
 
     <p class="about-summary">主导过组件库、低代码平台与 AI 中台从 0 到 1 的建设，擅长把重复的事收敛成可复用的基建。</p>
+
+    <p class="about-availability">
+      <span class="status-dot" aria-hidden="true"></span>
+      {site.availability}。<a href="/services/">查看交付方式</a>
+    </p>
 
     <section class="block">
       <h2>工作经历</h2>
@@ -51,7 +56,7 @@ import { site, experience, education, skillGroups, focus } from '../data/site';
     </section>
 
     <section class="block">
-      <h2>技术栈</h2>
+      <h2>常用技术与研究工具</h2>
       <div class="skill-grid">
         {skillGroups.map((group) => (
           <section class="skill-group">
@@ -118,6 +123,36 @@ import { site, experience, education, skillGroups, focus } from '../data/site';
     font-family: var(--font-display);
     font-size: clamp(1.08rem, 2vw, 1.28rem);
     line-height: 1.6;
+  }
+
+  .about-availability {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.45rem;
+    margin-top: 1.4rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .status-dot {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--seal);
+    transform: translateY(-1px);
+  }
+
+  .about-availability a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .about-availability a:hover {
+    color: var(--accent);
   }
 
   .block {

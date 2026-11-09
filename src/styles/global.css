@@ -114,6 +114,10 @@ img {
   display: none !important;
 }
 
+section[id] {
+  scroll-margin-top: 5rem;
+}
+
 button {
   padding: 0;
   border: 0;
