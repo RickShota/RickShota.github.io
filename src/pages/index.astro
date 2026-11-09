@@ -1,0 +1,342 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectRow from '../components/ProjectRow.astro';
+import PostRow from '../components/PostRow.astro';
+import { getCollection } from 'astro:content';
+import { site, projects } from '../data/site';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const latest = posts.slice(0, 3);
+---
+<BaseLayout>
+  <section class="hero">
+    <svg
+      class="hero-vine"
+      viewBox="0 0 300 620"
+      fill="none"
+      aria-hidden="true"
+      preserveAspectRatio="xMidYMin meet"
+    >
+      <path
+        d="M210 -20 C 226 70, 178 128, 200 200 C 222 272, 286 300, 268 386 C 252 462, 186 486, 200 640"
+        stroke="currentColor"
+        stroke-width="1.4"
+        stroke-linecap="round"></path>
+      <path
+        d="M130 -20 C 118 58, 152 96, 136 158"
+        stroke="currentColor"
+        stroke-width="1"
+        stroke-linecap="round"
+        opacity="0.55"></path>
+    </svg>
+
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <h1 class="hero-title">
+          <span>前端工程师，</span>
+          <span>向全栈生长。</span>
+        </h1>
+        <p class="hero-intro">{site.intro}</p>
+        <p class="hero-now">
+          <span class="status-dot" aria-hidden="true"></span>
+          {site.now}
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-solid" href="#projects">查看项目</a>
+          <a class="btn btn-ghost" href="/about/">更多关于我</a>
+        </div>
+      </div>
+
+      <div class="hero-portrait">
+        <img src={site.avatar} alt="榕的头像" width="220" height="220" loading="eager" />
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="section wrap">
+    <div class="section-head">
+      <h2>项目</h2>
+      <p class="section-note">全部开源在 GitHub</p>
+    </div>
+    <div class="project-list">
+      {projects.map((project) => <ProjectRow project={project} />)}
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <div class="section-head">
+      <h2>文章</h2>
+      {latest.length > 0 && <a class="section-link" href="/blog/">全部文章</a>}
+    </div>
+    <div class="post-list">
+      {latest.length > 0
+        ? latest.map((post) => <PostRow post={post} />)
+        : <p class="section-note">还没有文章。</p>}
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <div class="contact">
+      <div>
+        <h2>聊聊</h2>
+        <p class="contact-lead">如果对我的项目或经历感兴趣，欢迎来信；也欢迎在 GitHub 上交流。</p>
+      </div>
+      <div class="contact-links">
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+        <a href={site.github} target="_blank" rel="noopener noreferrer">github.com/RickShota</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero ---------------------------------------------------------- */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hero-vine {
+    position: absolute;
+    top: -30px;
+    right: clamp(1rem, 6vw, 5rem);
+    z-index: 0;
+    height: calc(100% + 60px);
+    width: auto;
+    color: var(--accent);
+    opacity: 0.42;
+    pointer-events: none;
+  }
+
+  .hero-vine path {
+    stroke-dasharray: 1100;
+    stroke-dashoffset: 1100;
+    animation: draw 1.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.15s forwards;
+  }
+
+  .hero-vine path + path {
+    animation-delay: 0.6s;
+  }
+
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: clamp(2rem, 6vw, 5rem);
+    padding-block: clamp(4rem, 11vw, 7.5rem);
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 6.6vw, 4.6rem);
+    line-height: 1.04;
+  }
+
+  .hero-title span {
+    display: block;
+  }
+
+  .hero-intro {
+    max-width: 44ch;
+    margin-top: 1.6rem;
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .hero-now {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  .status-dot {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--seal);
+    transform: translateY(-1px);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 2.2rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.68rem 1.35rem;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    font-size: 0.92rem;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .btn-solid {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .btn-solid:hover {
+    background: var(--accent);
+  }
+
+  .btn-ghost {
+    border-color: var(--line-strong);
+    color: var(--ink);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .hero-portrait {
+    position: relative;
+    justify-self: end;
+  }
+
+  .hero-portrait img {
+    width: clamp(150px, 20vw, 220px);
+    aspect-ratio: 1;
+    object-fit: cover;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+  }
+
+  .hero-portrait::after {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 50%;
+  }
+
+  /* Sections ------------------------------------------------------ */
+  .section {
+    padding-block: clamp(3rem, 7vw, 5rem);
+  }
+
+  .section + .section {
+    border-top: 1px solid var(--line);
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .section-head h2 {
+    font-size: 1.6rem;
+  }
+
+  .section-note {
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  .section-link {
+    color: var(--muted);
+    font-size: 0.88rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .section-link:hover {
+    color: var(--accent);
+  }
+
+  /* Contact ------------------------------------------------------- */
+  .contact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+  }
+
+  .contact h2 {
+    font-size: 1.6rem;
+  }
+
+  .contact-lead {
+    max-width: 44ch;
+    margin-top: 0.6rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+  }
+
+  .contact-links a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .contact-links a:hover {
+    color: var(--accent);
+  }
+
+  /* Responsive ---------------------------------------------------- */
+  @media (max-width: 860px) {
+    .hero-vine {
+      display: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      padding-block: 3rem;
+    }
+
+    .hero-portrait {
+      justify-self: start;
+      order: -1;
+    }
+
+    .hero-portrait img {
+      width: 120px;
+    }
+
+    .hero-portrait::after {
+      inset: -9px;
+    }
+
+    .hero-title {
+      font-size: clamp(2.3rem, 10vw, 3rem);
+    }
+  }
+</style>

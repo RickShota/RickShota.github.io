@@ -1,0 +1,41 @@
+---
+import { site } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <p>© {year} {site.name} · {site.nameEn}</p>
+    <p class="footer-note">
+      由 <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> 构建
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: clamp(3rem, 8vw, 5rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    padding-block: 1.75rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .footer-note a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .footer-note a:hover {
+    color: var(--accent);
+  }
+</style>

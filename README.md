@@ -1,41 +1,68 @@
 # 榕的Blog · Rick Shota
 
-个人博客「榕的Blog」的静态站点仓库，使用 [Hexo](https://hexo.io/) 6.1.0 生成，托管在 GitHub Pages。
+个人网站与博客，基于 [Astro](https://astro.build/) 构建，部署在 GitHub Pages。
 
-- **线上地址**：<https://rickshota.github.io/>
-- **作者**：Shota榕（[@RickShota](https://github.com/RickShota)）
-- **简介**：君子知命不惧，日日自新
+- 线上地址：<https://rickshota.github.io/>
+- 技术栈：Astro 7 · TypeScript · 原生 CSS · Markdown 内容集合
 
-## 仓库说明
+## 本地开发
 
-本仓库存放的是 Hexo **生成后的静态文件**（HTML / CSS / JS / 图片等），仅用于 GitHub Pages 发布，不是博客源文件。文章内容（Markdown）与 Hexo 配置在独立的源仓库中维护。
+```bash
+npm install
+npm run dev      # 开发服务器，默认 http://localhost:4321
+npm run build    # 构建静态文件到 dist/
+npm run preview  # 预览构建结果
+```
 
-> 请勿直接手工修改本仓库中的生成文件，下次部署会被覆盖。
+## 内容维护
 
-## 更新流程
+| 内容 | 位置 |
+| --- | --- |
+| 个人信息、项目列表、联系方式 | `src/data/site.ts` |
+| 文章（Markdown + frontmatter） | `src/content/blog/` |
+| 图片资源 | `public/images/` |
+| 页面样式 | `src/styles/global.css`、各组件内 scoped style |
 
-1. 在 Hexo 源仓库中写作并生成站点：`hexo clean && hexo generate`
-2. 将 `public/` 下的产物发布到本仓库的 `main` 分支（例如通过 `hexo deploy`，或手动提交推送）
-3. GitHub Pages 会自动从 `main` 构建发布，稍等片刻即可在 <https://rickshota.github.io/> 看到更新
+文章 frontmatter 字段：
+
+```yaml
+---
+title: 文章标题
+description: 一句话摘要，用于列表与 SEO
+pubDate: 2026-01-01
+tags: ['标签']
+---
+```
 
 ## 目录结构
 
-| 路径 | 说明 |
-| --- | --- |
-| `index.html` | 站点首页 |
-| `2022/` | 文章页面（按 `/年/月/日/标题/` 的 permalink 结构存放） |
-| `archives/` | 归档页 |
-| `categories/` | 分类页 |
-| `tags/` | 标签页 |
-| `about/` `myself/` `link/` | 关于 / 个人 / 友链页面 |
-| `css/` `js/` `img/` | 样式、脚本与图片资源 |
-| `manifest.json` `service-worker.js` | PWA 配置与离线缓存（Workbox） |
+```text
+src/
+  components/      导航、页脚、项目行、文章行
+  content/blog/    文章 Markdown
+  data/site.ts     站点与个人信息
+  layouts/         页面骨架（head/SEO/主题初始化）
+  lib/             工具函数
+  pages/           首页、文章、关于、404、RSS
+  styles/          全局样式与设计 token
+public/
+  images/          静态图片
+.github/workflows/ GitHub Pages 自动部署
+```
 
-## 分支与发布
+## 部署
 
-- `main`：唯一分支，同时是 GitHub Pages 的发布源。
-- 向本仓库推送的内容会直接出现在线上站点，请确保只推送生成产物（以及本 README）。
+推送到 `main` 分支后，GitHub Actions 会构建并发布到 GitHub Pages：
 
-## 版权
+1. 仓库 **Settings → Pages → Source** 选择 **GitHub Actions**（首次需要设置一次）。
+2. 之后每次推送 `main` 触发 `.github/workflows/deploy.yml` 自动构建部署。
 
-博客文章版权归作者所有；页面模板与第三方资源遵循各自许可证。
+## 设计说明
+
+- 配色：浅青灰纸面 + 墨绿近黑 + 朱砂点缀，暗色模式为深墨绿底。
+- 字体：标题 Fraunces + 中文宋体回退，正文 Public Sans + 系统中文字体。
+- 首页右侧的手绘曲线取意「榕」的气生根，是页面唯一的装饰元素。
+
+## 历史
+
+旧版 Hexo 站点位于 `2905858` 及更早的提交中，新站从该基线重建。

@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="页面不存在" description="这个地址没有对应的页面。">
+  <section class="wrap notfound">
+    <p class="code">404</p>
+    <h1>这页不见了</h1>
+    <p class="lead">地址可能打错了，或者内容已经移走。</p>
+    <a class="btn" href="/">回到首页</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-block: clamp(4rem, 12vw, 8rem);
+  }
+
+  .code {
+    color: var(--muted);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+  }
+
+  .notfound h1 {
+    margin-top: 0.3rem;
+    font-size: clamp(2rem, 5vw, 3rem);
+  }
+
+  .lead {
+    margin-top: 0.8rem;
+    color: var(--muted);
+  }
+
+  .btn {
+    display: inline-flex;
+    margin-top: 2rem;
+    padding: 0.68rem 1.35rem;
+    border-radius: 2px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.92rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .btn:hover {
+    background: var(--accent);
+  }
+</style>

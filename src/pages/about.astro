@@ -1,0 +1,103 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+
+const stack = [
+  { group: '前端', items: ['Vue 2 / 3', 'TypeScript', 'uni-app', 'Astro'] },
+  { group: '后端', items: ['Java', 'Node.js（学习中）'] },
+  { group: '其他', items: ['C++', 'Qt', 'Git'] },
+];
+---
+<BaseLayout title="关于" description="榕：从机电转计算机，Vue 前端开发，正在向全栈生长。">
+  <article class="about wrap">
+    <header class="about-head">
+      <h1>关于</h1>
+      <p class="about-lead">前端工程师，正在向全栈生长。</p>
+    </header>
+
+    <div class="prose">
+      <p>
+        我是榕（Rick Shota），来自安徽。大学时从机电转到计算机，从大三正式开始学编程，第一门认真学的东西是前端的三大件。
+      </p>
+      <p>
+        2022 年我搭了第一个博客，写下过「成为一名优秀的前端开发者，然后是前端架构师」的目标。几年过去，前端从课本上的练习变成了每天的工作；现在做 Vue 前端开发，同时补全 Node 与 Java 后端的能力，往全栈走。
+      </p>
+      <p>
+        这个站点是重新搭的：用 Astro 生成，把项目、文章和联系方式重新梳理了一遍。旧博客的内容保留在
+        <a href="https://github.com/RickShota/RickShota.github.io/commits/main" target="_blank" rel="noopener noreferrer">git 历史</a>
+        里。
+      </p>
+
+      <h2>技术栈</h2>
+      <dl class="stack-list">
+        {stack.map((row) => (
+          <div class="stack-row">
+            <dt>{row.group}</dt>
+            <dd>{row.items.join(' / ')}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <h2>现在</h2>
+      <p>
+        {site.now} 业余时间在写项目、读源码，偶尔把踩过的坑整理成文章。这个站会随着我的进度一起更新。
+      </p>
+
+      <h2>联系</h2>
+      <p>
+        邮件：<a href={`mailto:${site.email}`}>{site.email}</a><br />
+        GitHub：<a href={site.github} target="_blank" rel="noopener noreferrer">github.com/RickShota</a>
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .about {
+    padding-block: clamp(3rem, 8vw, 5rem);
+  }
+
+  .about-head {
+    margin-bottom: 2.5rem;
+  }
+
+  .about-head h1 {
+    font-size: clamp(2rem, 4.5vw, 2.8rem);
+  }
+
+  .about-lead {
+    margin-top: 0.6rem;
+    color: var(--muted);
+  }
+
+  .about .prose {
+    max-width: 62ch;
+  }
+
+  .stack-list {
+    margin: 1.2em 0;
+    padding: 0;
+  }
+
+  .stack-row {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 0.55em 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stack-row:first-child {
+    border-top: 1px solid var(--line);
+  }
+
+  .stack-row dt {
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  .stack-row dd {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+</style>

@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { formatDate } from '../../lib/format';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+<BaseLayout title={post.data.title} description={post.data.description} type="article">
+  <article class="article wrap">
+    <header class="article-head">
+      <p class="article-date">
+        <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+      </p>
+      <h1>{post.data.title}</h1>
+      <p class="article-desc">{post.data.description}</p>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <footer class="article-foot">
+      <a href="/blog/">返回文章列表</a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .article {
+    max-width: 46rem;
+    margin-inline: auto;
+    padding-block: clamp(3rem, 8vw, 5rem);
+  }
+
+  .article-head {
+    margin-bottom: 2.2rem;
+  }
+
+  .article-date {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .article-head h1 {
+    margin-top: 0.4rem;
+    font-size: clamp(1.9rem, 4.5vw, 2.6rem);
+  }
+
+  .article-desc {
+    margin-top: 0.8rem;
+    color: var(--muted);
+  }
+
+  .article-foot {
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.9rem;
+  }
+
+  .article-foot a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .article-foot a:hover {
+    color: var(--accent);
+  }
+</style>
