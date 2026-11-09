@@ -1,10 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectRow from '../components/ProjectRow.astro';
+import OssRow from '../components/OssRow.astro';
 import PostRow from '../components/PostRow.astro';
 import { getCollection } from 'astro:content';
-import { site, projects } from '../data/site';
+import { site, experience, ossProjects } from '../data/site';
 
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const posts = (await getCollection('blog')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
@@ -36,7 +38,7 @@ const latest = posts.slice(0, 3);
       <div class="hero-copy">
         <h1 class="hero-title">
           <span>前端工程师，</span>
-          <span>向全栈生长。</span>
+          <span>做界面，也做基建。</span>
         </h1>
         <p class="hero-intro">{site.intro}</p>
         <p class="hero-now">
@@ -50,7 +52,7 @@ const latest = posts.slice(0, 3);
       </div>
 
       <div class="hero-portrait">
-        <img src={site.avatar} alt="榕的头像" width="220" height="220" loading="eager" />
+        <img src={site.avatar} alt="黄瑞瑞（榕）的头像" width="220" height="220" loading="eager" />
       </div>
     </div>
   </section>
@@ -58,11 +60,37 @@ const latest = posts.slice(0, 3);
   <section id="projects" class="section wrap">
     <div class="section-head">
       <h2>项目</h2>
-      <p class="section-note">全部开源在 GitHub</p>
+      <p class="section-note">公司项目 · 内容已脱敏</p>
     </div>
     <div class="project-list">
       {projects.map((project) => <ProjectRow project={project} />)}
     </div>
+  </section>
+
+  <section class="section wrap">
+    <div class="section-head">
+      <h2>开源与练习</h2>
+      <p class="section-note">GitHub 上的早期项目</p>
+    </div>
+    <div class="oss-list">
+      {ossProjects.map((project) => <OssRow project={project} />)}
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <div class="section-head">
+      <h2>经历</h2>
+      <a class="section-link" href="/about/">完整经历</a>
+    </div>
+    <ul class="timeline">
+      {experience.map((job) => (
+        <li class="job-row">
+          <span class="job-period">{job.period}</span>
+          <span class="job-company">{job.company}</span>
+          <span class="job-role">{job.role}</span>
+        </li>
+      ))}
+    </ul>
   </section>
 
   <section class="section wrap">
@@ -147,7 +175,7 @@ const latest = posts.slice(0, 3);
   }
 
   .hero-intro {
-    max-width: 44ch;
+    max-width: 46ch;
     margin-top: 1.6rem;
     font-size: 1.05rem;
     line-height: 1.8;
@@ -270,6 +298,43 @@ const latest = posts.slice(0, 3);
     color: var(--accent);
   }
 
+  /* Timeline ------------------------------------------------------ */
+  .timeline {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .job-row {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr) auto;
+    gap: 0.4rem 1.5rem;
+    align-items: baseline;
+    padding: 1.1rem 0.9rem;
+    margin-inline: -0.9rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .job-row:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .job-period {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .job-company {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .job-role {
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
   /* Contact ------------------------------------------------------- */
   .contact {
     display: flex;
@@ -337,6 +402,15 @@ const latest = posts.slice(0, 3);
 
     .hero-title {
       font-size: clamp(2.3rem, 10vw, 3rem);
+    }
+
+    .job-row {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+    }
+
+    .job-role {
+      display: none;
     }
   }
 </style>

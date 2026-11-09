@@ -1,36 +1,45 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { site } from '../data/site';
-
-const stack = [
-  { group: '前端', items: ['Vue 2 / 3', 'TypeScript', 'uni-app', 'Astro'] },
-  { group: '后端', items: ['Java', 'Node.js（学习中）'] },
-  { group: '其他', items: ['C++', 'Qt', 'Git'] },
-];
+import { site, experience, education, skillGroups, focus } from '../data/site';
 ---
-<BaseLayout title="关于" description="榕：从机电转计算机，Vue 前端开发，正在向全栈生长。">
+<BaseLayout
+  title="关于"
+  description="黄瑞瑞（榕 / Rick Shota），前端工程师，3 年经验，专注工程化与 AI 应用。"
+>
   <article class="about wrap">
     <header class="about-head">
       <h1>关于</h1>
-      <p class="about-lead">前端工程师，正在向全栈生长。</p>
+      <p class="about-lead">黄瑞瑞 · 前端工程师 · 3 年经验</p>
     </header>
 
     <div class="prose">
       <p>
-        我是榕（Rick Shota），来自安徽。大学时从机电转到计算机，从大三正式开始学编程，第一门认真学的东西是前端的三大件。
+        我是黄瑞瑞，网名榕（Rick Shota），安徽人。3 年前端开发经验，现在在易立德做中后台与前端基建。
       </p>
       <p>
-        2022 年我搭了第一个博客，写下过「成为一名优秀的前端开发者，然后是前端架构师」的目标。几年过去，前端从课本上的练习变成了每天的工作；现在做 Vue 前端开发，同时补全 Node 与 Java 后端的能力，往全栈走。
+        我的工作大致分三块：把业务系统做稳（中后台、数据可视化、工作流），把重复的事工程化（Monorepo、组件库、CI/CD），把 AI 真正用进研发流程（大模型接入、AI 应用前端）。
       </p>
-      <p>
-        这个站点是重新搭的：用 Astro 生成，把项目、文章和联系方式重新梳理了一遍。旧博客的内容保留在
-        <a href="https://github.com/RickShota/RickShota.github.io/commits/main" target="_blank" rel="noopener noreferrer">git 历史</a>
-        里。
-      </p>
+
+      <h2>工作经历</h2>
+      {experience.map((job) => (
+        <section class="job">
+          <h3>{job.company}</h3>
+          <p class="job-meta">{job.period} · {job.role}</p>
+          <ul>
+            {job.points.map((point) => <li>{point}</li>)}
+          </ul>
+        </section>
+      ))}
+
+      <h2>教育</h2>
+      <p>{education.school} · {education.major} · {education.period}</p>
+      <ul>
+        {education.honors.map((honor) => <li>{honor}</li>)}
+      </ul>
 
       <h2>技术栈</h2>
       <dl class="stack-list">
-        {stack.map((row) => (
+        {skillGroups.map((row) => (
           <div class="stack-row">
             <dt>{row.group}</dt>
             <dd>{row.items.join(' / ')}</dd>
@@ -38,10 +47,10 @@ const stack = [
         ))}
       </dl>
 
-      <h2>现在</h2>
-      <p>
-        {site.now} 业余时间在写项目、读源码，偶尔把踩过的坑整理成文章。这个站会随着我的进度一起更新。
-      </p>
+      <h2>关注方向</h2>
+      <ul>
+        {focus.map((item) => <li>{item}</li>)}
+      </ul>
 
       <h2>联系</h2>
       <p>
@@ -71,7 +80,29 @@ const stack = [
   }
 
   .about .prose {
-    max-width: 62ch;
+    max-width: 64ch;
+  }
+
+  .job {
+    margin-top: 1.6em;
+    padding-bottom: 1.2em;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .job:last-of-type {
+    border-bottom: 0;
+  }
+
+  .job h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+  }
+
+  .job-meta {
+    margin-top: 0.2em;
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-variant-numeric: tabular-nums;
   }
 
   .stack-list {
@@ -81,7 +112,7 @@ const stack = [
 
   .stack-row {
     display: grid;
-    grid-template-columns: 4.5rem minmax(0, 1fr);
+    grid-template-columns: 6.5rem minmax(0, 1fr);
     gap: 1rem;
     padding: 0.55em 0;
     border-bottom: 1px solid var(--line);
@@ -93,11 +124,18 @@ const stack = [
 
   .stack-row dt {
     color: var(--muted);
-    font-size: 0.92rem;
+    font-size: 0.9rem;
   }
 
   .stack-row dd {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
+  }
+
+  @media (max-width: 560px) {
+    .stack-row {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
   }
 </style>

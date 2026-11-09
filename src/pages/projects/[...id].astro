@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { name, period, summary, stack, metrics } = project.data;
+---
+<BaseLayout title={name} description={summary} type="article">
+  <article class="project-page wrap">
+    <header class="head">
+      <p class="period">{period}</p>
+      <h1>{name}</h1>
+      <p class="summary">{summary}</p>
+
+      <ul class="stack" aria-label="技术栈">
+        {stack.map((item) => <li>{item}</li>)}
+      </ul>
+
+      {metrics.length > 0 && (
+        <ul class="metrics" aria-label="成果">
+          {metrics.map((metric) => <li>{metric}</li>)}
+        </ul>
+      )}
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <footer class="foot">
+      <a href="/#projects">返回项目列表</a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .project-page {
+    max-width: 46rem;
+    margin-inline: auto;
+    padding-block: clamp(3rem, 8vw, 5rem);
+  }
+
+  .head {
+    margin-bottom: 2.2rem;
+  }
+
+  .period {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .head h1 {
+    margin-top: 0.4rem;
+    font-size: clamp(1.9rem, 4.5vw, 2.6rem);
+  }
+
+  .summary {
+    margin-top: 0.8rem;
+    color: var(--muted);
+    font-size: 1.05rem;
+  }
+
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 1.2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stack li {
+    padding: 0.08em 0.5em;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    line-height: 1.7;
+  }
+
+  .metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.4rem;
+    margin: 1.2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .metrics li {
+    position: relative;
+    padding-left: 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .metrics li::before {
+    content: '';
+    position: absolute;
+    top: 0.6em;
+    left: 0;
+    width: 7px;
+    height: 1.5px;
+    background: var(--seal);
+  }
+
+  .foot {
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.9rem;
+  }
+
+  .foot a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .foot a:hover {
+    color: var(--accent);
+  }
+</style>

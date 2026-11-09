@@ -18,10 +18,13 @@ npm run preview  # 预览构建结果
 
 | 内容 | 位置 |
 | --- | --- |
-| 个人信息、项目列表、联系方式 | `src/data/site.ts` |
+| 个人信息、工作经历、技能、开源项目 | `src/data/site.ts` |
+| 项目案例（Markdown + frontmatter） | `src/content/projects/` |
 | 文章（Markdown + frontmatter） | `src/content/blog/` |
 | 图片资源 | `public/images/` |
 | 页面样式 | `src/styles/global.css`、各组件内 scoped style |
+
+> `docs/` 目录用于存放不公开的个人资料（简历等），已在 `.gitignore` 中忽略，不会上传。
 
 文章 frontmatter 字段：
 
