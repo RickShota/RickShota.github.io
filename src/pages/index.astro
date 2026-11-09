@@ -47,12 +47,12 @@ const latest = posts.slice(0, 3);
         </p>
         <div class="hero-actions">
           <a class="btn btn-solid" href="#projects">查看项目</a>
-          <a class="btn btn-ghost" href="/about/">更多关于我</a>
+          <a class="btn btn-ghost" href={`mailto:${site.email}`}>联系我</a>
         </div>
       </div>
 
       <div class="hero-portrait">
-        <img src={site.avatar} alt="黄瑞瑞（榕）的头像" width="220" height="220" loading="eager" />
+        <img src={site.avatar} alt="榕的头像" width="220" height="220" loading="eager" />
       </div>
     </div>
   </section>
@@ -113,7 +113,7 @@ const latest = posts.slice(0, 3);
       </div>
       <div class="contact-links">
         <a href={`mailto:${site.email}`}>{site.email}</a>
-        <a href={site.github} target="_blank" rel="noopener noreferrer">github.com/RickShota</a>
+        <a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>
     </div>
   </section>

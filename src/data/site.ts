@@ -1,15 +1,14 @@
 export const site = {
   name: '榕',
-  fullName: '黄瑞瑞',
-  nameEn: 'Rick Shota',
+  nameEn: 'RickRone',
   title: '前端工程师 · 工程化与 AI 应用',
   location: '安徽',
   github: 'https://github.com/RickShota',
   email: 'rickrone@qq.com',
   avatar: '/images/headportrait.jpg',
   intro:
-    '3 年前端开发经验，在两家公司做中后台、组件库与 AI 应用的前端建设。擅长把重复的事工程化，也擅长把 AI 用进日常研发。',
-  now: '在易立德负责中后台与前端基建，关注大模型应用与 Agent。',
+    '3 年前端开发经验。主要做中后台与业务系统，从页面、组件库到工程化基建；也在做 AI 应用的前端落地。',
+  now: '前端岗在职，负责中后台与前端基建，关注大模型应用与 Agent。',
 };
 
 export interface ExperienceItem {
@@ -21,7 +20,7 @@ export interface ExperienceItem {
 
 export const experience: ExperienceItem[] = [
   {
-    company: '易立德信息科技有限公司',
+    company: '某企业软件服务商',
     role: '前端开发工程师',
     period: '2025.04 — 至今',
     points: [
@@ -31,11 +30,11 @@ export const experience: ExperienceItem[] = [
     ],
   },
   {
-    company: '安徽三禾一信息科技有限公司',
+    company: '某企业信息化服务公司',
     role: '前端开发工程师',
     period: '2023.02 — 2025.04',
     points: [
-      '负责 CBG 终端公共服务业务线的前端架构与开发，构建卡片化组件与可配置的卡片编排系统，支撑消息中心、服务门户与任务看板。',
+      '负责公共服务业务线的前端架构与开发，构建卡片化组件与可配置的卡片编排系统，支撑消息中心、服务门户与任务看板。',
       '参与工程化体系搭建：Monorepo 微前端架构、私有 NPM、通用构建插件与 GitLab CI/CD 流水线。',
       '规划并维护技术文档与 WIKI 知识库，推动技术分享与 Code Review 规范化。',
     ],
@@ -55,26 +54,32 @@ export const education = {
 export const skillGroups = [
   {
     group: '语言与基础',
+    note: '日常写代码的地基',
     items: ['HTML / CSS', 'JavaScript (ES6+)', 'TypeScript'],
   },
   {
     group: '框架',
+    note: 'Vue / React 双栈',
     items: ['Vue 2/3（Router、Pinia / Vuex）', 'React（Hooks、Context、Redux）', 'Next.js', 'uni-app'],
   },
   {
     group: '工程化',
+    note: '构建、协作与交付',
     items: ['Vite / Webpack', 'Monorepo（pnpm / Lerna）', 'CI/CD（GitHub Actions / GitLab CI）', '私有 NPM', 'Storybook', 'Vitest'],
   },
   {
     group: '服务端',
+    note: 'BFF 与接口层',
     items: ['Node.js（Express / Koa、RESTful API、BFF）'],
   },
   {
     group: 'AI',
+    note: '把模型接进产品与研发流程',
     items: ['Cursor / Claude / Copilot 深度使用', '大模型 API 集成', 'SSE 流式输出', 'AI Agent / MCP（关注）'],
   },
   {
     group: '可视化与其他',
+    note: '图表与部署',
     items: ['ECharts', 'Docker', 'Git Flow'],
   },
 ];

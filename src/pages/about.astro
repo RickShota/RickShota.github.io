@@ -4,60 +4,79 @@ import { site, experience, education, skillGroups, focus } from '../data/site';
 ---
 <BaseLayout
   title="关于"
-  description="黄瑞瑞（榕 / Rick Shota），前端工程师，3 年经验，专注工程化与 AI 应用。"
+  description="榕（RickRone），前端工程师，3 年经验，专注工程化与 AI 应用。"
 >
   <article class="about wrap">
     <header class="about-head">
       <h1>关于</h1>
-      <p class="about-lead">黄瑞瑞 · 前端工程师 · 3 年经验</p>
+      <p class="about-lead">榕 · 前端工程师 · 3 年经验</p>
     </header>
 
-    <div class="prose">
+    <div class="about-intro">
       <p>
-        我是黄瑞瑞，网名榕（Rick Shota），安徽人。3 年前端开发经验，现在在易立德做中后台与前端基建。
+        我是榕（RickRone），安徽人。3 年前端开发经验，现在在一家企业软件服务商做中后台与前端基建。
       </p>
       <p>
         我的工作大致分三块：把业务系统做稳（中后台、数据可视化、工作流），把重复的事工程化（Monorepo、组件库、CI/CD），把 AI 真正用进研发流程（大模型接入、AI 应用前端）。
       </p>
+    </div>
 
+    <section class="block">
       <h2>工作经历</h2>
-      {experience.map((job) => (
-        <section class="job">
-          <h3>{job.company}</h3>
-          <p class="job-meta">{job.period} · {job.role}</p>
-          <ul>
-            {job.points.map((point) => <li>{point}</li>)}
-          </ul>
-        </section>
-      ))}
+      <ol class="timeline">
+        {experience.map((job, index) => (
+          <li class="stint">
+            <p class="stint-time">
+              {job.period}
+              {index === 0 && <span class="badge">最近一段</span>}
+            </p>
+            <h3>{job.company}</h3>
+            <p class="stint-role">{job.role}</p>
+            <ul>
+              {job.points.map((point) => <li>{point}</li>)}
+            </ul>
+          </li>
+        ))}
+      </ol>
+    </section>
 
+    <section class="block">
       <h2>教育</h2>
-      <p>{education.school} · {education.major} · {education.period}</p>
-      <ul>
+      <p class="edu-line">{education.school} · {education.major} · {education.period}</p>
+      <ul class="plain-list">
         {education.honors.map((honor) => <li>{honor}</li>)}
       </ul>
+    </section>
 
+    <section class="block">
       <h2>技术栈</h2>
-      <dl class="stack-list">
-        {skillGroups.map((row) => (
-          <div class="stack-row">
-            <dt>{row.group}</dt>
-            <dd>{row.items.join(' / ')}</dd>
-          </div>
+      <div class="skill-grid">
+        {skillGroups.map((group) => (
+          <section class="skill-group">
+            <h3>{group.group}</h3>
+            <p class="skill-note">{group.note}</p>
+            <ul>
+              {group.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
         ))}
-      </dl>
+      </div>
+    </section>
 
+    <section class="block">
       <h2>关注方向</h2>
-      <ul>
+      <ul class="plain-list">
         {focus.map((item) => <li>{item}</li>)}
       </ul>
+    </section>
 
+    <section class="block">
       <h2>联系</h2>
-      <p>
+      <p class="contact-line">
         邮件：<a href={`mailto:${site.email}`}>{site.email}</a><br />
-        GitHub：<a href={site.github} target="_blank" rel="noopener noreferrer">github.com/RickShota</a>
+        GitHub：<a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
       </p>
-    </div>
+    </section>
   </article>
 </BaseLayout>
 
@@ -79,63 +98,162 @@ import { site, experience, education, skillGroups, focus } from '../data/site';
     color: var(--muted);
   }
 
-  .about .prose {
+  .about-intro {
     max-width: 64ch;
+    font-size: 1.02rem;
+    line-height: 1.85;
   }
 
-  .job {
-    margin-top: 1.6em;
-    padding-bottom: 1.2em;
-    border-bottom: 1px solid var(--line);
+  .about-intro p + p {
+    margin-top: 1em;
   }
 
-  .job:last-of-type {
-    border-bottom: 0;
+  .block {
+    margin-top: clamp(2.6rem, 6vw, 4rem);
   }
 
-  .job h3 {
-    margin-top: 0;
-    font-size: 1.1rem;
+  .block h2 {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--line-strong);
+    font-size: 1.5rem;
   }
 
-  .job-meta {
-    margin-top: 0.2em;
+  /* Timeline */
+  .timeline {
+    position: relative;
+    margin: 1.6rem 0 0;
+    padding: 0 0 0 1.75rem;
+    border-left: 1px solid var(--line-strong);
+    list-style: none;
+  }
+
+  .stint {
+    position: relative;
+    padding-bottom: 2rem;
+  }
+
+  .stint:last-child {
+    padding-bottom: 0;
+  }
+
+  .stint::before {
+    content: '';
+    position: absolute;
+    top: 0.62em;
+    left: calc(-1.75rem - 3.5px);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .stint-time {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
     color: var(--muted);
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     font-variant-numeric: tabular-nums;
   }
 
-  .stack-list {
-    margin: 1.2em 0;
-    padding: 0;
+  .badge {
+    padding: 0.02em 0.4em;
+    border: 1px solid var(--seal);
+    border-radius: 2px;
+    color: var(--seal);
+    font-size: 0.7rem;
+    line-height: 1.6;
   }
 
-  .stack-row {
-    display: grid;
-    grid-template-columns: 6.5rem minmax(0, 1fr);
-    gap: 1rem;
-    padding: 0.55em 0;
-    border-bottom: 1px solid var(--line);
+  .stint h3 {
+    margin-top: 0.35rem;
+    font-size: 1.15rem;
   }
 
-  .stack-row:first-child {
-    border-top: 1px solid var(--line);
-  }
-
-  .stack-row dt {
+  .stint-role {
+    margin-top: 0.1rem;
     color: var(--muted);
     font-size: 0.9rem;
   }
 
-  .stack-row dd {
-    margin: 0;
-    font-size: 0.92rem;
+  .stint ul {
+    max-width: 62ch;
+    margin: 0.8rem 0 0;
+    padding-left: 1.2em;
+    font-size: 0.94rem;
+    line-height: 1.8;
   }
 
-  @media (max-width: 560px) {
-    .stack-row {
+  .stint li + li,
+  .plain-list li + li {
+    margin-top: 0.35em;
+  }
+
+  .edu-line {
+    margin-top: 1.3rem;
+    font-size: 0.98rem;
+  }
+
+  .plain-list {
+    max-width: 62ch;
+    margin: 0.8rem 0 0;
+    padding-left: 1.2em;
+    font-size: 0.94rem;
+  }
+
+  /* Skills */
+  .skill-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 3rem;
+    margin-top: 1.6rem;
+  }
+
+  .skill-group h3 {
+    font-size: 1.02rem;
+    font-weight: 600;
+  }
+
+  .skill-note {
+    margin-top: 0.25rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+
+  .skill-group ul {
+    margin: 0.8rem 0 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+    list-style: none;
+  }
+
+  .skill-group li {
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.9rem;
+  }
+
+  .contact-line {
+    margin-top: 1.2rem;
+    font-size: 0.98rem;
+    line-height: 1.9;
+  }
+
+  .contact-line a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .contact-line a:hover {
+    color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .skill-grid {
       grid-template-columns: 1fr;
-      gap: 0.2rem;
+      gap: 1.6rem;
     }
   }
 </style>

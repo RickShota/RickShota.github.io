@@ -13,9 +13,7 @@ interface Props {
 }
 
 const { title, description = site.intro, type = 'website' } = Astro.props;
-const pageTitle = title
-  ? `${title} · ${site.fullName}`
-  : `${site.fullName} · ${site.title}`;
+const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.title}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 <!doctype html>
@@ -32,7 +30,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:site_name" content={`${site.fullName} · ${site.nameEn}`} />
+    <meta property="og:site_name" content={`${site.name} · ${site.nameEn}`} />
     <meta property="og:locale" content="zh_CN" />
     <meta name="twitter:card" content="summary" />
     <meta name="theme-color" content="#eef0e9" media="(prefers-color-scheme: light)" />

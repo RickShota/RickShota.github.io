@@ -1,4 +1,4 @@
-# 榕的Blog · Rick Shota
+# 榕的Blog · RickRone
 
 个人网站与博客，基于 [Astro](https://astro.build/) 构建，部署在 GitHub Pages。
 
