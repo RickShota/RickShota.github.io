@@ -37,6 +37,26 @@ tags: ['标签']
 ---
 ```
 
+项目案例 frontmatter 字段（案例页按「问题与约束 → 核心链路 → 架构取舍 → 结果 → 验证关注点 → 职责」组织）：
+
+```yaml
+---
+name: 项目名
+period: 2024.08 — 2025.03
+summary: 列表页的一句话摘要
+thesis: 详情页开头的核心问题
+context: 问题与约束
+flow: [{ name: 环节名, detail: 说明 }]
+decisions: [{ title: 取舍标题, problem: 难点, choice: 方案, benefit: 考虑 }]
+checks: ['验证关注点']
+outcome: 这套设计解决了什么
+responsibility: 我的职责
+stack: [技术栈]
+metrics: [成果]
+order: 1
+---
+```
+
 ## 目录结构
 
 ```text

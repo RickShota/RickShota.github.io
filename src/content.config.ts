@@ -12,12 +12,31 @@ const blog = defineCollection({
   }),
 });
 
+const flowStep = z.object({
+  name: z.string(),
+  detail: z.string(),
+});
+
+const decision = z.object({
+  title: z.string(),
+  problem: z.string(),
+  choice: z.string(),
+  benefit: z.string(),
+});
+
 const projects = defineCollection({
   loader: glob({ base: './src/content/projects', pattern: '**/*.md' }),
   schema: z.object({
     name: z.string(),
     period: z.string(),
     summary: z.string(),
+    thesis: z.string(),
+    context: z.string(),
+    flow: z.array(flowStep).default([]),
+    decisions: z.array(decision).default([]),
+    checks: z.array(z.string()).default([]),
+    outcome: z.string(),
+    responsibility: z.string(),
     stack: z.array(z.string()).default([]),
     metrics: z.array(z.string()).default([]),
     order: z.number().default(99),

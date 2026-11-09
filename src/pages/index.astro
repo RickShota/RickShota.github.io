@@ -88,6 +88,7 @@ const latest = posts.slice(0, 3);
           <span class="job-period">{job.period}</span>
           <span class="job-company">{job.company}</span>
           <span class="job-role">{job.role}</span>
+          <span class="job-desc">{job.summary}</span>
         </li>
       ))}
     </ul>
@@ -335,6 +336,15 @@ const latest = posts.slice(0, 3);
     font-size: 0.88rem;
   }
 
+  .job-desc {
+    grid-column: 2 / -1;
+    max-width: 58ch;
+    margin-top: 0.3rem;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
   /* Contact ------------------------------------------------------- */
   .contact {
     display: flex;
@@ -411,6 +421,11 @@ const latest = posts.slice(0, 3);
 
     .job-role {
       display: none;
+    }
+
+    .job-desc {
+      grid-column: 1;
+      margin-top: 0.2rem;
     }
   }
 </style>
