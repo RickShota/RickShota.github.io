@@ -3,6 +3,7 @@ name: 物流智慧物资管理系统
 period: 2025.07 — 2026.01
 summary: 业务不停摆的前提下把 Vue2 老系统迁移到 Vue3，并加上 AI 智能分析，把操作工具升级为分析平台。
 thesis: 业务不停摆，把 Vue2 老系统整体搬到 Vue3，再长出一层 AI 分析。
+category: business
 context: 原系统基于 Vue2 + Options API 构建，代码组织混乱、TypeScript 支持不完整、性能瓶颈明显。目标是在业务不停摆的前提下完成 Vue3 迁移，并引入 AI 智能分析能力，把系统从操作型工具升级为分析决策平台。我主导这次迁移与智能化改造。
 flow:
   - name: 存量系统

@@ -6,9 +6,9 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { name, period, summary, stack, metrics } = project.data;
+const { name, period, summary, stack, metrics, category } = project.data;
 ---
-<a class="project" href={`/projects/${project.id}/`}>
+<a class="project" href={`/projects/${project.id}/`} data-category={category}>
   <div class="project-body">
     <h3>
       {name}

@@ -31,6 +31,7 @@ const projects = defineCollection({
     period: z.string(),
     summary: z.string(),
     thesis: z.string(),
+    category: z.enum(['ai', 'business', 'infra', 'cross-platform']),
     context: z.string(),
     flow: z.array(flowStep).default([]),
     decisions: z.array(decision).default([]),

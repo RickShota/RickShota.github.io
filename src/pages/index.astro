@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectRow from '../components/ProjectRow.astro';
 import OssRow from '../components/OssRow.astro';
 import PostRow from '../components/PostRow.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import { site, experience, ossProjects } from '../data/site';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
@@ -11,6 +11,24 @@ const posts = (await getCollection('blog')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 const latest = posts.slice(0, 3);
+const categories = [
+  { key: 'all', label: '全部' },
+  { key: 'ai', label: 'AI 应用' },
+  { key: 'business', label: '业务系统' },
+  { key: 'infra', label: '工程基建' },
+  { key: 'cross-platform', label: '跨端应用' },
+] as const;
+const categoryCounts = projects.reduce<Record<string, number>>((acc, project) => {
+  acc[project.data.category] = (acc[project.data.category] ?? 0) + 1;
+  return acc;
+}, {});
+const featuredCategories = ['ai', 'business', 'infra', 'cross-platform'] as const;
+const featured = featuredCategories
+  .map((key) => projects.find((project) => project.data.category === key))
+  .filter((project): project is CollectionEntry<'projects'> => Boolean(project));
+const categoryLabels = Object.fromEntries(
+  categories.filter((category) => category.key !== 'all').map((category) => [category.key, category.label]),
+) as Record<string, string>;
 ---
 <BaseLayout>
   <section class="hero">
@@ -49,6 +67,20 @@ const latest = posts.slice(0, 3);
           <a class="btn btn-solid" href="#projects">查看项目</a>
           <a class="btn btn-ghost" href={`mailto:${site.email}`}>联系我</a>
         </div>
+        <ul class="hero-stats" aria-label="概览">
+          <li>
+            <strong>3 年</strong>
+            <span>前端开发经验</span>
+          </li>
+          <li>
+            <strong>4 个</strong>
+            <span>从 0 到 1 的项目</span>
+          </li>
+          <li>
+            <strong>10+</strong>
+            <span>组件库服务的产品线</span>
+          </li>
+        </ul>
       </div>
 
       <div class="hero-portrait">
@@ -57,14 +89,82 @@ const latest = posts.slice(0, 3);
     </div>
   </section>
 
+  <section class="feature wrap" aria-labelledby="feature-title">
+    <div class="feature-head">
+      <div>
+        <p class="feature-kicker">案例速览</p>
+        <h2 id="feature-title">一条链路，看清一个项目。</h2>
+      </div>
+      <p class="section-note">按分类切换 · 完整取舍见案例详情</p>
+    </div>
+
+    <div class="feature-switch" role="group" aria-label="选择案例分类">
+      {featured.map((project, i) => (
+        <button
+          type="button"
+          class:list={['feature-btn', { 'is-active': i === 0 }]}
+          data-feature={project.data.category}
+          aria-pressed={i === 0 ? 'true' : 'false'}
+        >
+          {categoryLabels[project.data.category] ?? project.data.category}
+        </button>
+      ))}
+    </div>
+
+    {featured.map((project, i) => (
+      <article
+        class="feature-panel"
+        data-panel={project.data.category}
+        hidden={i !== 0}
+        aria-label={project.data.name}
+      >
+        <div class="feature-flow-wrap">
+          <p class="feature-flow-label">核心链路</p>
+          <div class="feature-flow" aria-label="核心链路">
+            {project.data.flow.map((step, stepIndex) => (
+              <div class="feature-step">
+                <span class="feature-num">{String(stepIndex + 1).padStart(2, '0')}</span>
+                <b>{step.name}</b>
+                <span class="feature-detail">{step.detail}</span>
+              </div>
+            ))}
+          </div>
+          <p class="feature-flow-note">工作项目 · 流程简图</p>
+        </div>
+
+        <div class="feature-body">
+          <p class="feature-meta">{project.data.period} · 公司项目（已脱敏）</p>
+          <h3>{project.data.name}</h3>
+          <p class="feature-thesis">{project.data.thesis}</p>
+          <p class="feature-summary">{project.data.summary}</p>
+          <a class="feature-link" href={`/projects/${project.id}/`}>阅读完整案例</a>
+        </div>
+      </article>
+    ))}
+  </section>
+
   <section id="projects" class="section wrap">
     <div class="section-head">
       <h2>项目</h2>
       <p class="section-note">公司项目 · 内容已脱敏</p>
     </div>
-    <div class="project-list">
+    <div class="filters" role="group" aria-label="按类型筛选项目">
+      {categories.map((category) => (
+        <button
+          type="button"
+          class:list={['filter', { 'is-active': category.key === 'all' }]}
+          data-filter={category.key}
+          aria-pressed={category.key === 'all' ? 'true' : 'false'}
+        >
+          {category.label}
+          <span>{category.key === 'all' ? projects.length : (categoryCounts[category.key] ?? 0)}</span>
+        </button>
+      ))}
+    </div>
+    <div class="project-list" id="project-list">
       {projects.map((project) => <ProjectRow project={project} />)}
     </div>
+    <p class="filter-empty" hidden>这个分类下还没有项目。</p>
   </section>
 
   <section class="section wrap">
@@ -119,6 +219,52 @@ const latest = posts.slice(0, 3);
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  const filterButtons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const projectRows = document.querySelectorAll<HTMLElement>('#project-list [data-category]');
+  const emptyState = document.querySelector<HTMLElement>('.filter-empty');
+
+  filterButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const key = button.dataset.filter;
+
+      filterButtons.forEach((item) => {
+        const active = item === button;
+        item.classList.toggle('is-active', active);
+        item.setAttribute('aria-pressed', String(active));
+      });
+
+      let visible = 0;
+      projectRows.forEach((row) => {
+        const show = key === 'all' || row.dataset.category === key;
+        row.hidden = !show;
+        if (show) visible += 1;
+      });
+
+      if (emptyState) emptyState.hidden = visible > 0;
+    });
+  });
+
+  const featureButtons = document.querySelectorAll<HTMLButtonElement>('[data-feature]');
+  const featurePanels = document.querySelectorAll<HTMLElement>('[data-panel]');
+
+  featureButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const key = button.dataset.feature;
+
+      featureButtons.forEach((item) => {
+        const active = item === button;
+        item.classList.toggle('is-active', active);
+        item.setAttribute('aria-pressed', String(active));
+      });
+
+      featurePanels.forEach((panel) => {
+        panel.hidden = panel.dataset.panel !== key;
+      });
+    });
+  });
+</script>
 
 <style>
   /* Hero ---------------------------------------------------------- */
@@ -205,6 +351,218 @@ const latest = posts.slice(0, 3);
     flex-wrap: wrap;
     gap: 0.7rem;
     margin-top: 2.2rem;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: start;
+    gap: 0 clamp(1.4rem, 3.5vw, 2.4rem);
+    margin: 2.6rem 0 0;
+    padding: 1.1rem 0 0;
+    border-top: 1px solid var(--line);
+    list-style: none;
+  }
+
+  .hero-stats li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .hero-stats li + li {
+    padding-left: clamp(1.2rem, 3vw, 2rem);
+    border-left: 1px solid var(--line);
+  }
+
+  .hero-stats strong {
+    font-family: var(--font-display);
+    font-size: 1.32rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .hero-stats span {
+    color: var(--muted);
+    font-size: 0.76rem;
+    line-height: 1.5;
+  }
+
+  /* Feature case --------------------------------------------------- */
+  .feature {
+    padding-block: clamp(3rem, 7vw, 5rem);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .feature-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.6rem 1.5rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .feature-kicker {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+
+  .feature-head h2 {
+    margin-top: 0.45rem;
+    font-size: 1.6rem;
+  }
+
+  .feature-switch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.3rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .feature-btn {
+    position: relative;
+    padding: 0.4rem 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+    transition: color 0.2s ease;
+  }
+
+  .feature-btn::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 1.5px;
+    background: transparent;
+  }
+
+  .feature-btn:hover {
+    color: var(--ink);
+  }
+
+  .feature-btn.is-active {
+    color: var(--ink);
+  }
+
+  .feature-btn.is-active::after {
+    background: var(--seal);
+  }
+
+  .feature-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    padding: clamp(1.3rem, 3vw, 2.2rem);
+    border: 1px solid var(--line-strong);
+    background: var(--paper-raised);
+  }
+
+  .feature-flow-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .feature-flow-label {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+  }
+
+  .feature-flow {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.9rem;
+    align-content: start;
+  }
+
+  .feature-flow-note {
+    margin-top: auto;
+    color: var(--muted);
+    font-size: 0.76rem;
+  }
+
+  .feature-step {
+    position: relative;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .feature-step + .feature-step::before {
+    content: '›';
+    position: absolute;
+    top: 2.35rem;
+    left: -0.62rem;
+    color: var(--seal);
+    font-size: 0.9rem;
+    line-height: 1;
+  }
+
+  .feature-num {
+    display: block;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+  }
+
+  .feature-step b {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .feature-detail {
+    display: block;
+    margin-top: 0.2rem;
+    color: var(--muted);
+    font-size: 0.76rem;
+    line-height: 1.55;
+  }
+
+  .feature-meta {
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .feature-body h3 {
+    margin-top: 0.45rem;
+    font-size: 1.3rem;
+  }
+
+  .feature-thesis {
+    margin-top: 0.7rem;
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    line-height: 1.55;
+  }
+
+  .feature-summary {
+    margin-top: 0.55rem;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+
+  .feature-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.86rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .feature-link:hover {
+    color: var(--accent);
   }
 
   .btn {
@@ -299,6 +657,59 @@ const latest = posts.slice(0, 3);
     color: var(--accent);
   }
 
+  /* Project filters ----------------------------------------------- */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.3rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .filter {
+    position: relative;
+    padding: 0.4rem 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+    transition: color 0.2s ease;
+  }
+
+  .filter::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -0.85rem;
+    left: 0;
+    height: 1.5px;
+    background: transparent;
+  }
+
+  .filter:hover {
+    color: var(--ink);
+  }
+
+  .filter.is-active {
+    color: var(--ink);
+  }
+
+  .filter.is-active::after {
+    background: var(--seal);
+  }
+
+  .filter span {
+    margin-left: 0.3rem;
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .filter-empty {
+    margin-top: 1.5rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
   /* Timeline ------------------------------------------------------ */
   .timeline {
     margin: 0;
@@ -388,6 +799,18 @@ const latest = posts.slice(0, 3);
     .hero-vine {
       display: none;
     }
+
+    .feature-panel {
+      grid-template-columns: 1fr;
+    }
+
+    .feature-flow {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .feature-step + .feature-step::before {
+      display: none;
+    }
   }
 
   @media (max-width: 640px) {
@@ -412,6 +835,23 @@ const latest = posts.slice(0, 3);
 
     .hero-title {
       font-size: clamp(2.3rem, 10vw, 3rem);
+    }
+
+    .hero-stats {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.8rem;
+    }
+
+    .hero-stats li + li {
+      padding-left: 0.8rem;
+    }
+
+    .hero-stats strong {
+      font-size: 1.1rem;
+    }
+
+    .hero-stats span {
+      font-size: 0.7rem;
     }
 
     .job-row {

@@ -110,6 +110,10 @@ img {
   height: auto;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 button {
   padding: 0;
   border: 0;

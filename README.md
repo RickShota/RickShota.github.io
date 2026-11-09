@@ -45,6 +45,7 @@ name: 项目名
 period: 2024.08 — 2025.03
 summary: 列表页的一句话摘要
 thesis: 详情页开头的核心问题
+category: ai | business | infra | cross-platform
 context: 问题与约束
 flow: [{ name: 环节名, detail: 说明 }]
 decisions: [{ title: 取舍标题, problem: 难点, choice: 方案, benefit: 考虑 }]
