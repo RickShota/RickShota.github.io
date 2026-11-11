@@ -1,0 +1,309 @@
+---
+import { careerDirection } from '../data/site';
+---
+<section id="direction" class="direction wrap" aria-labelledby="direction-title">
+  <div class="head">
+    <div>
+      <p class="kicker">职业方向 · Career Direction</p>
+      <h2 id="direction-title">从业务系统，走向工业 AI 与 FDE。</h2>
+    </div>
+    <p class="head-note">发展方向 · 不是现有职位</p>
+  </div>
+
+  <p class="statement">{careerDirection.statement}</p>
+
+  <div class="t-model">
+    <div class="t-bar">
+      <p class="axis"><span>横向</span>扩展能力</p>
+      <ul>
+        {careerDirection.horizontal.map((item) => (
+          <li>
+            <span class="h-name">{item.name}</span>
+            <span class:list={['h-status', { 'is-learning': item.status === '学习中' }]}>{item.status}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="t-stem">
+      <p class="axis"><span>纵向</span>核心能力</p>
+      <div class="core-list">
+        {careerDirection.vertical.map((item, index) => (
+          <div class="core">
+            <span class="core-index">{String(index + 1).padStart(2, '0')}</span>
+            <b>{item.title}</b>
+            <span class="core-detail">{item.detail}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="states">
+    {careerDirection.states.map((state) => (
+      <article class:list={['state', `is-${state.tone}`]}>
+        <div class="state-head">
+          <span class="state-key">{state.key}</span>
+          <h3>{state.label}</h3>
+        </div>
+        <ul>
+          {state.items.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+    ))}
+  </div>
+
+  <p class="note">{careerDirection.fdeNote}</p>
+</section>
+
+<style>
+  .direction {
+    padding-block: clamp(3rem, 7vw, 5rem);
+  }
+
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    margin-bottom: 1.3rem;
+  }
+
+  .kicker {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+
+  .head h2 {
+    margin-top: 0.7rem;
+    font-size: 1.6rem;
+  }
+
+  .head-note {
+    color: var(--muted);
+    font-size: 0.86rem;
+  }
+
+  .statement {
+    max-width: 68ch;
+    font-size: 1rem;
+    line-height: 1.85;
+  }
+
+  /* T-shaped model ------------------------------------------------ */
+  .t-model {
+    margin-top: 2.2rem;
+  }
+
+  .axis {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+  }
+
+  .axis span {
+    margin-right: 0.45rem;
+    color: var(--seal);
+  }
+
+  .t-bar {
+    padding-top: 0.9rem;
+    border-top: 2px solid var(--accent);
+  }
+
+  .t-bar ul {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin: 0.8rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .t-bar li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.45rem 0.65rem;
+    border: 1px solid var(--line-strong);
+    background: var(--paper-raised);
+  }
+
+  .h-name {
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .h-status {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+  }
+
+  .h-status.is-learning {
+    color: var(--seal);
+  }
+
+  .t-stem {
+    position: relative;
+    width: min(100%, 46rem);
+    margin: 0 auto;
+    padding-top: 1.6rem;
+  }
+
+  .t-stem::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 1.6rem;
+    background: var(--line-strong);
+  }
+
+  .core-list {
+    margin-top: 0.8rem;
+  }
+
+  .core {
+    display: grid;
+    grid-template-columns: 2rem 9rem minmax(0, 1fr);
+    gap: 0.6rem 1rem;
+    align-items: baseline;
+    padding: 0.7rem 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .core:first-child {
+    border-top-color: var(--line-strong);
+  }
+
+  .core-index {
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+  }
+
+  .core b {
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    font-weight: 600;
+  }
+
+  .core-detail {
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.65;
+  }
+
+  /* Three states -------------------------------------------------- */
+  .states {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.6rem 2.2rem;
+    margin-top: 2.4rem;
+  }
+
+  .state {
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .state.is-evidence {
+    border-top-color: var(--accent);
+  }
+
+  .state.is-learning {
+    border-top-style: dashed;
+  }
+
+  .state.is-target {
+    border-top-style: dashed;
+    border-top-color: var(--seal);
+  }
+
+  .state-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .state-key {
+    display: grid;
+    flex: none;
+    width: 1.4rem;
+    height: 1.4rem;
+    place-items: center;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+  }
+
+  .state h3 {
+    font-size: 0.96rem;
+  }
+
+  .state ul {
+    margin: 0.8rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .state li {
+    position: relative;
+    padding-left: 0.9rem;
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.68;
+  }
+
+  .state li + li {
+    margin-top: 0.45rem;
+  }
+
+  .state li::before {
+    content: '';
+    position: absolute;
+    top: 0.62em;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    background: var(--line-strong);
+  }
+
+  .note {
+    margin-top: 1.8rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px dashed var(--line-strong);
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 900px) {
+    .t-bar ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .states {
+      grid-template-columns: 1fr;
+      gap: 1.3rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .core {
+      grid-template-columns: 2rem minmax(0, 1fr);
+    }
+
+    .core-detail {
+      grid-column: 2;
+    }
+  }
+</style>

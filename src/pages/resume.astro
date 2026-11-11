@@ -2,20 +2,20 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SkillTiers from '../components/SkillTiers.astro';
 import { getCollection } from 'astro:content';
-import { site, experience, education, jobTargets, explorations } from '../data/site';
+import { site, experience, education, jobTargets, explorations, industry, careerDirection } from '../data/site';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 ---
 <BaseLayout
   title="简历"
-  description="榕（RickRone）的网页版简历：3 年开发经验，Vue / React 双栈，专注复杂中后台、前端工程化与企业 AI 应用。"
+  description="榕（RickRone）的网页版简历：近 4 年 ToB 企业级系统研发经验，专注物流 / 仓储 / 物资业务系统、Vue / React 双栈、前端工程化与企业 AI 应用。"
 >
   <article class="resume wrap">
     <header class="resume-head">
       <div>
         <p class="kicker">网页版简历 · 更新于 {site.resumeUpdated}</p>
         <h1>榕 <span>RickRone</span></h1>
-        <p class="role">软件工程师 · 工程化与 AI 应用</p>
+        <p class="role">ToB 工业互联网软件工程师 · 近 4 年企业级系统经验</p>
       </div>
       <div class="resume-actions no-print">
         <button type="button" data-print>打印 / 保存为 PDF</button>
@@ -51,9 +51,25 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
       <h2>个人简介</h2>
       <p>{site.intro}</p>
       <p>
-        3 年开发经验，做过中后台、组件库、低代码、CMS 与跨端应用；主导过组件库、低代码平台与 AI 中台从 0 到 1 的建设。
-        近一年主要把 AI 能力接进业务系统与研发流程。
+        近 4 年 ToB 企业级开发经验，长期在物流、仓储与物资管理场景做业务系统，也做过组件库、低代码、CMS 与 AI 中台；
+        主导过组件库、低代码平台与 AI 中台从 0 到 1 的建设，近一年主要把 AI 能力接进业务系统与研发流程。
       </p>
+    </section>
+
+    <section class="resume-section">
+      <h2>行业经验</h2>
+      <p>
+        近 4 年 ToB 企业级软件研发，长期围绕物流、仓储与物资管理场景；熟悉多角色审批、库存预警、现场作业与数据看板等业务流程。
+      </p>
+      <ul class="industry-tags" aria-label="行业场景">
+        {industry.tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+      <ul class="plain-list">
+        {industry.evidence.map((item) => (
+          <li><strong>{item.title}</strong>：{item.scenario}；{item.response}。</li>
+        ))}
+      </ul>
+      <p class="footnote">{industry.boundary}</p>
     </section>
 
     <section class="resume-section">
@@ -85,6 +101,9 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
             <h3>{project.data.name}</h3>
             <p>{project.data.period} · {project.data.role}</p>
           </header>
+          {project.data.domain.length > 0 && (
+            <p class="project-domain">{project.data.domain.join(' / ')}</p>
+          )}
           <p class="project-summary">{project.data.summary}</p>
           <ul>
             {project.data.contribution.owned.slice(0, 3).map((item) => <li>{item}</li>)}
@@ -98,6 +117,20 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
       <p class="footnote">
         项目指标为项目内部口径，具体统计方式可在沟通中说明；学习中的技术不会写成生产经验。
       </p>
+    </section>
+
+    <section class="resume-section">
+      <h2>职业方向</h2>
+      <p>{careerDirection.statement}</p>
+      <div class="direction-list">
+        {careerDirection.states.map((state) => (
+          <div class="direction-item">
+            <h3>{state.key} · {state.label}</h3>
+            <p>{state.items.join('；')}</p>
+          </div>
+        ))}
+      </div>
+      <p class="footnote">{careerDirection.fdeNote}</p>
     </section>
 
     <section class="resume-section">
@@ -121,6 +154,8 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
       <h2>更多</h2>
       <p>
         项目详情：<a href="/#projects">rickshota.github.io/#projects</a><br />
+        行业经验：<a href="/#domain">rickshota.github.io/#domain</a><br />
+        职业方向：<a href="/#direction">rickshota.github.io/#direction</a><br />
         技术探索：<a href="/lab/">rickshota.github.io/lab/</a>
       </p>
     </section>
@@ -328,6 +363,56 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
     line-height: 1.65;
   }
 
+  .industry-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.9rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .industry-tags li {
+    padding: 0.05em 0.5em;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    line-height: 1.7;
+  }
+
+  .project-domain {
+    margin-top: 0.3rem;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+  }
+
+  .direction-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.2rem 1.8rem;
+    margin-top: 1.1rem;
+  }
+
+  .direction-item {
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .direction-item h3 {
+    font-size: 0.86rem;
+  }
+
+  .direction-item p {
+    margin-top: 0.3rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.65;
+  }
+
   .edu-line {
     font-size: 0.94rem !important;
   }
@@ -357,6 +442,11 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
   @media (max-width: 700px) {
     .contact-strip {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .direction-list {
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
     }
   }
 
@@ -437,7 +527,18 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
       line-height: 1.55;
     }
 
-    .project-metrics {
+    .project-metrics,
+    .project-domain {
+      color: #000;
+    }
+
+    .direction-list {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+    }
+
+    .industry-tags li {
+      border-color: #888;
       color: #000;
     }
 

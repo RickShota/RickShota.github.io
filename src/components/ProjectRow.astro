@@ -6,7 +6,7 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { name, period, role, summary, stack, metrics, category } = project.data;
+const { name, period, role, summary, stack, metrics, category, domain } = project.data;
 
 const categoryLabels: Record<string, string> = {
   ai: 'AI 应用',
@@ -20,6 +20,7 @@ const categoryLabels: Record<string, string> = {
     <div class="project-meta">
       <span class="category">{categoryLabels[category] ?? category}</span>
       <span class="period">{period}</span>
+      {domain.length > 0 && <span class="domains">{domain.slice(0, 3).join(' / ')}</span>}
     </div>
     <h3>{name}</h3>
     <p class="role"><span>角色</span>{role}</p>
@@ -83,6 +84,11 @@ const categoryLabels: Record<string, string> = {
     border-radius: 2px;
     color: var(--accent);
     line-height: 1.6;
+  }
+
+  .domains {
+    color: var(--seal);
+    letter-spacing: 0.02em;
   }
 
   .project h3 {

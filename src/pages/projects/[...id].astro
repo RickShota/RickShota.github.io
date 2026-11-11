@@ -29,6 +29,10 @@ const {
   summary,
   thesis,
   category,
+  domain,
+  scenario,
+  complexity,
+  systems,
   context,
   goals,
   constraints,
@@ -51,6 +55,7 @@ const categoryLabels: Record<string, string> = {
   'cross-platform': '跨端应用',
 };
 const tocItems = [
+  ...(scenario ? [{ id: 'business', label: '业务场景' }] : []),
   { id: 'background', label: '背景与目标' },
   { id: 'role', label: '我的职责' },
   { id: 'solution', label: '技术方案与难点' },
@@ -89,6 +94,11 @@ const tocItems = [
           <dd>{stack.slice(0, 4).join(' · ')}</dd>
         </div>
       </dl>
+      {domain.length > 0 && (
+        <ul class="domain-tags head-tags" aria-label="行业场景">
+          {domain.map((tag) => <li>{tag}</li>)}
+        </ul>
+      )}
       <a class="back-link" href="/#projects">← 返回项目列表</a>
     </header>
 
@@ -105,6 +115,31 @@ const tocItems = [
       </aside>
 
       <div class="case-content">
+        {scenario && (
+          <section id="business" class="block">
+            <h2>业务场景</h2>
+            <p class="body-text">{scenario}</p>
+            <dl class="business-facts">
+              <div>
+                <dt>业务角色</dt>
+                <dd>{audience}</dd>
+              </div>
+              {systems.length > 0 && (
+                <div>
+                  <dt>关联系统</dt>
+                  <dd>{systems.join(' · ')}</dd>
+                </div>
+              )}
+              {complexity && (
+                <div>
+                  <dt>流程复杂性</dt>
+                  <dd>{complexity}</dd>
+                </div>
+              )}
+            </dl>
+          </section>
+        )}
+
         <section id="background" class="block">
           <h2>背景与目标</h2>
           <p class="body-text">{context}</p>
@@ -324,6 +359,58 @@ const tocItems = [
     margin: 0.25rem 0 0;
     font-size: 0.86rem;
     line-height: 1.6;
+  }
+
+  .domain-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .domain-tags li {
+    padding: 0.08em 0.55em;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.02em;
+    line-height: 1.7;
+  }
+
+  .head-tags li {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Business context --------------------------------------------- */
+  .business-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 2rem;
+    margin: 1.5rem 0 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .business-facts > div:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .business-facts dt {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+  }
+
+  .business-facts dd {
+    margin: 0.3rem 0 0;
+    font-size: 0.9rem;
+    line-height: 1.75;
   }
 
   .back-link {
@@ -755,6 +842,15 @@ const tocItems = [
     .facts {
       grid-template-columns: 1fr;
       gap: 0.8rem;
+    }
+
+    .business-facts {
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
+    }
+
+    .business-facts > div:last-child:nth-child(odd) {
+      grid-column: auto;
     }
 
     .two-col,

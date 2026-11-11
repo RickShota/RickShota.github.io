@@ -1,0 +1,292 @@
+---
+import { industry } from '../data/site';
+---
+<section id="domain" class="domain wrap" aria-labelledby="domain-title">
+  <div class="head">
+    <div>
+      <p class="kicker">行业经验 · Domain Experience</p>
+      <h2 id="domain-title">近 4 年，在物流与仓储的业务现场。</h2>
+    </div>
+    <p class="head-note">ToB 企业级软件 · 内容已脱敏</p>
+  </div>
+
+  <p class="statement">{industry.statement}</p>
+
+  <ul class="tags" aria-label="行业场景">
+    {industry.tags.map((tag) => <li>{tag}</li>)}
+  </ul>
+
+  <dl class="stats">
+    {industry.stats.map((stat) => (
+      <div>
+        <dt>{stat.label}</dt>
+        <dd>{stat.value}</dd>
+      </div>
+    ))}
+  </dl>
+
+  <div class="evidence">
+    {industry.evidence.map((item, index) => (
+      <article class="evidence-card">
+        <span class="index">{String(index + 1).padStart(2, '0')}</span>
+        <h3>{item.title}</h3>
+        <p class="scenario">{item.scenario}</p>
+        <p class="response"><span>工程回应</span>{item.response}</p>
+        <a href={item.href}>{item.linkLabel} →</a>
+      </article>
+    ))}
+  </div>
+
+  <div class="understanding">
+    <h3>从项目里长出的业务理解</h3>
+    <ul>
+      {industry.understanding.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+
+  <p class="boundary">{industry.boundary}</p>
+</section>
+
+<style>
+  .domain {
+    padding-block: clamp(3rem, 7vw, 5rem);
+  }
+
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    margin-bottom: 1.3rem;
+  }
+
+  .kicker {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+
+  .head h2 {
+    margin-top: 0.7rem;
+    font-size: 1.6rem;
+  }
+
+  .head-note {
+    color: var(--muted);
+    font-size: 0.86rem;
+  }
+
+  .statement {
+    max-width: 68ch;
+    font-size: 1rem;
+    line-height: 1.85;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tags li {
+    padding: 0.08em 0.55em;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
+    line-height: 1.7;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 1.8rem 0 0;
+    padding: 1rem 0;
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stats > div {
+    display: flex;
+    flex-direction: column-reverse;
+    padding-left: 1.2rem;
+    border-left: 1px solid var(--line);
+  }
+
+  .stats > div:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .stats dt {
+    margin-top: 0.2rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+
+  .stats dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.6vw, 1.55rem);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .evidence {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.6rem 2.2rem;
+    margin-top: 1.8rem;
+  }
+
+  .evidence-card {
+    display: flex;
+    flex-direction: column;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .evidence-card:first-child {
+    border-top-color: var(--accent);
+  }
+
+  .evidence-card:last-child {
+    border-top-style: dashed;
+    border-top-color: var(--seal);
+  }
+
+  .index {
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+  }
+
+  .evidence-card h3 {
+    margin-top: 0.4rem;
+    font-size: 1.04rem;
+  }
+
+  .scenario {
+    margin-top: 0.45rem;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .response {
+    margin-top: 0.6rem;
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.65;
+  }
+
+  .response span {
+    display: block;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+  }
+
+  .evidence-card a {
+    margin-top: auto;
+    padding-top: 0.9rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .evidence-card a:hover {
+    color: var(--accent);
+  }
+
+  .understanding {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: 1.4rem 2.2rem;
+    margin-top: 2.4rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .understanding h3 {
+    font-size: 1rem;
+  }
+
+  .understanding ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem 2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .understanding li {
+    position: relative;
+    padding-left: 1rem;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.72;
+  }
+
+  .understanding li::before {
+    content: '';
+    position: absolute;
+    top: 0.66em;
+    left: 0;
+    width: 7px;
+    height: 1.5px;
+    background: var(--seal);
+  }
+
+  .boundary {
+    margin-top: 1.8rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px dashed var(--line-strong);
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 860px) {
+    .understanding {
+      grid-template-columns: 1fr;
+    }
+
+    .understanding ul {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 780px) {
+    .evidence {
+      grid-template-columns: 1fr;
+      gap: 1.3rem;
+    }
+
+    .evidence-card a {
+      padding-top: 0.6rem;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .stats {
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+      padding: 0.9rem 0;
+    }
+
+    .stats > div {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+</style>

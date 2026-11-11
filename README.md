@@ -3,8 +3,8 @@
 个人网站与作品集，基于 [Astro](https://astro.build/) 构建，部署在 GitHub Pages。
 
 - 线上地址：<https://rickshota.github.io/>
-- 定位：软件工程师，专注工程化与 AI 应用
-- 内容：项目案例、工作经历、技术能力分层、技术探索、网页版简历、求职与合作
+- 定位：深耕 ToB 工业互联网的软件工程师，近 4 年企业级系统经验
+- 内容：项目案例、行业经验、工作经历、技术能力分层、职业方向（工业 AI / FDE）、技术探索、网页版简历、求职与合作
 - 技术栈：Astro 7 · TypeScript · 原生 CSS · Markdown 内容集合
 
 ## 本地开发
@@ -34,7 +34,7 @@ npm run check    # Astro + TypeScript 类型检查
 
 ## 项目案例结构
 
-案例页按「背景与目标 → 我的职责 → 技术方案与核心难点 → 项目成果 → 验证关注点 → 技术栈 → 界面与资料」组织。每篇案例区分：
+案例页按「业务场景 → 背景与目标 → 我的职责 → 技术方案与核心难点 → 项目成果 → 验证关注点 → 技术栈 → 界面与资料」组织。每篇案例区分：
 
 - **主导设计**：方案、架构与关键取舍
 - **独立负责**：具体由个人完成的模块
@@ -51,6 +51,10 @@ audience: 面向的用户或团队
 summary: 列表页的一句话摘要
 thesis: 详情页开头的核心问题
 category: ai | business | infra | cross-platform
+domain: ['行业 / 业务场景标签']
+scenario: 项目服务的业务场景、业务角色与真实问题
+complexity: 业务流程与系统约束的复杂性
+systems: ['需要交互的其他系统']
 context: 项目背景与原有困难
 goals: ['项目目标']
 constraints: ['技术或业务约束']
@@ -82,7 +86,7 @@ order: 1
 
 ```text
 src/
-  components/       导航、页脚、项目行、技术能力分层、案例图示
+  components/       导航、页脚、项目行、技术能力分层、行业经验、职业方向、案例图示
   content/projects/ 项目案例 Markdown
   data/site.ts      站点信息、经历、能力分层、技术探索
   layouts/          页面骨架（head / SEO / Open Graph / JSON-LD / 主题初始化）

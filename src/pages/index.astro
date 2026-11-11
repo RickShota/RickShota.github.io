@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectRow from '../components/ProjectRow.astro';
 import SkillTiers from '../components/SkillTiers.astro';
+import DomainExperience from '../components/DomainExperience.astro';
+import CareerDirection from '../components/CareerDirection.astro';
 import BackToTop from '../components/BackToTop.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { site, experience, capabilities, explorations } from '../data/site';
@@ -58,10 +60,10 @@ const statusClasses: Record<string, string> = {
 
     <div class="wrap hero-inner">
       <div class="hero-copy">
-        <p class="hero-kicker">软件工程师 · 工程化 / AI 应用</p>
+        <p class="hero-kicker">ToB 工业互联网软件工程师 · 近 4 年</p>
         <h1 class="hero-title">
-          <span>软件工程师，</span>
-          <span>专注工程化与 AI 应用。</span>
+          <span>深耕 ToB 工业互联网，</span>
+          <span>把复杂 B 端系统做稳。</span>
         </h1>
         <p class="hero-intro">{site.intro}</p>
         <p class="hero-now">
@@ -75,12 +77,12 @@ const statusClasses: Record<string, string> = {
         </div>
         <ul class="hero-stats" aria-label="概览">
           <li>
-            <strong>3 年</strong>
-            <span>开发经验</span>
+            <strong>近 4 年</strong>
+            <span>ToB 企业级开发</span>
           </li>
           <li>
-            <strong>4 个</strong>
-            <span>从 0 到 1 的项目</span>
+            <strong>6 个</strong>
+            <span>企业级项目案例</span>
           </li>
           <li>
             <strong>10+</strong>
@@ -102,9 +104,11 @@ const statusClasses: Record<string, string> = {
     </div>
   </section>
 
+  <DomainExperience />
+
   <section class="section wrap" aria-labelledby="cap-title">
     <div class="section-head">
-      <h2 id="cap-title">我解决的问题</h2>
+      <h2 id="cap-title">核心能力</h2>
       <p class="section-note">从项目里抽出的能力，不是技能标签</p>
     </div>
     <div class="cap-grid">
@@ -240,6 +244,8 @@ const statusClasses: Record<string, string> = {
     <SkillTiers layout="grid" />
   </section>
 
+  <CareerDirection />
+
   <section id="exploring" class="section wrap">
     <div class="section-head">
       <h2>技术探索</h2>
@@ -272,9 +278,9 @@ const statusClasses: Record<string, string> = {
     <div class="coop-primary">
       <div class="coop-primary-copy">
         <p class="coop-kicker">优先 · 全职</p>
-        <h3>寻找前端 / 全栈 / AI 应用方向的全职机会</h3>
+        <h3>寻找 ToB / 工业互联网方向的全职机会</h3>
         <p>
-          目标岗位：前端开发、全栈开发（前端为主）、AI 应用开发，以及工业软件 / FDE 方向。
+          目标岗位：前端开发（ToB / 工业互联网）、全栈开发（前端为主）、AI 应用开发；FDE / 工业软件是希望逐步进入的方向。
           目前在安徽，可到岗；具体岗位与到岗时间可以邮件沟通。
         </p>
       </div>

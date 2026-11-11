@@ -1,11 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { site, jobTargets } from '../data/site';
+import { site, jobTargets, industry, careerDirection } from '../data/site';
 
 const services = [
   {
-    title: '复杂中后台与业务系统',
-    detail: '数据可视化、工作流、权限中心与运营管理端；能在业务不停摆的前提下做迁移与重构，覆盖从原型到生产交付的闭环。',
+    title: '复杂 B 端与工业业务系统',
+    detail: '物流、仓储、物资管理等业务系统，以及数据可视化、工作流、权限中心与运营管理端；能在业务不停摆的前提下做迁移与重构，覆盖从原型到生产交付的闭环。',
   },
   {
     title: '前端工程化与组件基建',
@@ -43,14 +43,14 @@ const process = [
 ---
 <BaseLayout
   title="求职与合作"
-  description="榕（RickRone）优先寻找前端 / 全栈 / AI 应用方向的全职机会，也接受远程协作与项目制合作。"
+  description="榕（RickRone）寻找 ToB / 工业互联网方向的前端、全栈与 AI 应用岗位，也接受远程协作与项目制合作。"
 >
   <article class="services wrap">
     <header class="head">
       <p class="kicker">求职与合作</p>
       <h1>优先寻找全职机会，<br />也接受远程与项目制合作。</h1>
       <p class="lead">
-        主要方向是前端开发、全栈开发（前端为主）与 AI 应用；工业软件 / FDE 是正在学习与探索的方向。
+        主要方向是 ToB / 工业互联网的前端开发、全栈开发（前端为主）与企业 AI 应用；工业 AI / FDE 是正在学习与探索的方向。
         如果你在招聘相关岗位，欢迎直接发岗位说明，我会按项目证据说明能承担的部分。
       </p>
       <div class="head-actions">
@@ -82,6 +82,28 @@ const process = [
       <p class="intent-note">
         全职是首选。远程协作与项目制合作保留为次要选项，不代表本站以承接外包为主。
       </p>
+    </section>
+
+    <section class="block">
+      <h2>行业背景</h2>
+      <p class="block-note">{industry.statement}</p>
+      <ul class="domain-tags" aria-label="行业场景">
+        {industry.tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+    </section>
+
+    <section class="block">
+      <h2>技术扩展与职业方向</h2>
+      <p class="block-note">{careerDirection.statement}</p>
+      <ul class="direction-tags" aria-label="技术扩展方向">
+        {careerDirection.horizontal.map((item) => (
+          <li>
+            <span>{item.name}</span>
+            <em class:list={['status', item.status === '学习中' && 'is-learning']}>{item.status}</em>
+          </li>
+        ))}
+      </ul>
+      <p class="intent-note">{careerDirection.fdeNote}</p>
     </section>
 
     <section class="block">
@@ -218,6 +240,57 @@ const process = [
     margin-top: 0.5rem;
     color: var(--muted);
     font-size: 0.86rem;
+  }
+
+  /* Domain & direction -------------------------------------------- */
+  .domain-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .domain-tags li {
+    padding: 0.05em 0.5em;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1.7;
+  }
+
+  .direction-tags {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 2.2rem;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .direction-tags li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.88rem;
+  }
+
+  .direction-tags .status {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-style: normal;
+    white-space: nowrap;
+  }
+
+  .direction-tags .is-learning {
+    color: var(--seal);
   }
 
   /* Intent -------------------------------------------------------- */
@@ -399,7 +472,8 @@ const process = [
   @media (max-width: 700px) {
     .intent-grid,
     .service-grid,
-    .mode-grid {
+    .mode-grid,
+    .direction-tags {
       grid-template-columns: 1fr;
     }
 

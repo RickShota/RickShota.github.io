@@ -1,32 +1,32 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SkillTiers from '../components/SkillTiers.astro';
-import { site, experience, education, explorations } from '../data/site';
+import { site, experience, education, explorations, industry, careerDirection } from '../data/site';
 ---
 <BaseLayout
   title="关于我"
-  description="榕（RickRone），软件工程师，3 年开发经验，专注复杂中后台、前端工程化与企业 AI 应用。"
+  description="榕（RickRone），深耕 ToB 工业互联网的软件工程师，近 4 年企业级系统研发经验，专注物流 / 仓储 / 物资业务系统、前端工程化与企业 AI 应用。"
 >
   <article class="about wrap">
     <header class="about-head">
       <h1>关于我</h1>
-      <p class="about-lead">榕 · 软件工程师 · 3 年开发经验</p>
+      <p class="about-lead">榕 · ToB 工业互联网软件工程师 · 近 4 年企业级系统经验</p>
     </header>
 
     <div class="about-intro">
       <p>
-        我是榕（RickRone），安徽人，软件工程师，3 年开发经验。做过中后台、组件库、低代码、CMS 与跨端应用，现在在一家企业软件服务商负责中后台与前端基建，向全栈与 AI 应用方向延伸。
+        我是榕（RickRone），安徽人，近 4 年 ToB 企业级软件开发经验。长期在物流、仓储与物资管理场景做业务系统，也做过组件库、低代码、CMS 与 AI 中台；现在在一家企业软件服务商负责企业级产品前端与工程化基建。
       </p>
       <p>
-        我的工作大致分三块：把业务系统做稳（中后台、数据可视化、工作流），把重复的事工程化（Monorepo、组件库、CI/CD），把 AI 真正接进业务（模型接入、流式对话、智能分析）。
+        我的工作大致分三块：把业务系统做稳（多角色权限、审批流、数据可视化、业务不停摆的迁移），把重复的事工程化（Monorepo、组件库、CI/CD），把 AI 真正接进业务（模型接入、流式对话、智能分析）。
       </p>
       <p>
-        正在补 Java / Spring Boot 与工业软件方向，目标是把前端工程能力延伸到系统集成与设备数据场景。
+        正在补 Java / Spring Boot、企业 AI 应用与系统集成，职业方向是工业 AI 与 FDE：先把已有项目做扎实，再逐步走向客户现场与解决方案。
       </p>
     </div>
 
     <p class="about-summary">
-      主导过组件库、低代码平台与 AI 中台从 0 到 1 的建设；更擅长把重复的事收敛成可复用的基建。
+      主导过组件库、低代码平台与 AI 中台从 0 到 1 的建设；更擅长把复杂业务与重复建设收敛成可复用的系统。
     </p>
 
     <p class="about-availability">
@@ -35,11 +35,33 @@ import { site, experience, education, explorations } from '../data/site';
     </p>
 
     <section class="block">
+      <h2>行业经验</h2>
+      <p class="block-note">近 4 年 ToB 企业级软件研发，长期围绕物流、仓储与物资管理场景。</p>
+      <ul class="industry-tags" aria-label="行业场景">
+        {industry.tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+      <div class="industry-grid">
+        {industry.evidence.map((item) => (
+          <article class="industry-item">
+            <h3>{item.title}</h3>
+            <p>{item.scenario}</p>
+            <p class="industry-response">{item.response}</p>
+            <a href={item.href}>{item.linkLabel} →</a>
+          </article>
+        ))}
+      </div>
+      <p class="boundary-note">
+        {industry.boundary}
+        <a href="/#domain">在首页查看完整行业经验</a>
+      </p>
+    </section>
+
+    <section class="block">
       <h2>能力边界</h2>
       <div class="boundary-grid">
         <div class="boundary-item is-practice">
           <h3>有项目证据</h3>
-          <p>Vue 3 / Vue 2、React、TypeScript、Node / BFF、uni-app、组件库与前端工程化、大模型 API 与 SSE 流式输出。</p>
+          <p>Vue 3 / Vue 2、React、TypeScript、Node / BFF、uni-app、组件库与前端工程化、大模型 API 与 SSE 流式输出；物流 / 仓储 / 物资管理业务系统。</p>
         </div>
         <div class="boundary-item">
           <h3>有使用经验</h3>
@@ -97,6 +119,28 @@ import { site, experience, education, explorations } from '../data/site';
           </li>
         ))}
       </ol>
+    </section>
+
+    <section class="block">
+      <h2>职业方向</h2>
+      <p class="block-note">{careerDirection.statement}</p>
+      <div class="direction-grid">
+        {careerDirection.states.map((state) => (
+          <div class:list={['direction-state', `is-${state.tone}`]}>
+            <div class="direction-head">
+              <span>{state.key}</span>
+              <h3>{state.label}</h3>
+            </div>
+            <ul>
+              {state.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <p class="boundary-note">
+        {careerDirection.fdeNote}
+        <a href="/#direction">查看 T 型能力模型</a>
+      </p>
     </section>
 
     <section class="block">
@@ -264,6 +308,166 @@ import { site, experience, education, explorations } from '../data/site';
     color: var(--muted);
     font-size: 0.8rem;
     line-height: 1.65;
+  }
+
+  /* Industry ------------------------------------------------------ */
+  .industry-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .industry-tags li {
+    padding: 0.08em 0.5em;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1.7;
+  }
+
+  .industry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+    margin-top: 1.5rem;
+  }
+
+  .industry-item {
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .industry-item:first-child {
+    border-top-color: var(--accent);
+  }
+
+  .industry-item:last-child {
+    border-top-style: dashed;
+    border-top-color: var(--seal);
+  }
+
+  .industry-item h3 {
+    font-size: 0.98rem;
+  }
+
+  .industry-item p {
+    margin-top: 0.45rem;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+
+  .industry-item .industry-response {
+    color: var(--ink);
+    font-size: 0.82rem;
+  }
+
+  .industry-item a {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .industry-item a:hover {
+    color: var(--accent);
+  }
+
+  .boundary-note a {
+    margin-left: 0.3rem;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .boundary-note a:hover {
+    color: var(--accent);
+  }
+
+  /* Career direction ---------------------------------------------- */
+  .direction-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+    margin-top: 1.5rem;
+  }
+
+  .direction-state {
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .direction-state.is-evidence {
+    border-top-color: var(--accent);
+  }
+
+  .direction-state.is-learning {
+    border-top-style: dashed;
+  }
+
+  .direction-state.is-target {
+    border-top-style: dashed;
+    border-top-color: var(--seal);
+  }
+
+  .direction-head {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .direction-head span {
+    display: grid;
+    flex: none;
+    width: 1.3rem;
+    height: 1.3rem;
+    place-items: center;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+  }
+
+  .direction-head h3 {
+    font-size: 0.96rem;
+  }
+
+  .direction-state ul {
+    margin: 0.8rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .direction-state li {
+    position: relative;
+    padding-left: 0.9rem;
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.68;
+  }
+
+  .direction-state li + li {
+    margin-top: 0.4rem;
+  }
+
+  .direction-state li::before {
+    content: '';
+    position: absolute;
+    top: 0.62em;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    background: var(--line-strong);
   }
 
   /* Work style ---------------------------------------------------- */
@@ -471,7 +675,9 @@ import { site, experience, education, explorations } from '../data/site';
 
   @media (max-width: 860px) {
     .boundary-grid,
-    .work-grid {
+    .work-grid,
+    .industry-grid,
+    .direction-grid {
       grid-template-columns: 1fr;
       gap: 1.2rem;
     }
