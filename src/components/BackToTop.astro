@@ -1,0 +1,109 @@
+---
+---
+<a class="back-to-top" href="#top" data-back-to-top aria-label="回到顶部">
+  <span>顶部</span>
+  <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 19V5M6 11l6-6 6 6"></path>
+  </svg>
+</a>
+
+<script>
+  const backToTopLinks = document.querySelectorAll<HTMLAnchorElement>('[data-back-to-top]');
+
+  if (backToTopLinks.length > 0) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let ticking = false;
+
+    const updateVisibility = () => {
+      const visible = window.scrollY > 640;
+      backToTopLinks.forEach((link) => link.classList.toggle('is-visible', visible));
+      ticking = false;
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateVisibility);
+      },
+      { passive: true },
+    );
+
+    updateVisibility();
+
+    backToTopLinks.forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        window.scrollTo({
+          top: 0,
+          behavior: reduceMotion.matches ? 'auto' : 'smooth',
+        });
+        document.getElementById('main')?.focus({ preventScroll: true });
+      });
+    });
+  }
+</script>
+
+<style>
+  .back-to-top {
+    position: fixed;
+    right: clamp(1rem, 3vw, 2rem);
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.52rem 0.62rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    backdrop-filter: blur(8px);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(0.35rem);
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease,
+      visibility 0.18s ease,
+      border-color 0.18s ease,
+      color 0.18s ease;
+  }
+
+  .back-to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .back-to-top:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .back-to-top {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    /* 给浮动按钮留出空间，避免遮住页脚文字 */
+    :global(.footer-inner) {
+      padding-bottom: 3.75rem !important;
+    }
+  }
+
+  @media print {
+    .back-to-top {
+      display: none;
+    }
+  }
+</style>

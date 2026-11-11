@@ -1,10 +1,20 @@
 ---
 name: 物流智慧物资管理系统
 period: 2025.07 — 2026.01
+role: 前端负责人 · 迁移与智能化改造
+audience: 物资管理人员、审批人员、管理层与大屏监控用户
 summary: 业务不停摆的前提下把 Vue2 老系统迁移到 Vue3，并加上 AI 智能分析，把操作工具升级为分析平台。
 thesis: 业务不停摆，把 Vue2 老系统整体搬到 Vue3，再长出一层 AI 分析。
 category: business
-context: 原系统基于 Vue2 + Options API 构建，代码组织混乱、TypeScript 支持不完整、性能瓶颈明显。目标是在业务不停摆的前提下完成 Vue3 迁移，并引入 AI 智能分析能力，把系统从操作型工具升级为分析决策平台。我主导这次迁移与智能化改造。
+context: 原系统基于 Vue2 + Options API，服务物资管理与审批业务；代码组织混乱、TypeScript 支持不完整、性能瓶颈明显，且业务仍在持续运行。
+goals:
+  - 在业务不停摆的前提下完成 Vue2 → Vue3 迁移。
+  - 建立 TypeScript 类型体系与可维护的组件结构。
+  - 引入 AI 分析报告，把固定报表升级为可交互的分析能力。
+constraints:
+  - 老系统持续运行，不能停机重写。
+  - 旧代码存在隐式类型与职责混杂，逐行翻译会继承旧问题。
+  - 工业网络不稳定，实时通信需要可恢复。
 flow:
   - name: 存量系统
     detail: Vue2 + Options API，业务持续运行
@@ -33,7 +43,26 @@ checks:
   - AI 报告的原因与建议，能否追溯到对应数据与异常检测结果？
 outcome: 系统完成技术栈与架构重构，固定报表升级为可交互的智能分析报告，老系统的性能与可维护性问题得到系统性解决。
 responsibility: 主导 Vue2 到 Vue3 的迁移与前端架构重写，设计 AI 智能分析报告、混合实时通信与工业 PAD 适配方案。
+contribution:
+  led:
+    - Vue2 → Vue3 迁移方案与前端架构重写。
+    - AI 智能分析报告的交互与呈现方案。
+    - SSE / WebSocket 混合实时通信方案。
+  owned:
+    - 用 Composition API 重写业务组件，建立 TypeScript 类型体系。
+    - SSE / WebSocket 连接管理、断线重连与状态同步。
+    - ECharts 图表配置、智能图表推荐与工业 PAD 适配。
+    - 渐进式数据加载与高频查询缓存。
+  team:
+    - 与后端联调模型、时序异常检测与工单接口。
+    - 与业务方按模块推进迁移验收，保证业务连续。
 stack: [Vue3, TypeScript, Vite, Pinia, Ant Design Vue, ECharts, SSE, WebSocket]
 metrics: [Vue2 → Vue3 全量迁移, 双通道实时通信, 弱网离线可用]
+metricsNote: 迁移范围与双通道架构为项目事实；「弱网可用」为现场测试结论，未附量化记录。
+media:
+  - 迁移前后界面对比（需脱敏）
+  - AI 智能分析报告与图表
+  - SSE / WebSocket 通信状态示意
+  - 工业 PAD 适配截图
 order: 2
 ---

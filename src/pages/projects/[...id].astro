@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectVisual from '../../components/ProjectVisual.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -20,134 +21,275 @@ const { project, index, total } = Astro.props;
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const prev = projects[(index - 1 + total) % total];
 const next = projects[(index + 1) % total];
-const { name, period, summary, thesis, context, flow, decisions, checks, outcome, responsibility, stack, metrics } =
-  project.data;
+const {
+  name,
+  period,
+  role,
+  audience,
+  summary,
+  thesis,
+  category,
+  context,
+  goals,
+  constraints,
+  flow,
+  decisions,
+  checks,
+  outcome,
+  responsibility,
+  contribution,
+  stack,
+  metrics,
+  metricsNote,
+  media,
+} = project.data;
 const caseNo = String(index + 1).padStart(2, '0');
+const categoryLabels: Record<string, string> = {
+  ai: 'AI 应用',
+  business: '业务系统',
+  infra: '工程基建',
+  'cross-platform': '跨端应用',
+};
+const tocItems = [
+  { id: 'background', label: '背景与目标' },
+  { id: 'role', label: '我的职责' },
+  { id: 'solution', label: '技术方案与难点' },
+  { id: 'results', label: '项目成果' },
+  ...(checks.length > 0 ? [{ id: 'checks', label: '验证关注点' }] : []),
+  { id: 'stack', label: '技术栈' },
+  { id: 'media', label: '界面与资料' },
+];
 ---
 <BaseLayout title={name} description={summary} type="article">
   <article class="case wrap">
-    <header class="head">
-      <p class="kicker">案例 {caseNo} · 工程细节</p>
-      <h1>{name}</h1>
-      <p class="thesis">{thesis}</p>
-      <p class="meta">{period} · 公司项目（已脱敏）</p>
-    </header>
-
-    <section class="block">
-      <h2>问题与约束</h2>
-      <p class="body-text">{context}</p>
-    </section>
-
-    {flow.length > 0 && (
-      <section class="block">
-        <h2>核心链路</h2>
-        <p class="note">以下为技术思路的简化示意。</p>
-        <ol class="flow">
-          {flow.map((step) => (
-            <li>
-              <b>{step.name}</b>
-              <span>{step.detail}</span>
-            </li>
-          ))}
-        </ol>
-      </section>
-    )}
-
-    {decisions.length > 0 && (
-      <section class="block">
-        <h2>架构取舍与实现</h2>
-        <ol class="decisions">
-          {decisions.map((item, i) => (
-            <li class="decision">
-              <div class="decision-head">
-                <span class="num">{String(i + 1).padStart(2, '0')}</span>
-                <h3>{item.title}</h3>
-              </div>
-              <dl class="tradeoff">
-                <dt>难点</dt>
-                <dd>{item.problem}</dd>
-                <dt>方案</dt>
-                <dd>{item.choice}</dd>
-                <dt>考虑</dt>
-                <dd>{item.benefit}</dd>
-              </dl>
-            </li>
-          ))}
-        </ol>
-      </section>
-    )}
-
-    <section class="block">
-      <h2>这套设计解决了什么</h2>
-      <p class="outcome">{outcome}</p>
-      {metrics.length > 0 && (
-        <ul class="metrics" aria-label="成果">
-          {metrics.map((metric) => <li>{metric}</li>)}
-        </ul>
-      )}
-    </section>
-
-    {checks.length > 0 && (
-      <section class="block">
-        <h2>验证关注点</h2>
-        <ul class="checks">
-          {checks.map((check) => <li>{check}</li>)}
-        </ul>
-      </section>
-    )}
-
-    <section class="block">
-      <h2>我的职责</h2>
-      <p class="body-text">{responsibility}</p>
-    </section>
-
-    <section class="block">
-      <h2>技术与主题</h2>
-      <ul class="stack" aria-label="技术栈">
-        {stack.map((item) => <li>{item}</li>)}
-      </ul>
-    </section>
-
-    <nav class="case-nav" aria-label="其他案例">
-      <a href={`/projects/${prev.id}/`}>
-        <span class="nav-label">上一个案例</span>
-        <strong>{prev.data.name}</strong>
-        <span class="nav-desc">{prev.data.thesis}</span>
-      </a>
-      <a href={`/projects/${next.id}/`}>
-        <span class="nav-label">下一个案例</span>
-        <strong>{next.data.name}</strong>
-        <span class="nav-desc">{next.data.thesis}</span>
-      </a>
+    <nav class="crumbs" aria-label="面包屑">
+      <a href="/">首页</a>
+      <span aria-hidden="true">/</span>
+      <a href="/#projects">项目</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{name}</span>
     </nav>
 
-    <footer class="foot">
-      <a href="/#projects">返回项目列表</a>
-    </footer>
+    <header class="head">
+      <p class="kicker">案例 {caseNo} · {categoryLabels[category] ?? category}</p>
+      <h1>{name}</h1>
+      <p class="thesis">{thesis}</p>
+      <p class="meta">{period} · 参与区间 · 公司项目（已脱敏）</p>
+      <dl class="facts">
+        <div>
+          <dt>角色</dt>
+          <dd>{role}</dd>
+        </div>
+        <div>
+          <dt>面向用户</dt>
+          <dd>{audience}</dd>
+        </div>
+        <div>
+          <dt>主要技术</dt>
+          <dd>{stack.slice(0, 4).join(' · ')}</dd>
+        </div>
+      </dl>
+      <a class="back-link" href="/#projects">← 返回项目列表</a>
+    </header>
+
+    <div class="case-body">
+      <aside class="case-toc">
+        <nav aria-label="案例目录">
+          <p class="toc-label">本页目录</p>
+          <ol>
+            {tocItems.map((item) => (
+              <li><a href={`#${item.id}`}>{item.label}</a></li>
+            ))}
+          </ol>
+        </nav>
+      </aside>
+
+      <div class="case-content">
+        <section id="background" class="block">
+          <h2>背景与目标</h2>
+          <p class="body-text">{context}</p>
+          <div class="two-col">
+            {goals.length > 0 && (
+              <div>
+                <h3>项目目标</h3>
+                <ul class="dash-list">
+                  {goals.map((goal) => <li>{goal}</li>)}
+                </ul>
+              </div>
+            )}
+            {constraints.length > 0 && (
+              <div>
+                <h3>约束</h3>
+                <ul class="dash-list">
+                  {constraints.map((constraint) => <li>{constraint}</li>)}
+                </ul>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section id="role" class="block">
+          <h2>我的职责</h2>
+          <p class="body-text">{responsibility}</p>
+          {(contribution.led.length > 0 || contribution.owned.length > 0 || contribution.team.length > 0) && (
+            <div class="contribution-grid">
+              {contribution.led.length > 0 && (
+                <div class="contribution">
+                  <h3>主导设计</h3>
+                  <ul>
+                    {contribution.led.map((item) => <li>{item}</li>)}
+                  </ul>
+                </div>
+              )}
+              {contribution.owned.length > 0 && (
+                <div class="contribution">
+                  <h3>独立负责</h3>
+                  <ul>
+                    {contribution.owned.map((item) => <li>{item}</li>)}
+                  </ul>
+                </div>
+              )}
+              {contribution.team.length > 0 && (
+                <div class="contribution">
+                  <h3>协作参与</h3>
+                  <ul>
+                    {contribution.team.map((item) => <li>{item}</li>)}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </section>
+
+        <section id="solution" class="block">
+          <h2>技术方案与核心难点</h2>
+          <p class="note">下面按「难点 → 方案 → 取舍」展开，重点说明为什么这样做。</p>
+          <ProjectVisual flow={flow} name={name} showMedia={false} />
+          {decisions.length > 0 && (
+            <ol class="decisions">
+              {decisions.map((item, i) => (
+                <li class="decision">
+                  <div class="decision-head">
+                    <span class="num">{String(i + 1).padStart(2, '0')}</span>
+                    <h3>{item.title}</h3>
+                  </div>
+                  <dl class="tradeoff">
+                    <dt>难点</dt>
+                    <dd>{item.problem}</dd>
+                    <dt>方案</dt>
+                    <dd>{item.choice}</dd>
+                    <dt>取舍</dt>
+                    <dd>{item.benefit}</dd>
+                  </dl>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
+
+        <section id="results" class="block">
+          <h2>项目成果</h2>
+          <p class="outcome">{outcome}</p>
+          {metrics.length > 0 && (
+            <ul class="metrics" aria-label="成果">
+              {metrics.map((metric) => <li>{metric}</li>)}
+            </ul>
+          )}
+          {metricsNote && (
+            <p class="metrics-note">
+              <span>口径说明</span>
+              {metricsNote}
+            </p>
+          )}
+        </section>
+
+        {checks.length > 0 && (
+          <section id="checks" class="block">
+            <h2>验证关注点</h2>
+            <ul class="checks">
+              {checks.map((check) => <li>{check}</li>)}
+            </ul>
+          </section>
+        )}
+
+        <section id="stack" class="block">
+          <h2>技术栈</h2>
+          <ul class="stack" aria-label="技术栈">
+            {stack.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+
+        <section id="media" class="block">
+          <h2>界面与资料</h2>
+          <p class="note">
+            公司项目界面需脱敏；当前只展示流程示意与待补充清单。真实截图、录屏和架构图会在脱敏后补充。
+          </p>
+          <ProjectVisual flow={[]} media={media} name={name} />
+        </section>
+
+        <nav class="case-nav" aria-label="其他案例">
+          <a href={`/projects/${prev.id}/`}>
+            <span class="nav-label">上一个案例</span>
+            <strong>{prev.data.name}</strong>
+            <span class="nav-desc">{prev.data.thesis}</span>
+          </a>
+          <a href={`/projects/${next.id}/`}>
+            <span class="nav-label">下一个案例</span>
+            <strong>{next.data.name}</strong>
+            <span class="nav-desc">{next.data.thesis}</span>
+          </a>
+        </nav>
+
+        <footer class="foot">
+          <a href="/#projects">返回项目列表</a>
+        </footer>
+      </div>
+    </div>
   </article>
 </BaseLayout>
 
 <style>
   .case {
-    max-width: 48rem;
-    margin-inline: auto;
-    padding-block: clamp(3rem, 8vw, 5rem);
+    padding-block: clamp(2.5rem, 7vw, 4.5rem);
   }
 
-  .kicker {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
+  /* Breadcrumb ---------------------------------------------------- */
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    color: var(--muted);
+    font-size: 0.76rem;
+  }
+
+  .crumbs a:hover {
     color: var(--accent);
   }
 
+  .crumbs span[aria-current='page'] {
+    color: var(--ink);
+  }
+
+  /* Header -------------------------------------------------------- */
+  .head {
+    max-width: 54rem;
+    margin-top: 1.6rem;
+  }
+
+  .kicker {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+
   .head h1 {
-    margin-top: 0.9rem;
+    margin-top: 0.8rem;
     font-size: clamp(2rem, 4.8vw, 2.9rem);
   }
 
   .thesis {
-    max-width: 40ch;
+    max-width: 42ch;
     margin-top: 1.1rem;
     font-family: var(--font-display);
     font-size: clamp(1.12rem, 2.2vw, 1.36rem);
@@ -155,14 +297,105 @@ const caseNo = String(index + 1).padStart(2, '0');
   }
 
   .meta {
-    margin-top: 1.1rem;
+    margin-top: 1rem;
     color: var(--muted);
-    font-size: 0.85rem;
+    font-size: 0.84rem;
     font-variant-numeric: tabular-nums;
   }
 
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem 2rem;
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 0;
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .facts dt {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+  }
+
+  .facts dd {
+    margin: 0.25rem 0 0;
+    font-size: 0.86rem;
+    line-height: 1.6;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.84rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .back-link:hover {
+    color: var(--accent);
+  }
+
+  /* Layout -------------------------------------------------------- */
+  .case-body {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .case-toc {
+    align-self: start;
+    position: sticky;
+    top: 5.5rem;
+  }
+
+  .toc-label {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+  }
+
+  .case-toc ol {
+    margin: 0.8rem 0 0;
+    padding: 0 0 0 0.9rem;
+    border-left: 1px solid var(--line);
+    list-style: none;
+  }
+
+  .case-toc li + li {
+    margin-top: 0.45rem;
+  }
+
+  .case-toc a {
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .case-toc a:hover {
+    color: var(--accent);
+  }
+
+  .case-content {
+    max-width: 48rem;
+  }
+
+  /* Blocks -------------------------------------------------------- */
   .block {
     margin-top: clamp(2.6rem, 6vw, 3.8rem);
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    scroll-margin-top: 5.5rem;
+  }
+
+  .block:first-child {
+    margin-top: 0;
   }
 
   .block h2 {
@@ -170,62 +403,141 @@ const caseNo = String(index + 1).padStart(2, '0');
   }
 
   .note {
-    margin-top: 0.9rem;
-    color: var(--muted);
-    font-size: 0.82rem;
-  }
-
-  .body-text {
-    max-width: 62ch;
-    margin-top: 1.1rem;
-    font-size: 0.98rem;
-    line-height: 1.85;
-  }
-
-  /* Flow ---------------------------------------------------------- */
-  .flow {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1.25rem;
-    margin: 1.5rem 0 0;
-    padding: 0;
-    list-style: none;
-    counter-reset: step;
-  }
-
-  .flow li::before {
-    counter-increment: step;
-    content: '0' counter(step);
-    display: block;
-    color: var(--seal);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-  }
-
-  .flow b {
-    display: block;
-    margin-top: 0.35rem;
-    font-size: 0.94rem;
-    font-weight: 600;
-  }
-
-  .flow span {
-    display: block;
-    margin-top: 0.25rem;
+    margin-top: 0.8rem;
     color: var(--muted);
     font-size: 0.82rem;
     line-height: 1.65;
   }
 
-  /* Decisions ----------------------------------------------------- */
-  .decisions {
-    margin: 1.6rem 0 0;
+  .body-text {
+    max-width: 64ch;
+    margin-top: 1.1rem;
+    font-size: 0.98rem;
+    line-height: 1.85;
+  }
+
+  /* Goals & constraints ------------------------------------------ */
+  .two-col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem 2.5rem;
+    margin-top: 1.6rem;
+  }
+
+  .two-col > div {
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .two-col > div:first-child {
+    border-top-color: var(--accent);
+  }
+
+  .two-col > div:last-child {
+    border-top-style: dashed;
+    border-top-color: var(--seal);
+  }
+
+  .two-col h3 {
+    font-size: 0.96rem;
+  }
+
+  .dash-list {
+    margin: 0.7rem 0 0;
     padding: 0;
     list-style: none;
   }
 
+  .dash-list li {
+    position: relative;
+    padding-left: 1rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .dash-list li + li {
+    margin-top: 0.35rem;
+  }
+
+  .dash-list li::before {
+    content: '';
+    position: absolute;
+    top: 0.68em;
+    left: 0;
+    width: 7px;
+    height: 1.5px;
+    background: var(--seal);
+  }
+
+  /* Contribution -------------------------------------------------- */
+  .contribution-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.4rem 1.8rem;
+    margin-top: 1.6rem;
+  }
+
+  .contribution {
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .contribution:first-child {
+    border-top-color: var(--accent);
+  }
+
+  .contribution:last-child {
+    border-top-style: dashed;
+    border-top-color: var(--seal);
+  }
+
+  .contribution h3 {
+    font-size: 0.92rem;
+  }
+
+  .contribution ul {
+    margin: 0.7rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contribution li {
+    position: relative;
+    padding-left: 0.9rem;
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.68;
+  }
+
+  .contribution li + li {
+    margin-top: 0.4rem;
+  }
+
+  .contribution li::before {
+    content: '';
+    position: absolute;
+    top: 0.62em;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    background: var(--line-strong);
+  }
+
+  /* Decisions ----------------------------------------------------- */
+  .decisions {
+    margin: 1.8rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .decision {
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--line);
+  }
+
   .decision + .decision {
-    margin-top: 2.6rem;
+    margin-top: 1.4rem;
   }
 
   .decision-head {
@@ -242,20 +554,20 @@ const caseNo = String(index + 1).padStart(2, '0');
   }
 
   .decision h3 {
-    font-size: 1.1rem;
+    font-size: 1.08rem;
   }
 
   .tradeoff {
     display: grid;
-    grid-template-columns: 4rem minmax(0, 1fr);
+    grid-template-columns: 3.5rem minmax(0, 1fr);
     gap: 0.55rem 1rem;
-    margin: 0.9rem 0 0 1.6rem;
+    margin: 0.8rem 0 0 1.6rem;
   }
 
   .tradeoff dt {
     padding-top: 0.12em;
     color: var(--muted);
-    font-size: 0.78rem;
+    font-size: 0.76rem;
   }
 
   .tradeoff dd {
@@ -264,9 +576,9 @@ const caseNo = String(index + 1).padStart(2, '0');
     line-height: 1.78;
   }
 
-  /* Outcome ------------------------------------------------------- */
+  /* Results ------------------------------------------------------- */
   .outcome {
-    max-width: 62ch;
+    max-width: 64ch;
     margin-top: 1.2rem;
     padding: 0.9rem 0 0.9rem 1.1rem;
     border-left: 2px solid var(--seal);
@@ -297,6 +609,26 @@ const caseNo = String(index + 1).padStart(2, '0');
     width: 7px;
     height: 1.5px;
     background: var(--seal);
+  }
+
+  .metrics-note {
+    max-width: 64ch;
+    margin-top: 1rem;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--line);
+    background: var(--paper-raised);
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.7;
+  }
+
+  .metrics-note span {
+    display: inline-block;
+    margin-right: 0.5rem;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
   }
 
   /* Checks -------------------------------------------------------- */
@@ -353,6 +685,8 @@ const caseNo = String(index + 1).padStart(2, '0');
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem 2rem;
     margin-top: clamp(3rem, 7vw, 4.5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line-strong);
   }
 
   .nav-label {
@@ -388,7 +722,7 @@ const caseNo = String(index + 1).padStart(2, '0');
   }
 
   .foot {
-    margin-top: 2.5rem;
+    margin-top: 2rem;
     font-size: 0.9rem;
   }
 
@@ -402,9 +736,31 @@ const caseNo = String(index + 1).padStart(2, '0');
     color: var(--accent);
   }
 
+  /* Responsive ---------------------------------------------------- */
+  @media (max-width: 900px) {
+    .case-toc {
+      display: none;
+    }
+
+    .case-body {
+      grid-template-columns: 1fr;
+    }
+
+    .case-content {
+      max-width: none;
+    }
+  }
+
   @media (max-width: 700px) {
-    .flow {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .facts {
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+    }
+
+    .two-col,
+    .contribution-grid {
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
     }
 
     .tradeoff {

@@ -1,67 +1,91 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { site } from '../data/site';
+import { site, jobTargets } from '../data/site';
 
 const services = [
   {
-    title: '中后台与业务系统',
-    detail: '数据可视化、工作流、权限中心与运营管理端，从原型到生产交付的完整闭环。',
+    title: '复杂中后台与业务系统',
+    detail: '数据可视化、工作流、权限中心与运营管理端；能在业务不停摆的前提下做迁移与重构，覆盖从原型到生产交付的闭环。',
   },
   {
-    title: '组件库与工程化',
-    detail: 'Monorepo、组件库、CLI 脚手架、代码规范与 CI/CD，把重复的事收敛成可复用的基建。',
+    title: '前端工程化与组件基建',
+    detail: 'Monorepo、组件库、CLI 脚手架、代码规范、测试与 CI/CD，把重复的事收敛成可复用的团队基建。',
   },
   {
-    title: 'AI 应用前端',
-    detail: '大模型接入、流式对话、智能分析报告，以及 AI 工具在业务里的实际落地。',
+    title: 'AI 应用接入',
+    detail: '大模型 API 集成、SSE 流式对话、上下文与用量管理、智能分析报告；关注 AI 能力在业务里的实际落地。',
   },
   {
-    title: '跨端与移动应用',
-    detail: 'uni-app 多端应用、离线作业、扫码与地图能力，覆盖现场作业场景。',
+    title: '跨端与现场作业',
+    detail: 'uni-app 多端应用、扫码、离线同步、地图追踪与弱网适配，覆盖仓库、物流等现场作业场景。',
   },
 ];
 
 const modes = [
   {
-    label: '全职现场',
-    title: '接受全职 offer',
-    detail: '可到岗，方向偏中后台、前端基建与 AI 应用，也接受全栈方向的机会。',
+    label: '次要 · 远程',
+    title: '远程协作',
+    detail: '远程全职或长期协作，按周同步进度，以文档、代码和演示推进，适合跨城市团队。',
   },
   {
-    label: '远程协作',
-    title: '远程全职或长期协作',
-    detail: '按周同步进度，以文档、代码和演示推进，适合跨城市团队。',
-  },
-  {
-    label: '项目制私活',
-    title: '按项目交付',
-    detail: '需求明确的页面、系统、组件库或 AI 应用，可按阶段拆分、验收与结算。',
+    label: '次要 · 项目制',
+    title: '项目制合作',
+    detail: '需求明确的页面、系统、组件库或 AI 应用，按阶段拆分、验收与结算。',
   },
 ];
 
 const process = [
-  { step: '需求沟通', detail: '确认业务目标、现有系统、时间与预算边界。' },
+  { step: '需求沟通', detail: '确认业务目标、现有系统、范围与时间边界。' },
   { step: '方案与报价', detail: '给出范围、技术方案、里程碑与费用。' },
   { step: '开发与演示', detail: '分阶段开发，定期演示，及时调整。' },
   { step: '验收与交接', detail: '源码、文档、部署说明与约定维护期。' },
 ];
 ---
 <BaseLayout
-  title="交付方式"
-  description="榕（RickRone）的合作方式：全职现场、远程协作与项目制私活，按阶段交付与验收。"
+  title="求职与合作"
+  description="榕（RickRone）优先寻找前端 / 全栈 / AI 应用方向的全职机会，也接受远程协作与项目制合作。"
 >
   <article class="services wrap">
     <header class="head">
-      <p class="kicker">合作方式</p>
-      <h1>全职、远程、私活，<br />都可以先聊清楚。</h1>
+      <p class="kicker">求职与合作</p>
+      <h1>优先寻找全职机会，<br />也接受远程与项目制合作。</h1>
       <p class="lead">
-        目前接受全职现场、远程协作与项目制合作。先把目标、范围和交付方式说清楚，再决定怎么开始。
+        主要方向是前端开发、全栈开发（前端为主）与 AI 应用；工业软件 / FDE 是正在学习与探索的方向。
+        如果你在招聘相关岗位，欢迎直接发岗位说明，我会按项目证据说明能承担的部分。
       </p>
-      <a class="btn" href={`mailto:${site.email}`}>发邮件聊聊</a>
+      <div class="head-actions">
+        <a class="btn" href={`mailto:${site.email}`}>发送岗位或约聊</a>
+        <a class="btn btn-ghost" href="/resume/">查看简历</a>
+      </div>
     </header>
 
     <section class="block">
-      <h2>我能做什么</h2>
+      <h2>求职意向</h2>
+      <dl class="intent-grid">
+        <div>
+          <dt>目标岗位</dt>
+          <dd>{jobTargets.join(' / ')}</dd>
+        </div>
+        <div>
+          <dt>地点</dt>
+          <dd>安徽 · 可到岗</dd>
+        </div>
+        <div>
+          <dt>状态</dt>
+          <dd>在职，具体到岗时间面谈</dd>
+        </div>
+        <div>
+          <dt>优先</dt>
+          <dd>全职现场 / 远程全职</dd>
+        </div>
+      </dl>
+      <p class="intent-note">
+        全职是首选。远程协作与项目制合作保留为次要选项，不代表本站以承接外包为主。
+      </p>
+    </section>
+
+    <section class="block">
+      <h2>我能带来什么</h2>
       <div class="service-grid">
         {services.map((item) => (
           <div class="service">
@@ -73,58 +97,52 @@ const process = [
     </section>
 
     <section class="block">
-      <h2>合作形式</h2>
-      <ul class="mode-list">
-        {modes.map((mode, index) => (
-          <li>
-            <span class="num">{String(index + 1).padStart(2, '0')}</span>
-            <div>
-              <p class="mode-label">{mode.label}</p>
-              <h3>{mode.title}</h3>
-              <p class="mode-detail">{mode.detail}</p>
-            </div>
-          </li>
+      <h2>其他合作方式</h2>
+      <p class="block-note">以下为次要合作方式；如果你主要招聘全职，可以跳过这一节。</p>
+      <div class="mode-grid">
+        {modes.map((mode) => (
+          <div class="mode">
+            <p class="mode-label">{mode.label}</p>
+            <h3>{mode.title}</h3>
+            <p class="mode-detail">{mode.detail}</p>
+          </div>
         ))}
-      </ul>
+      </div>
     </section>
 
     <section class="block">
-      <h2>交付流程</h2>
-      <ol class="process">
-        {process.map((item, index) => (
-          <li>
-            <span class="num">{String(index + 1).padStart(2, '0')}</span>
-            <b>{item.step}</b>
-            <span class="process-detail">{item.detail}</span>
-          </li>
-        ))}
-      </ol>
-    </section>
-
-    <section class="block">
-      <h2>交付内容</h2>
-      <ul class="plain-list">
-        <li>可运行的源码与必要的注释，按约定范围交付。</li>
-        <li>部署说明、环境配置与接入文档。</li>
-        <li>关键模块的设计说明与使用示例。</li>
-        <li>约定维护期内的 bug 修复与必要支持。</li>
-      </ul>
+      <details class="project-process">
+        <summary>项目制合作流程（次要）</summary>
+        <ol class="process">
+          {process.map((item, index) => (
+            <li>
+              <span class="num">{String(index + 1).padStart(2, '0')}</span>
+              <b>{item.step}</b>
+              <span class="process-detail">{item.detail}</span>
+            </li>
+          ))}
+        </ol>
+        <p class="process-note">
+          按阶段拆分、验收与结算；范围、源码与维护期以书面约定为准。所有合作都按真实范围说明，不承诺无法验证的指标。
+        </p>
+      </details>
     </section>
 
     <section class="block">
       <h2>联系</h2>
       <p class="contact-line">
         邮件：<a href={`mailto:${site.email}`}>{site.email}</a><br />
-        GitHub：<a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+        GitHub：<a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a><br />
+        简历：<a href="/resume/">网页版简历</a>
       </p>
-      <p class="contact-note">邮件请简单说明项目背景、目标和时间预期，我会尽快回复。</p>
+      <p class="contact-note">邮件请简单说明岗位、团队方向与时间预期，我会尽快回复。</p>
     </section>
   </article>
 </BaseLayout>
 
 <style>
   .services {
-    max-width: 52rem;
+    max-width: 54rem;
     margin-inline: auto;
     padding-block: clamp(3rem, 8vw, 5rem);
   }
@@ -143,26 +161,49 @@ const process = [
   }
 
   .lead {
-    max-width: 52ch;
+    max-width: 58ch;
     margin-top: 1.1rem;
     color: var(--muted);
     font-size: 1rem;
     line-height: 1.8;
   }
 
+  .head-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.6rem;
+  }
+
   .btn {
     display: inline-flex;
-    margin-top: 1.6rem;
+    align-items: center;
+    justify-content: center;
     padding: 0.68rem 1.35rem;
+    border: 1px solid transparent;
     border-radius: 2px;
     background: var(--ink);
     color: var(--paper);
     font-size: 0.92rem;
-    transition: background-color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
   }
 
   .btn:hover {
     background: var(--accent);
+  }
+
+  .btn-ghost {
+    border-color: var(--line-strong);
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   .block {
@@ -173,12 +214,62 @@ const process = [
     font-size: 1.4rem;
   }
 
+  .block-note {
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font-size: 0.86rem;
+  }
+
+  /* Intent -------------------------------------------------------- */
+  .intent-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem 2.5rem;
+    margin: 1.4rem 0 0;
+    padding: 1.1rem 0;
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .intent-grid dt {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+  }
+
+  .intent-grid dd {
+    margin: 0.3rem 0 0;
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+
+  .intent-note {
+    margin-top: 1rem;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--line);
+    background: var(--paper-raised);
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.65;
+  }
+
   /* Services ------------------------------------------------------ */
   .service-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.6rem 2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem 2.5rem;
     margin-top: 1.4rem;
+  }
+
+  .service {
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .service:nth-child(1),
+  .service:nth-child(3) {
+    border-top-color: var(--accent);
   }
 
   .service h3 {
@@ -193,57 +284,70 @@ const process = [
   }
 
   /* Modes --------------------------------------------------------- */
-  .mode-list {
-    margin: 1.5rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .mode-list li {
+  .mode-grid {
     display: grid;
-    grid-template-columns: 2.2rem minmax(0, 1fr);
-    gap: 1rem;
-    padding: 1.2rem 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem 2.5rem;
+    margin-top: 1.2rem;
   }
 
-  .num {
-    color: var(--seal);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    padding-top: 0.2em;
+  .mode {
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line);
   }
 
   .mode-label {
     color: var(--muted);
-    font-size: 0.78rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
   }
 
-  .mode-list h3 {
-    margin-top: 0.2rem;
-    font-size: 1.05rem;
+  .mode h3 {
+    margin-top: 0.3rem;
+    font-size: 1.02rem;
   }
 
   .mode-detail {
     max-width: 56ch;
     margin-top: 0.35rem;
     color: var(--muted);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     line-height: 1.7;
   }
 
   /* Process ------------------------------------------------------- */
+  .project-process {
+    padding: 1rem 0;
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .project-process summary {
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+
+  .project-process summary:hover {
+    color: var(--accent);
+  }
+
   .process {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1rem;
-    margin: 1.5rem 0 0;
+    margin: 1.4rem 0 0;
     padding: 0;
     list-style: none;
   }
 
-  .process .num {
+  .num {
     display: block;
-    padding-top: 0;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
   }
 
   .process b {
@@ -261,19 +365,15 @@ const process = [
     line-height: 1.6;
   }
 
+  .process-note {
+    max-width: 64ch;
+    margin-top: 1.2rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.7;
+  }
+
   /* Contact ------------------------------------------------------- */
-  .plain-list {
-    max-width: 60ch;
-    margin: 1.2rem 0 0;
-    padding-left: 1.2em;
-    font-size: 0.94rem;
-    line-height: 1.8;
-  }
-
-  .plain-list li + li {
-    margin-top: 0.35em;
-  }
-
   .contact-line {
     margin-top: 1.2rem;
     font-size: 0.98rem;
@@ -297,7 +397,9 @@ const process = [
   }
 
   @media (max-width: 700px) {
-    .service-grid {
+    .intent-grid,
+    .service-grid,
+    .mode-grid {
       grid-template-columns: 1fr;
     }
 

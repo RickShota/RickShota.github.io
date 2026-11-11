@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rickshota.github.io/sitemap-index.xml

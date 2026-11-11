@@ -4,10 +4,20 @@ import { site } from '../data/site';
 const links = [
   { href: '/#projects', label: '项目' },
   { href: '/#experience', label: '经历' },
-  { href: '/#stack', label: '技术栈' },
-  { href: '/about/', label: '关于我' },
-  { href: '/services/', label: '交付方式' },
+  { href: '/#stack', label: '能力' },
+  { href: '/lab/', label: '探索' },
+  { href: '/about/', label: '关于' },
+  { href: '/resume/', label: '简历' },
+  { href: '/services/', label: '合作' },
 ];
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) => {
+  if (href === '/#projects') return currentPath.startsWith('/projects/');
+  const path = href.split('#')[0];
+  if (path === '/') return false;
+  return currentPath === path || currentPath.startsWith(path);
+};
 ---
 <header class="nav">
   <div class="wrap nav-inner">
@@ -17,7 +27,18 @@ const links = [
     </a>
 
     <nav class="nav-links" aria-label="主导航">
-      {links.map((link) => <a href={link.href}>{link.label}</a>)}
+      {links.map((link) => (
+        <a
+          class:list={['nav-link', { 'is-active': isActive(link.href) }]}
+          href={link.href}
+          aria-current={isActive(link.href) ? 'page' : undefined}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="nav-actions">
       <a
         class="nav-icon nav-github"
         href={site.github}
@@ -40,6 +61,39 @@ const links = [
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
         </svg>
       </button>
+      <button
+        class="menu-toggle nav-icon"
+        type="button"
+        aria-label="打开菜单"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <svg class="icon-menu" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+        <svg class="icon-close" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+          <path d="M6 6l12 12M18 6 6 18"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-panel" id="mobile-menu" data-menu hidden>
+    <nav class="wrap mobile-nav" aria-label="移动端导航">
+      {links.map((link) => (
+        <a
+          class:list={['mobile-link', { 'is-active': isActive(link.href) }]}
+          href={link.href}
+          aria-current={isActive(link.href) ? 'page' : undefined}
+        >
+          {link.label}
+        </a>
+      ))}
+      <div class="mobile-meta">
+        <a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
     </nav>
   </div>
 </header>
@@ -55,6 +109,42 @@ const links = [
     } catch {
       /* 隐私模式下忽略 */
     }
+  });
+
+  const menuToggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const mobileMenu = document.querySelector<HTMLElement>('[data-menu]');
+
+  const setMenu = (open: boolean) => {
+    if (!menuToggle || !mobileMenu) return;
+    menuToggle.setAttribute('aria-expanded', String(open));
+    menuToggle.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
+    mobileMenu.toggleAttribute('hidden', !open);
+  };
+
+  menuToggle?.addEventListener('click', () => {
+    const open = menuToggle.getAttribute('aria-expanded') !== 'true';
+    setMenu(open);
+  });
+
+  mobileMenu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => setMenu(false));
+  });
+
+  document.addEventListener('click', (event) => {
+    if (menuToggle?.getAttribute('aria-expanded') !== 'true') return;
+    const target = event.target as Node;
+    if (mobileMenu?.contains(target) || menuToggle?.contains(target)) return;
+    setMenu(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || menuToggle?.getAttribute('aria-expanded') !== 'true') return;
+    setMenu(false);
+    menuToggle.focus();
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 720) setMenu(false);
   });
 </script>
 
@@ -80,6 +170,7 @@ const links = [
     display: inline-flex;
     align-items: baseline;
     gap: 0.55rem;
+    flex: none;
   }
 
   .brand-name {
@@ -101,13 +192,32 @@ const links = [
     font-size: 0.9rem;
   }
 
-  .nav-links a {
+  .nav-link {
     color: var(--muted);
     transition: color 0.2s ease;
   }
 
-  .nav-links a:hover {
+  .nav-link:hover {
     color: var(--ink);
+  }
+
+  .nav-link.is-active {
+    color: var(--ink);
+  }
+
+  .nav-link.is-active::after {
+    content: '';
+    display: block;
+    height: 1.5px;
+    margin-top: 0.12rem;
+    background: var(--seal);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    flex: none;
   }
 
   .nav-icon {
@@ -125,14 +235,94 @@ const links = [
     color: var(--ink);
   }
 
-  @media (max-width: 560px) {
+  .menu-toggle {
+    display: none;
+  }
+
+  .menu-toggle .icon-close {
+    display: none;
+  }
+
+  .menu-toggle[aria-expanded='true'] .icon-menu {
+    display: none;
+  }
+
+  .menu-toggle[aria-expanded='true'] .icon-close {
+    display: block;
+  }
+
+  .mobile-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    border-bottom: 1px solid var(--line-strong);
+    background: var(--paper);
+    animation: menu-in 0.16s ease-out;
+  }
+
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .mobile-nav {
+    display: grid;
+    padding-block: 0.6rem 1rem;
+  }
+
+  .mobile-link {
+    padding: 0.72rem 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  .mobile-link:hover,
+  .mobile-link.is-active {
+    color: var(--ink);
+  }
+
+  .mobile-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-top: 0.9rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+
+  .mobile-meta a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  @media (max-width: 860px) {
+    .nav-links {
+      gap: 0.8rem;
+      font-size: 0.84rem;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .nav-links {
+      display: none;
+    }
+
     .nav-github {
       display: none;
     }
 
-    .nav-links {
-      gap: 0.75rem;
-      font-size: 0.82rem;
+    .menu-toggle {
+      display: inline-flex;
     }
   }
 

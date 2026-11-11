@@ -82,6 +82,10 @@ main {
   flex: 1 0 auto;
 }
 
+main:focus {
+  outline: none;
+}
+
 h1,
 h2,
 h3,

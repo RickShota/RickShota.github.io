@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectRow from '../components/ProjectRow.astro';
-import OssRow from '../components/OssRow.astro';
+import SkillTiers from '../components/SkillTiers.astro';
+import BackToTop from '../components/BackToTop.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { site, experience, ossProjects, skillGroups } from '../data/site';
+import { site, experience, capabilities, explorations } from '../data/site';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const categories = [
@@ -24,6 +25,13 @@ const featured = featuredCategories
 const categoryLabels = Object.fromEntries(
   categories.filter((category) => category.key !== 'all').map((category) => [category.key, category.label]),
 ) as Record<string, string>;
+
+const statusClasses: Record<string, string> = {
+  学习中: 'learning',
+  实验中: 'experimenting',
+  规划中: 'planned',
+  已有公开代码: 'open',
+};
 ---
 <BaseLayout>
   <section class="hero">
@@ -50,9 +58,10 @@ const categoryLabels = Object.fromEntries(
 
     <div class="wrap hero-inner">
       <div class="hero-copy">
+        <p class="hero-kicker">软件工程师 · 工程化 / AI 应用</p>
         <h1 class="hero-title">
-          <span>全栈工程师，</span>
-          <span>做界面，也做系统。</span>
+          <span>软件工程师，</span>
+          <span>专注工程化与 AI 应用。</span>
         </h1>
         <p class="hero-intro">{site.intro}</p>
         <p class="hero-now">
@@ -61,7 +70,8 @@ const categoryLabels = Object.fromEntries(
         </p>
         <div class="hero-actions">
           <a class="btn btn-solid" href="#projects">查看项目</a>
-          <a class="btn btn-ghost" href={`mailto:${site.email}`}>联系我</a>
+          <a class="btn btn-ghost" href="/resume/">查看简历</a>
+          <a class="hero-mail" href={`mailto:${site.email}`}>或直接来信</a>
         </div>
         <ul class="hero-stats" aria-label="概览">
           <li>
@@ -80,8 +90,33 @@ const categoryLabels = Object.fromEntries(
       </div>
 
       <div class="hero-portrait">
-        <img src={site.avatar} alt="榕的头像" width="220" height="220" loading="eager" />
+        <img
+          src={site.avatar}
+          alt="榕的头像"
+          width="220"
+          height="220"
+          loading="eager"
+          fetchpriority="high"
+        />
       </div>
+    </div>
+  </section>
+
+  <section class="section wrap" aria-labelledby="cap-title">
+    <div class="section-head">
+      <h2 id="cap-title">我解决的问题</h2>
+      <p class="section-note">从项目里抽出的能力，不是技能标签</p>
+    </div>
+    <div class="cap-grid">
+      {capabilities.map((cap) => (
+        <article class="cap">
+          <span class="cap-index">{cap.index}</span>
+          <h3>{cap.title}</h3>
+          <p class="cap-detail">{cap.detail}</p>
+          <p class="cap-proof">{cap.proof}</p>
+          <a class="cap-link" href={cap.href}>{cap.linkLabel}</a>
+        </article>
+      ))}
     </div>
   </section>
 
@@ -91,7 +126,7 @@ const categoryLabels = Object.fromEntries(
         <p class="feature-kicker">案例速览</p>
         <h2 id="feature-title">一条链路，看清一个项目。</h2>
       </div>
-      <p class="section-note">按分类切换 · 完整取舍见案例详情</p>
+      <p class="section-note">按分类切换 · 流程为技术示意，非产品截图</p>
     </div>
 
     <div class="feature-switch" role="group" aria-label="选择案例分类">
@@ -115,7 +150,7 @@ const categoryLabels = Object.fromEntries(
         aria-label={project.data.name}
       >
         <div class="feature-flow-wrap">
-          <p class="feature-flow-label">核心链路</p>
+          <p class="feature-flow-label">核心链路 · 技术示意</p>
           <div class="feature-flow" aria-label="核心链路">
             {project.data.flow.map((step, stepIndex) => (
               <div class="feature-step">
@@ -125,14 +160,17 @@ const categoryLabels = Object.fromEntries(
               </div>
             ))}
           </div>
-          <p class="feature-flow-note">工作项目 · 流程简图</p>
+          <p class="feature-flow-note">周期为参与区间，部分项目并行推进。</p>
         </div>
 
         <div class="feature-body">
-          <p class="feature-meta">{project.data.period} · 公司项目（已脱敏）</p>
+          <p class="feature-meta">{project.data.period} · {project.data.role}</p>
           <h3>{project.data.name}</h3>
           <p class="feature-thesis">{project.data.thesis}</p>
           <p class="feature-summary">{project.data.summary}</p>
+          <ul class="feature-metrics" aria-label="关键结果">
+            {project.data.metrics.slice(0, 2).map((metric) => <li>{metric}</li>)}
+          </ul>
           <a class="feature-link" href={`/projects/${project.id}/`}>阅读完整案例</a>
         </div>
       </article>
@@ -142,8 +180,11 @@ const categoryLabels = Object.fromEntries(
   <section id="projects" class="section wrap">
     <div class="section-head">
       <h2>项目</h2>
-      <p class="section-note">公司项目 · 内容已脱敏</p>
+      <p class="section-note">{projects.length} 个公司项目 · 内容已脱敏</p>
     </div>
+    <p class="projects-note">
+      部分项目在时间上并行推进；周期为参与区间，不代表全职投入时长。每篇案例区分了主导设计、独立负责与协作参与。
+    </p>
     <div class="filters" role="group" aria-label="按类型筛选项目">
       {categories.map((category) => (
         <button
@@ -163,16 +204,6 @@ const categoryLabels = Object.fromEntries(
     <p class="filter-empty" hidden>这个分类下还没有项目。</p>
   </section>
 
-  <section class="section wrap">
-    <div class="section-head">
-      <h2>开源与练习</h2>
-      <p class="section-note">GitHub 上的早期项目</p>
-    </div>
-    <div class="oss-list">
-      {ossProjects.map((project) => <OssRow project={project} />)}
-    </div>
-  </section>
-
   <section id="experience" class="section wrap">
     <div class="section-head">
       <h2>经历</h2>
@@ -181,10 +212,18 @@ const categoryLabels = Object.fromEntries(
     <ul class="timeline">
       {experience.map((job) => (
         <li class="job-row">
-          <span class="job-period">{job.period}</span>
-          <span class="job-company">{job.company}</span>
-          <span class="job-role">{job.role}</span>
-          <span class="job-desc">{job.summary}</span>
+          <div class="job-head">
+            <span class="job-period">{job.period}</span>
+            <span class="job-company">{job.company}</span>
+            <span class="job-role">{job.role}</span>
+          </div>
+          <p class="job-desc">{job.summary}</p>
+          <ul class="job-points">
+            {job.points.slice(0, 2).map((point) => <li>{point}</li>)}
+          </ul>
+          <ul class="job-tags" aria-label="关键词">
+            {job.keywords.map((keyword) => <li>{keyword}</li>)}
+          </ul>
         </li>
       ))}
     </ul>
@@ -192,33 +231,59 @@ const categoryLabels = Object.fromEntries(
 
   <section id="stack" class="section wrap">
     <div class="section-head">
-      <h2>常用技术与研究工具</h2>
-      <p class="section-note">日常开发、工程交付与 AI 研究</p>
+      <h2>技术能力</h2>
+      <p class="section-note">按真实使用程度分层</p>
     </div>
-    <div class="tool-grid">
-      {skillGroups.map((group) => (
-        <section class="tool-group">
-          <h3>{group.group}</h3>
-          <p class="tool-note">{group.note}</p>
-          <ul>
-            {group.items.map((item) => <li>{item}</li>)}
+    <p class="stack-note">
+      分层依据是项目证据，不按熟练度自评。项目实战之外的技术会明确标注；学习中的方向不会写成生产经验。
+    </p>
+    <SkillTiers layout="grid" />
+  </section>
+
+  <section id="exploring" class="section wrap">
+    <div class="section-head">
+      <h2>技术探索</h2>
+      <a class="section-link" href="/lab/">查看探索页</a>
+    </div>
+    <p class="explore-intro">
+      以下不是已交付项目，是正在学习、规划或验证的方向；没有代码与验证结果的内容不会写成项目经历。
+    </p>
+    <div class="explore-grid">
+      {explorations.map((item) => (
+        <article class="explore-card">
+          <span class:list={['explore-status', `is-${statusClasses[item.status]}`]}>{item.status}</span>
+          <h3>{item.title}</h3>
+          <p class="explore-summary">{item.summary}</p>
+          <ul class="explore-plans">
+            {item.plans.slice(0, 3).map((plan) => <li>{plan}</li>)}
           </ul>
-        </section>
+          <p class="explore-boundary">{item.boundary}</p>
+          <a class="explore-link" href={`/lab/#${item.id}`}>查看探索记录</a>
+        </article>
       ))}
     </div>
   </section>
 
   <section id="cooperate" class="section wrap">
     <div class="section-head">
-      <h2>合作方式</h2>
-      <a class="section-link" href="/services/">查看交付方式</a>
+      <h2>求职与合作</h2>
+      <a class="section-link" href="/services/">查看合作方式</a>
     </div>
-    <div class="coop-grid">
-      <div class="coop-item">
-        <span class="coop-index">01</span>
-        <h3>全职现场</h3>
-        <p>接受全职 offer，可到岗。方向偏中后台、前端基建与 AI 应用。</p>
+    <div class="coop-primary">
+      <div class="coop-primary-copy">
+        <p class="coop-kicker">优先 · 全职</p>
+        <h3>寻找前端 / 全栈 / AI 应用方向的全职机会</h3>
+        <p>
+          目标岗位：前端开发、全栈开发（前端为主）、AI 应用开发，以及工业软件 / FDE 方向。
+          目前在安徽，可到岗；具体岗位与到岗时间可以邮件沟通。
+        </p>
       </div>
+      <div class="coop-actions">
+        <a class="btn btn-solid" href={`mailto:${site.email}`}>发送岗位或约聊</a>
+        <a class="btn btn-ghost" href="/resume/">查看简历</a>
+      </div>
+    </div>
+    <div class="coop-secondary">
       <div class="coop-item">
         <span class="coop-index">02</span>
         <h3>远程协作</h3>
@@ -226,7 +291,7 @@ const categoryLabels = Object.fromEntries(
       </div>
       <div class="coop-item">
         <span class="coop-index">03</span>
-        <h3>项目制私活</h3>
+        <h3>项目制合作</h3>
         <p>需求明确的页面、系统、组件库或 AI 应用，按阶段交付与验收。</p>
       </div>
     </div>
@@ -237,15 +302,19 @@ const categoryLabels = Object.fromEntries(
       <div>
         <h2>聊聊</h2>
         <p class="contact-lead">
-          目前接受全职现场、远程协作与项目制合作。如果对我的项目或经历感兴趣，欢迎来信；也欢迎在 GitHub 上交流。
+          目前优先寻找全职机会，也接受远程协作与项目制合作。如果我的项目或经历匹配你正在招的岗位，欢迎来信；
+          也欢迎在 GitHub 上交流。
         </p>
       </div>
       <div class="contact-links">
         <a href={`mailto:${site.email}`}>{site.email}</a>
+        <a href="/resume/">简历</a>
         <a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>
     </div>
   </section>
+
+  <BackToTop />
 </BaseLayout>
 
 <script>
@@ -368,9 +437,17 @@ const categoryLabels = Object.fromEntries(
     padding-block: clamp(4rem, 11vw, 7.5rem);
   }
 
+  .hero-kicker {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+
   .hero-title {
-    font-size: clamp(2.5rem, 6.6vw, 4.6rem);
-    line-height: 1.04;
+    margin-top: 1rem;
+    font-size: clamp(2.4rem, 6.2vw, 4.4rem);
+    line-height: 1.06;
   }
 
   .hero-title span {
@@ -378,7 +455,7 @@ const categoryLabels = Object.fromEntries(
   }
 
   .hero-intro {
-    max-width: 46ch;
+    max-width: 48ch;
     margin-top: 1.6rem;
     font-size: 1.05rem;
     line-height: 1.8;
@@ -405,8 +482,21 @@ const categoryLabels = Object.fromEntries(
   .hero-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.7rem;
+    align-items: center;
+    gap: 0.7rem 1.1rem;
     margin-top: 2.2rem;
+  }
+
+  .hero-mail {
+    color: var(--muted);
+    font-size: 0.86rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .hero-mail:hover {
+    color: var(--accent);
   }
 
   .hero-stats {
@@ -415,6 +505,7 @@ const categoryLabels = Object.fromEntries(
     justify-content: start;
     gap: 0 clamp(2rem, 5vw, 3.4rem);
     margin: 2.6rem 0 0;
+    padding: 0;
     list-style: none;
   }
 
@@ -435,6 +526,151 @@ const categoryLabels = Object.fromEntries(
     color: var(--muted);
     font-size: 0.76rem;
     line-height: 1.5;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.68rem 1.35rem;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    font-size: 0.92rem;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .btn-solid {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .btn-solid:hover {
+    background: var(--accent);
+  }
+
+  .btn-ghost {
+    border-color: var(--line-strong);
+    color: var(--ink);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .hero-portrait {
+    position: relative;
+    justify-self: end;
+  }
+
+  .hero-portrait img {
+    width: clamp(150px, 20vw, 220px);
+    aspect-ratio: 1;
+    object-fit: cover;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+  }
+
+  .hero-portrait::after {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 50%;
+  }
+
+  /* Sections ------------------------------------------------------ */
+  .section {
+    padding-block: clamp(3rem, 7vw, 5rem);
+  }
+
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    margin-bottom: 1.3rem;
+  }
+
+  .section-head h2 {
+    font-size: 1.6rem;
+  }
+
+  .section-note {
+    color: var(--muted);
+    font-size: 0.86rem;
+  }
+
+  .section-link {
+    color: var(--muted);
+    font-size: 0.88rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .section-link:hover {
+    color: var(--accent);
+  }
+
+  /* Capabilities -------------------------------------------------- */
+  .cap-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem 2.5rem;
+  }
+
+  .cap {
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .cap:nth-child(1),
+  .cap:nth-child(3) {
+    border-top-color: var(--accent);
+  }
+
+  .cap-index {
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+  }
+
+  .cap h3 {
+    margin-top: 0.45rem;
+    font-size: 1.1rem;
+  }
+
+  .cap-detail {
+    max-width: 52ch;
+    margin-top: 0.45rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .cap-proof {
+    margin-top: 0.7rem;
+    color: var(--ink);
+    font-size: 0.8rem;
+  }
+
+  .cap-link {
+    display: inline-block;
+    margin-top: 0.7rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .cap-link:hover {
+    color: var(--accent);
   }
 
   /* Feature case --------------------------------------------------- */
@@ -502,7 +738,7 @@ const categoryLabels = Object.fromEntries(
 
   .feature-panel {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
     gap: clamp(1.5rem, 4vw, 3rem);
     padding: clamp(1.3rem, 3vw, 2.2rem);
     border: 1px solid var(--line-strong);
@@ -519,7 +755,7 @@ const categoryLabels = Object.fromEntries(
     color: var(--accent);
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
   }
 
   .feature-flow {
@@ -537,16 +773,8 @@ const categoryLabels = Object.fromEntries(
 
   .feature-step {
     position: relative;
-  }
-
-  .feature-step + .feature-step::before {
-    content: '›';
-    position: absolute;
-    top: 1.45rem;
-    left: -0.62rem;
-    color: var(--seal);
-    font-size: 0.9rem;
-    line-height: 1;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--line-strong);
   }
 
   .feature-num {
@@ -597,6 +825,31 @@ const categoryLabels = Object.fromEntries(
     line-height: 1.7;
   }
 
+  .feature-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    margin: 0.8rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .feature-metrics li {
+    position: relative;
+    padding-left: 0.8rem;
+    font-size: 0.78rem;
+  }
+
+  .feature-metrics li::before {
+    content: '';
+    position: absolute;
+    top: 0.6em;
+    left: 0;
+    width: 6px;
+    height: 1.5px;
+    background: var(--seal);
+  }
+
   .feature-link {
     display: inline-block;
     margin-top: 1rem;
@@ -611,100 +864,22 @@ const categoryLabels = Object.fromEntries(
     color: var(--accent);
   }
 
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.68rem 1.35rem;
-    border: 1px solid transparent;
-    border-radius: 2px;
-    font-size: 0.92rem;
-    transition:
-      background-color 0.2s ease,
-      color 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .btn-solid {
-    background: var(--ink);
-    color: var(--paper);
-  }
-
-  .btn-solid:hover {
-    background: var(--accent);
-  }
-
-  .btn-ghost {
-    border-color: var(--line-strong);
-    color: var(--ink);
-  }
-
-  .btn-ghost:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .hero-portrait {
-    position: relative;
-    justify-self: end;
-  }
-
-  .hero-portrait img {
-    width: clamp(150px, 20vw, 220px);
-    aspect-ratio: 1;
-    object-fit: cover;
-    border: 1px solid var(--line-strong);
-    border-radius: 50%;
-  }
-
-  .hero-portrait::after {
-    content: '';
-    position: absolute;
-    inset: -12px;
-    border: 1px dashed var(--line-strong);
-    border-radius: 50%;
-  }
-
-  /* Sections ------------------------------------------------------ */
-  .section {
-    padding-block: clamp(3rem, 7vw, 5rem);
-  }
-
-  .section-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.4rem;
-  }
-
-  .section-head h2 {
-    font-size: 1.6rem;
-  }
-
-  .section-note {
+  /* Projects ------------------------------------------------------ */
+  .projects-note,
+  .stack-note,
+  .explore-intro {
+    max-width: 68ch;
+    margin: -0.35rem 0 1.4rem;
     color: var(--muted);
-    font-size: 0.88rem;
+    font-size: 0.85rem;
+    line-height: 1.7;
   }
 
-  .section-link {
-    color: var(--muted);
-    font-size: 0.88rem;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.2em;
-  }
-
-  .section-link:hover {
-    color: var(--accent);
-  }
-
-  /* Project filters ----------------------------------------------- */
   .filters {
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem 1.3rem;
-    margin-bottom: 1.6rem;
+    margin-bottom: 0.6rem;
   }
 
   .filter {
@@ -750,7 +925,7 @@ const categoryLabels = Object.fromEntries(
     font-size: 0.9rem;
   }
 
-  /* Timeline ------------------------------------------------------ */
+  /* Experience ---------------------------------------------------- */
   .timeline {
     margin: 0;
     padding: 0;
@@ -758,73 +933,206 @@ const categoryLabels = Object.fromEntries(
   }
 
   .job-row {
-    display: grid;
-    grid-template-columns: 9rem minmax(0, 1fr) auto;
-    gap: 0.4rem 1.5rem;
+    padding: 1.3rem 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .job-row:first-child {
+    border-top-color: var(--line-strong);
+  }
+
+  .job-head {
+    display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
-    padding: 1.1rem 0.9rem;
-    margin-inline: -0.9rem;
+    gap: 0.3rem 1rem;
   }
 
   .job-period {
     color: var(--muted);
-    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
     font-variant-numeric: tabular-nums;
   }
 
   .job-company {
-    font-size: 1rem;
+    font-size: 1.02rem;
     font-weight: 500;
   }
 
   .job-role {
     color: var(--muted);
-    font-size: 0.88rem;
+    font-size: 0.84rem;
   }
 
   .job-desc {
-    grid-column: 2 / -1;
-    max-width: 58ch;
-    margin-top: 0.3rem;
+    max-width: 62ch;
+    margin-top: 0.4rem;
     color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .job-points {
+    max-width: 68ch;
+    margin: 0.6rem 0 0;
+    padding-left: 1.1em;
     font-size: 0.88rem;
-    line-height: 1.65;
+    line-height: 1.75;
   }
 
-  /* Tech stack ----------------------------------------------------- */
-  .tool-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 2rem 2.5rem;
-  }
-
-  .tool-group h3 {
-    font-size: 1rem;
-    font-weight: 600;
-  }
-
-  .tool-note {
+  .job-points li + li {
     margin-top: 0.25rem;
-    color: var(--muted);
-    font-size: 0.78rem;
   }
 
-  .tool-group ul {
+  .job-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
     margin: 0.75rem 0 0;
     padding: 0;
     list-style: none;
   }
 
-  .tool-group li {
-    padding: 0.22rem 0;
-    font-size: 0.86rem;
+  .job-tags li {
+    padding: 0.05em 0.45em;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    color: var(--muted);
+    font-size: 0.68rem;
+    line-height: 1.6;
   }
 
-  /* Cooperation ---------------------------------------------------- */
-  .coop-grid {
+  /* Exploration --------------------------------------------------- */
+  .explore-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.5rem 2rem;
+    gap: 1.6rem 2rem;
+  }
+
+  .explore-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--line-strong);
+  }
+
+  .explore-status {
+    padding: 0.02em 0.45em;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    line-height: 1.7;
+  }
+
+  .explore-status.is-learning {
+    border-color: var(--line-strong);
+    color: var(--muted);
+  }
+
+  .explore-status.is-experimenting {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .explore-status.is-planned {
+    border-color: var(--seal);
+    color: var(--seal);
+  }
+
+  .explore-status.is-open {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .explore-card h3 {
+    margin-top: 0.6rem;
+    font-size: 1.06rem;
+    line-height: 1.35;
+  }
+
+  .explore-summary {
+    margin-top: 0.45rem;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+
+  .explore-plans {
+    margin: 0.7rem 0 0;
+    padding-left: 1.1em;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.65;
+  }
+
+  .explore-boundary {
+    margin-top: 0.7rem;
+    color: var(--seal);
+    font-size: 0.76rem;
+    line-height: 1.6;
+  }
+
+  .explore-link {
+    margin-top: auto;
+    padding-top: 0.8rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .explore-link:hover {
+    color: var(--accent);
+  }
+
+  /* Cooperation --------------------------------------------------- */
+  .coop-primary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem 2.5rem;
+    padding: clamp(1.3rem, 3vw, 2rem);
+    border: 1px solid var(--line-strong);
+    border-left: 3px solid var(--seal);
+    background: var(--paper-raised);
+  }
+
+  .coop-kicker {
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+  }
+
+  .coop-primary h3 {
+    margin-top: 0.45rem;
+    font-size: 1.25rem;
+  }
+
+  .coop-primary-copy > p:last-child {
+    max-width: 58ch;
+    margin-top: 0.55rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.75;
+  }
+
+  .coop-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .coop-secondary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 2.5rem;
+    margin-top: 1.6rem;
   }
 
   .coop-index {
@@ -833,15 +1141,20 @@ const categoryLabels = Object.fromEntries(
     font-size: 0.7rem;
   }
 
+  .coop-item {
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--line);
+  }
+
   .coop-item h3 {
     margin-top: 0.4rem;
-    font-size: 1.08rem;
+    font-size: 1.02rem;
   }
 
   .coop-item p {
-    margin-top: 0.45rem;
+    margin-top: 0.4rem;
     color: var(--muted);
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     line-height: 1.7;
   }
 
@@ -859,10 +1172,11 @@ const categoryLabels = Object.fromEntries(
   }
 
   .contact-lead {
-    max-width: 44ch;
+    max-width: 52ch;
     margin-top: 0.6rem;
     color: var(--muted);
     font-size: 0.95rem;
+    line-height: 1.75;
   }
 
   .contact-links {
@@ -884,7 +1198,7 @@ const categoryLabels = Object.fromEntries(
   }
 
   /* Responsive ---------------------------------------------------- */
-  @media (max-width: 860px) {
+  @media (max-width: 960px) {
     .hero-schematic {
       display: none;
     }
@@ -897,12 +1211,13 @@ const categoryLabels = Object.fromEntries(
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .feature-step + .feature-step::before {
-      display: none;
+    .cap-grid {
+      grid-template-columns: 1fr;
     }
 
-    .tool-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .explore-grid {
+      grid-template-columns: 1fr;
+      gap: 1.4rem;
     }
   }
 
@@ -927,7 +1242,7 @@ const categoryLabels = Object.fromEntries(
     }
 
     .hero-title {
-      font-size: clamp(2.3rem, 10vw, 3rem);
+      font-size: clamp(2.2rem, 10vw, 2.9rem);
     }
 
     .hero-stats {
@@ -947,28 +1262,13 @@ const categoryLabels = Object.fromEntries(
       font-size: 0.7rem;
     }
 
-    .job-row {
-      grid-template-columns: 1fr;
-      gap: 0.15rem;
-    }
-
-    .job-role {
-      display: none;
-    }
-
-    .job-desc {
-      grid-column: 1;
-      margin-top: 0.2rem;
-    }
-
-    .tool-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1.6rem 1.2rem;
-    }
-
-    .coop-grid {
+    .coop-secondary {
       grid-template-columns: 1fr;
       gap: 1.2rem;
+    }
+
+    .feature-flow {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 </style>

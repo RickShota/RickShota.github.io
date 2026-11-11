@@ -1,0 +1,202 @@
+---
+import { skillTiers } from '../data/site';
+
+interface Props {
+  layout?: 'grid' | 'stack';
+  compact?: boolean;
+}
+
+const { layout = 'grid', compact = false } = Astro.props;
+---
+<div class:list={['tiers', `tiers-${layout}`, { 'is-compact': compact }]}>
+  {skillTiers.map((tier) => (
+    <section class:list={['tier', `tier-${tier.key}`]}>
+      <header class="tier-head">
+        <p class="tier-level">{tier.level}</p>
+        <h3>{tier.title}</h3>
+        {!compact && <p class="tier-note">{tier.note}</p>}
+      </header>
+      <dl class="tier-groups">
+        {tier.groups.map((group) => (
+          <div class="tier-group">
+            <dt>{group.name}</dt>
+            <dd>
+              <span class="tier-items">{group.items.join(' · ')}</span>
+              {!compact && <span class="tier-usage">{group.usage}</span>}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  ))}
+</div>
+
+<style>
+  .tiers {
+    margin-top: 1.6rem;
+  }
+
+  .tiers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem 2.5rem;
+    align-items: start;
+  }
+
+  .tiers-stack {
+    display: block;
+  }
+
+  .tier {
+    padding-top: 1.1rem;
+    border-top: 2px solid var(--line-strong);
+  }
+
+  .tier-practice {
+    border-top-color: var(--accent);
+  }
+
+  .tier-learning {
+    border-top-style: dashed;
+    border-top-color: var(--seal);
+  }
+
+  .tier-level {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+  }
+
+  .tier-familiar .tier-level {
+    color: var(--muted);
+  }
+
+  .tier-learning .tier-level {
+    color: var(--seal);
+  }
+
+  .tier-head h3 {
+    margin-top: 0.45rem;
+    font-size: 1.02rem;
+    line-height: 1.35;
+  }
+
+  .tier-note {
+    margin-top: 0.45rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.65;
+  }
+
+  .tier-groups {
+    margin: 1.1rem 0 0;
+  }
+
+  .tier-group {
+    padding: 0.7rem 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .tier-group:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .tier-group:last-child {
+    padding-bottom: 0;
+  }
+
+  .tier-group dt {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+  }
+
+  .tier-group dd {
+    margin: 0.3rem 0 0;
+  }
+
+  .tier-items {
+    display: block;
+    font-size: 0.87rem;
+    line-height: 1.6;
+  }
+
+  .tier-usage {
+    display: block;
+    margin-top: 0.15rem;
+    color: var(--muted);
+    font-size: 0.76rem;
+    line-height: 1.55;
+  }
+
+  /* 堆叠布局：关于页与简历页 */
+  .tiers-stack .tier {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: 1rem 3rem;
+    padding: 1.5rem 0;
+  }
+
+  .tiers-stack .tier:last-child {
+    padding-bottom: 0;
+  }
+
+  .tiers-stack .tier-groups {
+    margin: 0;
+  }
+
+  .tiers-stack .tier-group:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .tiers-stack .tier-group + .tier-group {
+    border-top: 1px solid var(--line);
+  }
+
+  .is-compact .tier {
+    padding-top: 0.8rem;
+  }
+
+  .is-compact .tier-head h3 {
+    margin-top: 0.25rem;
+    font-size: 0.95rem;
+  }
+
+  .is-compact .tier-groups {
+    margin-top: 0.65rem;
+  }
+
+  .is-compact .tier-group {
+    padding: 0.35rem 0;
+  }
+
+  .is-compact .tier-items {
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 960px) {
+    .tiers-grid {
+      grid-template-columns: 1fr;
+      gap: 1.8rem;
+    }
+
+    .tiers-stack .tier {
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .tiers-grid {
+      gap: 1.5rem;
+    }
+
+    .tier-head h3 {
+      font-size: 0.98rem;
+    }
+  }
+</style>

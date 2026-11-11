@@ -1,0 +1,453 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SkillTiers from '../components/SkillTiers.astro';
+import { getCollection } from 'astro:content';
+import { site, experience, education, jobTargets, explorations } from '../data/site';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+<BaseLayout
+  title="简历"
+  description="榕（RickRone）的网页版简历：3 年开发经验，Vue / React 双栈，专注复杂中后台、前端工程化与企业 AI 应用。"
+>
+  <article class="resume wrap">
+    <header class="resume-head">
+      <div>
+        <p class="kicker">网页版简历 · 更新于 {site.resumeUpdated}</p>
+        <h1>榕 <span>RickRone</span></h1>
+        <p class="role">软件工程师 · 工程化与 AI 应用</p>
+      </div>
+      <div class="resume-actions no-print">
+        <button type="button" data-print>打印 / 保存为 PDF</button>
+        <a href="/">返回首页</a>
+      </div>
+    </header>
+
+    <dl class="contact-strip">
+      <div>
+        <dt>邮箱</dt>
+        <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+      </div>
+      <div>
+        <dt>GitHub</dt>
+        <dd><a href={site.github} target="_blank" rel="noopener noreferrer">RickShota</a></dd>
+      </div>
+      <div>
+        <dt>地点</dt>
+        <dd>安徽 · 可到岗</dd>
+      </div>
+      <div>
+        <dt>求职</dt>
+        <dd>全职优先</dd>
+      </div>
+    </dl>
+
+    <section class="resume-section">
+      <h2>求职意向</h2>
+      <p>目标岗位：{jobTargets.join(' / ')}。优先全职；远程全职与项目制合作可谈。</p>
+    </section>
+
+    <section class="resume-section">
+      <h2>个人简介</h2>
+      <p>{site.intro}</p>
+      <p>
+        3 年开发经验，做过中后台、组件库、低代码、CMS 与跨端应用；主导过组件库、低代码平台与 AI 中台从 0 到 1 的建设。
+        近一年主要把 AI 能力接进业务系统与研发流程。
+      </p>
+    </section>
+
+    <section class="resume-section">
+      <h2>核心能力</h2>
+      <SkillTiers layout="stack" compact />
+    </section>
+
+    <section class="resume-section">
+      <h2>工作经历</h2>
+      {experience.map((job) => (
+        <article class="resume-item">
+          <header>
+            <h3>{job.company}</h3>
+            <p>{job.period} · {job.role}</p>
+          </header>
+          <ul>
+            {job.points.map((point) => <li>{point}</li>)}
+          </ul>
+        </article>
+      ))}
+    </section>
+
+    <section class="resume-section">
+      <h2>项目经历</h2>
+      <p class="section-note">以下为公司项目，内容已脱敏；完整背景与取舍见项目案例页。</p>
+      {projects.map((project) => (
+        <article class="resume-item">
+          <header>
+            <h3>{project.data.name}</h3>
+            <p>{project.data.period} · {project.data.role}</p>
+          </header>
+          <p class="project-summary">{project.data.summary}</p>
+          <ul>
+            {project.data.contribution.owned.slice(0, 3).map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="project-result">结果：{project.data.outcome}</p>
+          {project.data.metrics.length > 0 && (
+            <p class="project-metrics">关键指标：{project.data.metrics.join(' · ')}</p>
+          )}
+        </article>
+      ))}
+      <p class="footnote">
+        项目指标为项目内部口径，具体统计方式可在沟通中说明；学习中的技术不会写成生产经验。
+      </p>
+    </section>
+
+    <section class="resume-section">
+      <h2>教育</h2>
+      <p class="edu-line">{education.school} · {education.major} · {education.period}</p>
+      <ul class="plain-list">
+        {education.honors.map((honor) => <li>{honor}</li>)}
+      </ul>
+    </section>
+
+    <section class="resume-section no-print">
+      <h2>技术探索</h2>
+      <ul class="plain-list">
+        {explorations.map((item) => (
+          <li><strong>{item.status}</strong> · {item.title}：{item.boundary}</li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="resume-section no-print">
+      <h2>更多</h2>
+      <p>
+        项目详情：<a href="/#projects">rickshota.github.io/#projects</a><br />
+        技术探索：<a href="/lab/">rickshota.github.io/lab/</a>
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<script>
+  const printButton = document.querySelector<HTMLButtonElement>('[data-print]');
+  printButton?.addEventListener('click', () => window.print());
+</script>
+
+<style>
+  .resume {
+    max-width: 56rem;
+    padding-block: clamp(3rem, 8vw, 5rem);
+  }
+
+  .resume-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+  }
+
+  .kicker {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+
+  .resume-head h1 {
+    margin-top: 0.6rem;
+    font-size: clamp(2rem, 4.5vw, 2.8rem);
+  }
+
+  .resume-head h1 span {
+    color: var(--muted);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  .role {
+    margin-top: 0.35rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .resume-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .resume-actions button,
+  .resume-actions a {
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    color: var(--ink);
+    font-size: 0.82rem;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .resume-actions button:hover,
+  .resume-actions a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .contact-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem 2rem;
+    margin: 1.6rem 0 0;
+    padding: 0.9rem 0;
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .contact-strip dt {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+  }
+
+  .contact-strip dd {
+    margin: 0.25rem 0 0;
+    font-size: 0.86rem;
+  }
+
+  .contact-strip a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .contact-strip a:hover {
+    color: var(--accent);
+  }
+
+  .resume-section {
+    margin-top: clamp(2rem, 5vw, 3rem);
+  }
+
+  .resume-section h2 {
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid var(--line-strong);
+    font-size: 1.2rem;
+  }
+
+  .resume-section > p {
+    max-width: 68ch;
+    margin-top: 0.8rem;
+    font-size: 0.94rem;
+    line-height: 1.8;
+  }
+
+  .resume-section > p + p {
+    margin-top: 0.5rem;
+  }
+
+  .section-note {
+    color: var(--muted);
+    font-size: 0.82rem !important;
+  }
+
+  .resume-item {
+    margin-top: 1.4rem;
+  }
+
+  .resume-item + .resume-item {
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .resume-item header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.3rem 1rem;
+  }
+
+  .resume-item h3 {
+    font-size: 1rem;
+  }
+
+  .resume-item header p {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .resume-item ul {
+    max-width: 70ch;
+    margin: 0.55rem 0 0;
+    padding-left: 1.15em;
+    font-size: 0.88rem;
+    line-height: 1.72;
+  }
+
+  .resume-item li + li {
+    margin-top: 0.25rem;
+  }
+
+  .project-summary {
+    max-width: 70ch;
+    margin-top: 0.45rem;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.65;
+  }
+
+  .project-result {
+    max-width: 70ch;
+    margin-top: 0.5rem;
+    font-size: 0.86rem;
+    line-height: 1.65;
+  }
+
+  .project-metrics {
+    margin-top: 0.35rem;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    line-height: 1.6;
+  }
+
+  .footnote {
+    max-width: 70ch;
+    margin-top: 1.2rem;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--line);
+    background: var(--paper-raised);
+    color: var(--muted);
+    font-size: 0.76rem;
+    line-height: 1.65;
+  }
+
+  .edu-line {
+    font-size: 0.94rem !important;
+  }
+
+  .plain-list {
+    max-width: 70ch;
+    margin: 0.65rem 0 0;
+    padding-left: 1.15em;
+    font-size: 0.88rem;
+    line-height: 1.72;
+  }
+
+  .plain-list li + li {
+    margin-top: 0.25rem;
+  }
+
+  .resume-section a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .resume-section a:hover {
+    color: var(--accent);
+  }
+
+  @media (max-width: 700px) {
+    .contact-strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media print {
+    :global(.nav),
+    :global(.footer),
+    :global(.skip-link),
+    .no-print {
+      display: none !important;
+    }
+
+    :global(html),
+    :global(body) {
+      background: #fff !important;
+      color: #000;
+    }
+
+    .resume {
+      --paper: #fff;
+      --paper-raised: #fff;
+      --ink: #000;
+      --muted: #444;
+      --accent: #000;
+      --seal: #000;
+      --line: #ccc;
+      --line-strong: #888;
+
+      max-width: none;
+      padding: 0;
+    }
+
+    .resume :global(.tiers-stack .tier) {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+      padding: 0.7rem 0;
+      break-inside: avoid;
+    }
+
+    .resume :global(.tier-groups) {
+      margin-top: 0.3rem;
+    }
+
+    .resume-section,
+    .resume-item {
+      break-inside: auto;
+    }
+
+    .resume-section h2 {
+      break-after: avoid;
+    }
+
+    .section-note {
+      break-after: avoid;
+    }
+
+    .resume-item,
+    .footnote,
+    .contact-strip {
+      break-inside: avoid;
+    }
+
+    .resume-section {
+      margin-top: 1.4rem;
+    }
+
+    .resume-section h2 {
+      font-size: 1.05rem;
+    }
+
+    .resume-item {
+      margin-top: 0.9rem;
+    }
+
+    .resume-section > p,
+    .resume-item ul,
+    .plain-list {
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+
+    .project-metrics {
+      color: #000;
+    }
+
+    .footnote {
+      background: none;
+    }
+
+    a {
+      color: #000;
+      text-decoration: none;
+    }
+  }
+</style>

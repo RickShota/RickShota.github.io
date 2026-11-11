@@ -1,0 +1,209 @@
+---
+interface FlowStep {
+  name: string;
+  detail: string;
+}
+
+interface Props {
+  flow: FlowStep[];
+  media?: string[];
+  name: string;
+  label?: string;
+  note?: string;
+  showMedia?: boolean;
+}
+
+const {
+  flow,
+  media = [],
+  name,
+  label = '技术链路示意',
+  note = '基于项目流程整理，非产品界面截图。',
+  showMedia = true,
+} = Astro.props;
+---
+<section class="visuals" aria-label={`${name} 图示与素材`}>
+  {flow.length > 0 && (
+    <figure class="flow-figure">
+      <figcaption class="visual-head">
+        <span class="visual-label">{label}</span>
+        <span class="visual-note">{note}</span>
+      </figcaption>
+      <ol class="flow-map">
+        {flow.map((step, index) => (
+          <li class="flow-node">
+            <span class="flow-index">{String(index + 1).padStart(2, '0')}</span>
+            <span class="flow-name">{step.name}</span>
+            <span class="flow-detail">{step.detail}</span>
+          </li>
+        ))}
+      </ol>
+    </figure>
+  )}
+
+  {showMedia && (
+    <div class="media-slot">
+      <div class="visual-head">
+        <span class="visual-label">界面与演示素材</span>
+        <span class="media-status">待补充</span>
+      </div>
+      <p class="media-note">
+        公司项目界面需脱敏后补充；当前不展示真实截图，也不使用模拟界面代替。
+      </p>
+      {media.length > 0 ? (
+        <ul class="media-list">
+          {media.map((item) => <li>{item}</li>)}
+        </ul>
+      ) : (
+        <p class="media-empty">截图、录屏与架构图待整理。</p>
+      )}
+    </div>
+  )}
+</section>
+
+<style>
+  .visuals {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1.6rem;
+  }
+
+  .visual-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.4rem 1rem;
+  }
+
+  .visual-label {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+  }
+
+  .visual-note,
+  .media-note,
+  .media-empty {
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.65;
+  }
+
+  .flow-figure {
+    margin: 0;
+    padding: clamp(1.1rem, 3vw, 1.6rem);
+    border: 1px solid var(--line-strong);
+    background: var(--paper-raised);
+  }
+
+  .flow-map {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.2rem;
+    margin: 1.4rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .flow-node {
+    position: relative;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .flow-node::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--seal);
+  }
+
+  .flow-index {
+    display: block;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .flow-name {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .flow-detail {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+
+  .media-slot {
+    padding: clamp(1.1rem, 3vw, 1.6rem);
+    border: 1px dashed var(--line-strong);
+    background-color: var(--paper-raised);
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .media-status {
+    padding: 0.02em 0.45em;
+    border: 1px solid var(--seal);
+    border-radius: 2px;
+    color: var(--seal);
+    font-size: 0.68rem;
+    line-height: 1.6;
+  }
+
+  .media-note {
+    max-width: 62ch;
+    margin-top: 0.7rem;
+  }
+
+  .media-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.35rem 1.4rem;
+    max-width: 60ch;
+    margin: 0.9rem 0 0;
+    padding-left: 1.1rem;
+    font-size: 0.84rem;
+    line-height: 1.65;
+  }
+
+  .media-list li::marker {
+    color: var(--seal);
+  }
+
+  .media-empty {
+    margin-top: 0.8rem;
+  }
+
+  @media (max-width: 720px) {
+    .flow-map {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 440px) {
+    .flow-map {
+      grid-template-columns: 1fr;
+    }
+
+    .media-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

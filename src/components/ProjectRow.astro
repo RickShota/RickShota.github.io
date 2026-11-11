@@ -6,15 +6,24 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { name, period, summary, stack, metrics, category } = project.data;
+const { name, period, role, summary, stack, metrics, category } = project.data;
+
+const categoryLabels: Record<string, string> = {
+  ai: 'AI 应用',
+  business: '业务系统',
+  infra: '工程基建',
+  'cross-platform': '跨端应用',
+};
 ---
 <a class="project" href={`/projects/${project.id}/`} data-category={category}>
   <div class="project-body">
-    <h3>
-      {name}
+    <div class="project-meta">
+      <span class="category">{categoryLabels[category] ?? category}</span>
       <span class="period">{period}</span>
-    </h3>
-    <p>{summary}</p>
+    </div>
+    <h3>{name}</h3>
+    <p class="role"><span>角色</span>{role}</p>
+    <p class="summary">{summary}</p>
     {metrics.length > 0 && (
       <ul class="metrics" aria-label="成果">
         {metrics.map((metric) => <li>{metric}</li>)}
@@ -41,6 +50,7 @@ const { name, period, summary, stack, metrics, category } = project.data;
     align-items: center;
     padding: 1.4rem 0.9rem;
     margin-inline: -0.9rem;
+    border-top: 1px solid var(--line);
   }
 
   .project::before {
@@ -57,27 +67,49 @@ const { name, period, summary, stack, metrics, category } = project.data;
     opacity: 1;
   }
 
-  .project h3 {
+  .project-meta {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.6rem;
-    font-size: 1.3rem;
-  }
-
-  .period {
-    font-family: var(--font-body);
-    font-size: 0.78rem;
-    font-weight: 500;
+    align-items: center;
+    gap: 0.35rem 0.8rem;
     color: var(--muted);
+    font-size: 0.72rem;
     font-variant-numeric: tabular-nums;
   }
 
-  .project p {
-    max-width: 56ch;
-    margin-top: 0.35rem;
+  .category {
+    padding: 0.02em 0.42em;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    color: var(--accent);
+    line-height: 1.6;
+  }
+
+  .project h3 {
+    margin-top: 0.4rem;
+    font-size: 1.28rem;
+  }
+
+  .role {
+    margin-top: 0.2rem;
     color: var(--muted);
-    font-size: 0.94rem;
+    font-size: 0.8rem;
+  }
+
+  .role span {
+    margin-right: 0.4rem;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+  }
+
+  .summary {
+    max-width: 58ch;
+    margin-top: 0.4rem;
+    color: var(--muted);
+    font-size: 0.93rem;
+    line-height: 1.7;
   }
 
   .metrics {
@@ -93,7 +125,7 @@ const { name, period, summary, stack, metrics, category } = project.data;
     position: relative;
     padding-left: 0.85rem;
     color: var(--ink);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
   }
 
   .metrics li::before {

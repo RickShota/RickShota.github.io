@@ -1,0 +1,364 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site, explorations } from '../data/site';
+
+const statusClasses: Record<string, string> = {
+  学习中: 'learning',
+  实验中: 'experimenting',
+  规划中: 'planned',
+  已有公开代码: 'open',
+};
+
+const plannedFlow = [
+  { name: '设备数据采集', detail: 'Modbus TCP 模拟与采集' },
+  { name: '状态监控', detail: '设备信息、告警与运行状态' },
+  { name: '知识库检索', detail: '设备手册与维修记录，RAG' },
+  { name: '故障诊断建议', detail: '大模型结合检索结果生成建议' },
+  { name: '维修工单', detail: '建议进入工单闭环' },
+];
+---
+<BaseLayout
+  title="技术探索"
+  description="榕（RickRone）的技术探索记录：工业 AI 设备运维助手、Java / Spring Boot、Agent / MCP 与 RAG。这里记录学习与规划，不是已交付项目。"
+>
+  <article class="lab wrap">
+    <header class="head">
+      <p class="kicker">技术探索</p>
+      <h1>在学与在做的方向。</h1>
+      <p class="lead">
+        这里记录学习、实验与规划中的项目，不是工作履历。没有代码和验证结果的内容不会写成已完成项目，
+        也不展示虚构的完成度百分比。
+      </p>
+    </header>
+
+    <section class="legend" aria-label="状态说明">
+      <div class="legend-badges">
+        <span class="status is-learning">学习中</span>
+        <span class="status is-experimenting">实验中</span>
+        <span class="status is-planned">规划中</span>
+        <span class="status is-open">已有公开代码</span>
+      </div>
+      <p>状态按真实进度标注；后续有可运行代码或验证记录时，会补充链接与结果。</p>
+    </section>
+
+    {explorations.map((item) => (
+      <section id={item.id} class="entry">
+        <header class="entry-head">
+          <span class:list={['status', `is-${statusClasses[item.status]}`]}>{item.status}</span>
+          <h2>{item.title}</h2>
+        </header>
+        <p class="entry-summary">{item.summary}</p>
+
+        {item.id === 'industrial-ai' && (
+          <div class="plan-block">
+            <p class="plan-label">规划中的技术链路 · 尚未实现</p>
+            <ol class="plan-flow">
+              {plannedFlow.map((step, index) => (
+                <li>
+                  <span class="plan-index">{String(index + 1).padStart(2, '0')}</span>
+                  <b>{step.name}</b>
+                  <span>{step.detail}</span>
+                </li>
+              ))}
+            </ol>
+            <p class="plan-note">
+              这条链路目前只是方案设计，用于说明目标与边界；没有可运行代码、真实设备数据或验证结果。
+            </p>
+          </div>
+        )}
+
+        <div class="entry-grid">
+          <div>
+            <h3>计划能力 / 学习内容</h3>
+            <ul>
+              {item.plans.map((plan) => <li>{plan}</li>)}
+            </ul>
+          </div>
+          <div>
+            <h3>当前边界</h3>
+            <p>{item.boundary}</p>
+          </div>
+        </div>
+
+        <p class="entry-more">
+          相关阅读：<a href="/#stack">技术能力分层</a> ·
+          <a href="/projects/ai-platform/">AI 智能化中台案例</a>
+        </p>
+      </section>
+    ))}
+
+    <section class="entry">
+      <h2>记录方式</h2>
+      <p class="entry-summary">
+        每个实验会尽量记录目标、当前进度、验证方式、已知限制与代码 / 笔记链接；没有验证结果的部分会明确标为「待验证」。
+      </p>
+      <ul class="record-list">
+        <li><b>目标</b>：要解决的具体问题，而不是技术名词。</li>
+        <li><b>进度</b>：当前完成到哪一步，是否有可运行代码。</li>
+        <li><b>验证</b>：如何证明它有效，哪些还没有验证。</li>
+        <li><b>限制</b>：已知问题、未覆盖场景与下一步计划。</li>
+      </ul>
+    </section>
+
+    <section class="entry">
+      <h2>相关链接</h2>
+      <p class="entry-summary">
+        GitHub：<a href={site.github} target="_blank" rel="noopener noreferrer">RickShota</a>。
+        目前没有工业 AI 项目的公开仓库；后续有可运行代码会在 GitHub 与这里同步。
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .lab {
+    max-width: 54rem;
+    margin-inline: auto;
+    padding-block: clamp(3rem, 8vw, 5rem);
+  }
+
+  .kicker {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+
+  .head h1 {
+    margin-top: 0.8rem;
+    font-size: clamp(2rem, 4.8vw, 2.9rem);
+    line-height: 1.18;
+  }
+
+  .lead {
+    max-width: 58ch;
+    margin-top: 1.1rem;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .legend {
+    margin-top: 2rem;
+    padding: 0.9rem 0;
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .legend-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .legend p {
+    margin-top: 0.6rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .status {
+    display: inline-block;
+    padding: 0.02em 0.45em;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    line-height: 1.7;
+  }
+
+  .status.is-learning {
+    color: var(--muted);
+  }
+
+  .status.is-experimenting,
+  .status.is-open {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .status.is-planned {
+    border-color: var(--seal);
+    color: var(--seal);
+  }
+
+  .entry {
+    margin-top: clamp(2.4rem, 6vw, 3.5rem);
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    scroll-margin-top: 5.5rem;
+  }
+
+  .entry:first-of-type {
+    border-top-color: var(--line-strong);
+  }
+
+  .entry-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.8rem;
+  }
+
+  .entry-head h2 {
+    font-size: 1.35rem;
+  }
+
+  .entry h2 {
+    font-size: 1.25rem;
+  }
+
+  .entry-summary {
+    max-width: 66ch;
+    margin-top: 0.8rem;
+    color: var(--muted);
+    font-size: 0.94rem;
+    line-height: 1.8;
+  }
+
+  .plan-block {
+    margin-top: 1.4rem;
+    padding: clamp(1rem, 3vw, 1.5rem);
+    border: 1px dashed var(--line-strong);
+    background: var(--paper-raised);
+  }
+
+  .plan-label {
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+  }
+
+  .plan-flow {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .plan-flow li {
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .plan-index {
+    display: block;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+  }
+
+  .plan-flow b {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.86rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .plan-flow li > span:last-child {
+    display: block;
+    margin-top: 0.2rem;
+    color: var(--muted);
+    font-size: 0.74rem;
+    line-height: 1.55;
+  }
+
+  .plan-note {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.65;
+  }
+
+  .entry-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem 2.5rem;
+    margin-top: 1.6rem;
+  }
+
+  .entry-grid > div {
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .entry-grid h3 {
+    font-size: 0.92rem;
+  }
+
+  .entry-grid ul {
+    margin: 0.65rem 0 0;
+    padding-left: 1.1em;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+
+  .entry-grid li + li {
+    margin-top: 0.25rem;
+  }
+
+  .entry-grid p {
+    margin-top: 0.65rem;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+
+  .entry-more {
+    margin-top: 1.1rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .entry-more a,
+  .entry-summary a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .entry-more a:hover,
+  .entry-summary a:hover {
+    color: var(--accent);
+  }
+
+  .record-list {
+    margin: 1rem 0 0;
+    padding-left: 1.1em;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.75;
+  }
+
+  .record-list li + li {
+    margin-top: 0.35rem;
+  }
+
+  .record-list b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  @media (max-width: 800px) {
+    .plan-flow {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .entry-grid {
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+    }
+  }
+
+  @media (max-width: 440px) {
+    .plan-flow {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
