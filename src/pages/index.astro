@@ -28,23 +28,24 @@ const categoryLabels = Object.fromEntries(
 <BaseLayout>
   <section class="hero">
     <svg
-      class="hero-vine"
-      viewBox="0 0 300 620"
+      class="hero-schematic"
+      viewBox="0 0 300 640"
       fill="none"
       aria-hidden="true"
       preserveAspectRatio="xMidYMin meet"
     >
+      <path class="trace" pathLength="1" d="M234 -24V120H194V238H266V404H222V664"></path>
+      <path class="branch" d="M234 64H286M286 56V72M194 176H160M160 168V184M266 316H292M292 308V324"></path>
       <path
-        d="M210 -20 C 226 70, 178 128, 200 200 C 222 272, 286 300, 268 386 C 252 462, 186 486, 200 640"
-        stroke="currentColor"
-        stroke-width="1.4"
-        stroke-linecap="round"></path>
-      <path
-        d="M130 -20 C 118 58, 152 96, 136 158"
-        stroke="currentColor"
-        stroke-width="1"
-        stroke-linecap="round"
-        opacity="0.55"></path>
+        class="ticks"
+        d="M240 10h7M240 42h7M240 74h7M240 106h7M188 150h-7M188 180h-7M188 210h-7M273 268h7M273 300h7M273 332h7M273 364h7M273 396h7M215 436h-7M215 470h-7M215 504h-7M215 538h-7M215 572h-7M215 606h-7"
+      ></path>
+      <path class="guide" d="M150 -24V664" stroke-dasharray="2 6"></path>
+      <rect class="node" x="230.5" y="116.5" width="7" height="7" fill="currentColor" stroke="none"></rect>
+      <rect class="node" x="190.5" y="234.5" width="7" height="7" fill="currentColor" stroke="none"></rect>
+      <rect class="node" x="262.5" y="400.5" width="7" height="7" fill="currentColor" stroke="none"></rect>
+      <text class="label" x="240" y="140">A-01</text>
+      <text class="label" x="274" y="352">C-03</text>
     </svg>
 
     <div class="wrap hero-inner">
@@ -298,29 +299,57 @@ const categoryLabels = Object.fromEntries(
   .hero {
     position: relative;
     overflow: hidden;
-    border-bottom: 1px solid var(--line);
   }
 
-  .hero-vine {
+  .hero-schematic {
     position: absolute;
-    top: -30px;
+    top: -32px;
     right: clamp(1rem, 6vw, 5rem);
     z-index: 0;
-    height: calc(100% + 60px);
+    height: calc(100% + 64px);
     width: auto;
     color: var(--accent);
-    opacity: 0.42;
+    opacity: 0.45;
     pointer-events: none;
   }
 
-  .hero-vine path {
-    stroke-dasharray: 1100;
-    stroke-dashoffset: 1100;
-    animation: draw 1.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.15s forwards;
+  .hero-schematic .trace,
+  .hero-schematic .branch,
+  .hero-schematic .ticks,
+  .hero-schematic .guide {
+    stroke: currentColor;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
   }
 
-  .hero-vine path + path {
-    animation-delay: 0.6s;
+  .hero-schematic .trace {
+    stroke-width: 1.15;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 1.7s cubic-bezier(0.22, 0.61, 0.36, 1) 0.1s forwards;
+  }
+
+  .hero-schematic .branch {
+    stroke-width: 1;
+    opacity: 0.55;
+  }
+
+  .hero-schematic .ticks {
+    stroke-width: 0.9;
+    opacity: 0.5;
+  }
+
+  .hero-schematic .guide {
+    stroke-width: 0.8;
+    opacity: 0.25;
+  }
+
+  .hero-schematic .label {
+    fill: currentColor;
+    font-family: var(--font-mono);
+    font-size: 7.5px;
+    letter-spacing: 0.12em;
+    opacity: 0.7;
   }
 
   @keyframes draw {
@@ -384,10 +413,8 @@ const categoryLabels = Object.fromEntries(
     display: grid;
     grid-template-columns: repeat(3, auto);
     justify-content: start;
-    gap: 0 clamp(1.4rem, 3.5vw, 2.4rem);
+    gap: 0 clamp(2rem, 5vw, 3.4rem);
     margin: 2.6rem 0 0;
-    padding: 1.1rem 0 0;
-    border-top: 1px solid var(--line);
     list-style: none;
   }
 
@@ -395,11 +422,6 @@ const categoryLabels = Object.fromEntries(
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
-  }
-
-  .hero-stats li + li {
-    padding-left: clamp(1.2rem, 3vw, 2rem);
-    border-left: 1px solid var(--line);
   }
 
   .hero-stats strong {
@@ -418,7 +440,6 @@ const categoryLabels = Object.fromEntries(
   /* Feature case --------------------------------------------------- */
   .feature {
     padding-block: clamp(3rem, 7vw, 5rem);
-    border-bottom: 1px solid var(--line);
   }
 
   .feature-head {
@@ -516,14 +537,12 @@ const categoryLabels = Object.fromEntries(
 
   .feature-step {
     position: relative;
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--line-strong);
   }
 
   .feature-step + .feature-step::before {
     content: '›';
     position: absolute;
-    top: 2.35rem;
+    top: 1.45rem;
     left: -0.62rem;
     color: var(--seal);
     font-size: 0.9rem;
@@ -651,10 +670,6 @@ const categoryLabels = Object.fromEntries(
     padding-block: clamp(3rem, 7vw, 5rem);
   }
 
-  .section + .section {
-    border-top: 1px solid var(--line);
-  }
-
   .section-head {
     display: flex;
     align-items: baseline;
@@ -689,9 +704,7 @@ const categoryLabels = Object.fromEntries(
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem 1.3rem;
-    margin-bottom: 1.2rem;
-    padding-bottom: 0.85rem;
-    border-bottom: 1px solid var(--line);
+    margin-bottom: 1.6rem;
   }
 
   .filter {
@@ -706,7 +719,7 @@ const categoryLabels = Object.fromEntries(
     content: '';
     position: absolute;
     right: 0;
-    bottom: -0.85rem;
+    bottom: -0.35rem;
     left: 0;
     height: 1.5px;
     background: transparent;
@@ -751,11 +764,6 @@ const categoryLabels = Object.fromEntries(
     align-items: baseline;
     padding: 1.1rem 0.9rem;
     margin-inline: -0.9rem;
-    border-top: 1px solid var(--line);
-  }
-
-  .job-row:last-child {
-    border-bottom: 1px solid var(--line);
   }
 
   .job-period {
@@ -804,13 +812,11 @@ const categoryLabels = Object.fromEntries(
   .tool-group ul {
     margin: 0.75rem 0 0;
     padding: 0;
-    border-top: 1px solid var(--line);
     list-style: none;
   }
 
   .tool-group li {
-    padding: 0.42rem 0;
-    border-bottom: 1px solid var(--line);
+    padding: 0.22rem 0;
     font-size: 0.86rem;
   }
 
@@ -819,11 +825,6 @@ const categoryLabels = Object.fromEntries(
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.5rem 2rem;
-  }
-
-  .coop-item {
-    padding-top: 1rem;
-    border-top: 1px solid var(--line-strong);
   }
 
   .coop-index {
@@ -884,7 +885,7 @@ const categoryLabels = Object.fromEntries(
 
   /* Responsive ---------------------------------------------------- */
   @media (max-width: 860px) {
-    .hero-vine {
+    .hero-schematic {
       display: none;
     }
 
