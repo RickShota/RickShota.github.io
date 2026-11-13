@@ -5,23 +5,23 @@ import { site, experience, education, explorations, industry, careerDirection } 
 ---
 <BaseLayout
   title="关于我"
-  description="榕（RickRone），深耕 ToB 工业互联网的软件工程师，近 4 年企业级系统研发经验，专注物流 / 仓储 / 物资业务系统、前端工程化与企业 AI 应用。"
+  description="榕（RickRone），深耕 ToB 工业互联网的全栈开发工程师，近 4 年企业级系统研发经验，专注物流 / 仓储 / 物资业务系统、Vue / React 双栈、Java / Spring Boot 后端与企业 AI / 工业 AI 应用。"
 >
   <article class="about wrap">
     <header class="about-head">
       <h1>关于我</h1>
-      <p class="about-lead">榕 · ToB 工业互联网软件工程师 · 近 4 年企业级系统经验</p>
+      <p class="about-lead">榕 · ToB 工业互联网全栈开发工程师 · 近 4 年企业级系统经验</p>
     </header>
 
     <div class="about-intro">
       <p>
-        我是榕（RickRone），安徽人，近 4 年 ToB 企业级软件开发经验。长期在物流、仓储与物资管理场景做业务系统，也做过组件库、低代码、CMS 与 AI 中台；现在在一家企业软件服务商负责企业级产品前端与工程化基建。
+        我是榕（RickRone），安徽人，近 4 年 ToB 企业级软件开发经验。长期在物流、仓储与物资管理场景做业务系统，也做过组件库、低代码、CMS 与 AI 中台；现在在一家企业软件服务商负责企业级产品全栈开发与工程化基建。
       </p>
       <p>
         我的工作大致分三块：把业务系统做稳（多角色权限、审批流、数据可视化、业务不停摆的迁移），把重复的事工程化（Monorepo、组件库、CI/CD），把 AI 真正接进业务（模型接入、流式对话、智能分析）。
       </p>
       <p>
-        正在补 Java / Spring Boot、企业 AI 应用与系统集成，职业方向是工业 AI 与 FDE：先把已有项目做扎实，再逐步走向客户现场与解决方案。
+        前端之外，我在 AI 中台项目里承担了 Spring Boot 接口、MyBatis-Plus 持久化、Redis 缓存、RabbitMQ 异步链路与 Docker 部署；同时持续探索工业 AI 与企业 AI 应用，FDE 是长期发展方向。
       </p>
     </div>
 
@@ -61,15 +61,15 @@ import { site, experience, education, explorations, industry, careerDirection } 
       <div class="boundary-grid">
         <div class="boundary-item is-practice">
           <h3>有项目证据</h3>
-          <p>Vue 3 / Vue 2、React、TypeScript、Node / BFF、uni-app、组件库与前端工程化、大模型 API 与 SSE 流式输出；物流 / 仓储 / 物资管理业务系统。</p>
+          <p>Vue 3 / Vue 2、React、TypeScript、uni-app、组件库与前端工程化、Java / Spring Boot、MyBatis-Plus、MySQL、Redis、RabbitMQ、Spring Security + JWT、Docker；大模型 API 与 SSE 流式输出；物流 / 仓储 / 物资管理业务系统。</p>
         </div>
         <div class="boundary-item">
           <h3>有使用经验</h3>
-          <p>Next.js、Express / Koa、Docker、MySQL 基础、GitLab CI / GitHub Actions。能完成常规开发与联调，复杂场景仍需协作。</p>
+          <p>Next.js、Node.js（BFF / 接口层）、Webpack、Nginx、GitLab CI / GitHub Actions。能完成常规开发与联调，复杂场景仍需协作。</p>
         </div>
         <div class="boundary-item is-learning">
           <h3>学习中</h3>
-          <p>Java / Spring Boot、RAG、Agent / MCP、Modbus TCP / OPC UA、工业 AI 与 FDE 方向。</p>
+          <p>RAG、Agent / MCP、Modbus TCP / OPC UA、工业 AI 与 FDE 方向。</p>
         </div>
       </div>
       <p class="boundary-note">
@@ -276,16 +276,6 @@ import { site, experience, education, explorations, industry, careerDirection } 
 
   .boundary-item {
     padding-top: 0.9rem;
-    border-top: 1px solid var(--line-strong);
-  }
-
-  .boundary-item.is-practice {
-    border-top-color: var(--accent);
-  }
-
-  .boundary-item.is-learning {
-    border-top-style: dashed;
-    border-top-color: var(--seal);
   }
 
   .boundary-item h3 {
@@ -339,16 +329,6 @@ import { site, experience, education, explorations, industry, careerDirection } 
 
   .industry-item {
     padding-top: 0.9rem;
-    border-top: 1px solid var(--line-strong);
-  }
-
-  .industry-item:first-child {
-    border-top-color: var(--accent);
-  }
-
-  .industry-item:last-child {
-    border-top-style: dashed;
-    border-top-color: var(--seal);
   }
 
   .industry-item h3 {
@@ -403,20 +383,6 @@ import { site, experience, education, explorations, industry, careerDirection } 
 
   .direction-state {
     padding-top: 0.9rem;
-    border-top: 1px solid var(--line-strong);
-  }
-
-  .direction-state.is-evidence {
-    border-top-color: var(--accent);
-  }
-
-  .direction-state.is-learning {
-    border-top-style: dashed;
-  }
-
-  .direction-state.is-target {
-    border-top-style: dashed;
-    border-top-color: var(--seal);
   }
 
   .direction-head {
@@ -619,11 +585,6 @@ import { site, experience, education, explorations, industry, careerDirection } 
     gap: 0.5rem 1rem;
     align-items: baseline;
     padding: 0.8rem 0;
-    border-top: 1px solid var(--line);
-  }
-
-  .explore-list li:first-child {
-    border-top-color: var(--line-strong);
   }
 
   .explore-status {

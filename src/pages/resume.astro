@@ -8,14 +8,14 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 ---
 <BaseLayout
   title="简历"
-  description="榕（RickRone）的网页版简历：近 4 年 ToB 企业级系统研发经验，专注物流 / 仓储 / 物资业务系统、Vue / React 双栈、前端工程化与企业 AI 应用。"
+  description="榕（RickRone）的网页版简历：近 4 年 ToB 工业互联网方向的全栈开发经验，专注物流 / 仓储 / 物资业务系统、Vue / React 双栈、Java / Spring Boot 后端与容器化交付。"
 >
   <article class="resume wrap">
     <header class="resume-head">
       <div>
         <p class="kicker">网页版简历 · 更新于 {site.resumeUpdated}</p>
         <h1>榕 <span>RickRone</span></h1>
-        <p class="role">ToB 工业互联网软件工程师 · 近 4 年企业级系统经验</p>
+        <p class="role">ToB 工业互联网全栈开发工程师 · 近 4 年企业级系统经验</p>
       </div>
       <div class="resume-actions no-print">
         <button type="button" data-print>打印 / 保存为 PDF</button>
@@ -52,7 +52,8 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
       <p>{site.intro}</p>
       <p>
         近 4 年 ToB 企业级开发经验，长期在物流、仓储与物资管理场景做业务系统，也做过组件库、低代码、CMS 与 AI 中台；
-        主导过组件库、低代码平台与 AI 中台从 0 到 1 的建设，近一年主要把 AI 能力接进业务系统与研发流程。
+        前端为主，能承担 Java / Spring Boot 接口、Redis 缓存、RabbitMQ 异步链路与 Docker 容器化部署，
+        主导过组件库、低代码平台与 AI 中台从 0 到 1 的建设。
       </p>
     </section>
 
@@ -238,8 +239,6 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
     gap: 1rem 2rem;
     margin: 1.6rem 0 0;
     padding: 0.9rem 0;
-    border-top: 1px solid var(--line-strong);
-    border-bottom: 1px solid var(--line);
   }
 
   .contact-strip dt {
@@ -270,7 +269,6 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 
   .resume-section h2 {
     padding-bottom: 0.45rem;
-    border-bottom: 1px solid var(--line-strong);
     font-size: 1.2rem;
   }
 
@@ -296,7 +294,6 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 
   .resume-item + .resume-item {
     padding-top: 1.2rem;
-    border-top: 1px solid var(--line);
   }
 
   .resume-item header {
@@ -399,7 +396,6 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 
   .direction-item {
     padding-top: 0.7rem;
-    border-top: 1px solid var(--line-strong);
   }
 
   .direction-item h3 {

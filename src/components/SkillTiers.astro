@@ -49,16 +49,6 @@ const { layout = 'grid', compact = false } = Astro.props;
 
   .tier {
     padding-top: 1.1rem;
-    border-top: 2px solid var(--line-strong);
-  }
-
-  .tier-practice {
-    border-top-color: var(--accent);
-  }
-
-  .tier-learning {
-    border-top-style: dashed;
-    border-top-color: var(--seal);
   }
 
   .tier-level {
@@ -95,12 +85,10 @@ const { layout = 'grid', compact = false } = Astro.props;
 
   .tier-group {
     padding: 0.7rem 0;
-    border-top: 1px solid var(--line);
   }
 
   .tier-group:first-child {
     padding-top: 0;
-    border-top: 0;
   }
 
   .tier-group:last-child {
@@ -150,11 +138,6 @@ const { layout = 'grid', compact = false } = Astro.props;
 
   .tiers-stack .tier-group:first-child {
     padding-top: 0;
-    border-top: 0;
-  }
-
-  .tiers-stack .tier-group + .tier-group {
-    border-top: 1px solid var(--line);
   }
 
   .is-compact .tier {

@@ -1,22 +1,22 @@
 export const site = {
   name: '榕',
   nameEn: 'RickRone',
-  title: '深耕 ToB 工业互联网的软件工程师',
-  jobTitle: 'ToB 工业互联网软件工程师',
+  title: '深耕 ToB 工业互联网的全栈开发工程师',
+  jobTitle: 'ToB 工业互联网全栈开发工程师',
   location: '安徽',
   github: 'https://github.com/RickShota',
   email: 'rickrone@qq.com',
   avatar: '/images/headportrait.jpg',
   intro:
-    '近 4 年 ToB 企业级软件研发经验，长期围绕物流、仓储与物资管理场景建设复杂 B 端系统；Vue / React / TypeScript 双栈，具备前端架构、工程化与系统交付经验。正在向 Java 全栈、企业 AI 应用与 FDE 方向延伸。',
-  now: '在职，负责企业级产品前端与工程化基建；正在学习 Java / Spring Boot，并探索工业 AI 与企业 AI 应用落地。',
+    '近 4 年 ToB 企业级软件研发经验，长期围绕物流、仓储与物资管理场景建设复杂 B 端系统；Vue / React / TypeScript 前端为主，能独立完成 Java / Spring Boot 接口开发、Redis 缓存、RabbitMQ 异步链路与 Docker 容器化部署。持续关注工业 AI 与企业 AI 应用落地，FDE 是长期发展方向。',
+  now: '在职，负责企业级产品全栈开发与工程化基建；近一年在 AI 中台项目中承担前端与部分 Spring Boot 后端开发，并持续探索工业 AI 与企业 AI 应用落地。',
   availability: '优先寻找全职机会，也接受远程协作与项目制合作',
   resumeUpdated: '2026.11',
 };
 
 export const jobTargets = [
-  '前端开发工程师（ToB / 工业互联网）',
   '全栈开发工程师（前端为主）',
+  '前端开发工程师（ToB / 工业互联网）',
   'AI 应用开发工程师',
   'FDE / 工业软件方向',
 ];
@@ -33,20 +33,20 @@ export interface ExperienceItem {
 export const experience: ExperienceItem[] = [
   {
     company: '某企业软件服务商',
-    role: '前端开发工程师 · 全栈方向',
+    role: '全栈开发工程师 · 前端方向',
     period: '2025.04 — 至今',
-    summary: '负责企业级产品线前端与团队工程化基建，推动 TypeScript、Composition API 与微前端落地；参与物流物资、CMS 与 AI 中台等 ToB 项目。',
+    summary: '负责企业级产品线全栈开发与团队工程化、容器化基建，推动 TypeScript、Composition API 与微前端落地；参与物流物资、CMS 与 AI 中台等 ToB 项目。',
     points: [
-      '主导应用级产品线前端开发，基于 Vben Admin（Vue3 + Vite）负责数据可视化、工作流引擎、权限中心等核心模块，覆盖从原型到生产交付的完整闭环。',
-      '主导团队工程化基建：定制 CLI 脚手架、统一代码规范与提交校验，搭建私有 NPM、组件库文档站与 CI/CD 流水线，提升研发效率与代码一致性。',
+      '主导应用级产品线全栈开发，基于 Vben Admin（Vue3 + Vite）负责数据可视化、工作流引擎、权限中心等核心模块，并承担部分后端接口研发，覆盖从原型到生产交付的完整闭环。',
+      '主导团队工程化与容器化基建：定制 CLI 脚手架、统一代码规范与提交校验，搭建私有 NPM、组件库文档站与 CI/CD 流水线，推动 Docker 构建与自动化部署，保障多环境一致交付。',
       '持续演进技术栈：扩展 Vben Admin 底层模块、维护内部组件库与工具库，推动 TypeScript 与 Composition API 深度应用，落地微前端支撑多团队并行开发。',
-      '在物流物资系统中主导 Vue 2 → Vue 3 迁移与 AI 分析报告改造，兼顾业务连续性与仓库现场的实时通信。',
+      '在 AI 智能化中台项目中承担前端与部分 Spring Boot 后端开发，落地 JWT + RBAC 权限体系与 RabbitMQ 异步日志链路。',
     ],
-    keywords: ['中后台', '工程化', '组件库', 'ToB 交付'],
+    keywords: ['全栈交付', '中后台', '工程化', '容器化'],
   },
   {
     company: '某企业信息化服务公司',
-    role: '前端开发工程师 · 全栈方向',
+    role: '前端开发工程师',
     period: '2023.02 — 2025.04',
     summary: '负责公共服务业务线前端架构，建设卡片编排系统与 Monorepo 工程体系；参与仓储现场跨端应用建设。',
     points: [
@@ -97,8 +97,8 @@ export const capabilities: CapabilityItem[] = [
   },
   {
     index: '03',
-    title: 'AI 应用接入与全栈探索',
-    detail: '大模型 API、SSE 流式输出、上下文与用量管理；具备 Node / BFF 接口层经验，向 Java 全栈延伸。',
+    title: '全栈交付与 AI 应用接入',
+    detail: '大模型 API、SSE 流式输出、上下文与用量管理；在 AI 中台承担 Spring Boot 接口、Redis 缓存与 RabbitMQ 异步链路，具备前后端容器化部署经验。',
     proof: 'AI 智能化中台 · 物流 AI 分析',
     href: '/projects/ai-platform/',
     linkLabel: '查看 AI 中台案例',
@@ -148,19 +148,19 @@ export const skillTiers: SkillTier[] = [
         usage: '物流物资、仓储现场与企业级平台',
       },
       {
-        name: '工程化',
-        items: ['Vite', 'Monorepo（pnpm / Lerna）', '私有 NPM', 'CLI 脚手架', 'CI/CD（GitLab CI / GitHub Actions）', 'Vitest', 'Storybook'],
-        usage: '组件库、团队基建与质量保障',
+        name: '工程化与云原生',
+        items: ['Vite', 'Monorepo（pnpm / Lerna）', '私有 NPM', 'CLI 脚手架', 'CI/CD（GitLab CI / GitHub Actions）', 'Docker', 'Nginx'],
+        usage: '组件库、团队基建与前后端容器化部署',
       },
       {
-        name: '服务端与 AI',
-        items: ['Node.js（BFF / 接口层）', '大模型 API 集成', 'SSE 流式输出'],
-        usage: '接口层、AI 能力接入与会话交互',
+        name: '后端与数据',
+        items: ['Java', 'Spring Boot', 'MyBatis-Plus', 'MySQL', 'Redis', 'RabbitMQ', 'Spring Security + JWT'],
+        usage: 'AI 中台接口、认证授权、缓存与异步消息',
       },
       {
-        name: '跨端与可视化',
-        items: ['uni-app', 'ECharts', '高德地图 SDK'],
-        usage: '移动作业、数据看板与运输追踪',
+        name: 'AI、跨端与可视化',
+        items: ['大模型 API 集成', 'SSE 流式输出', 'uni-app', 'ECharts', '高德地图 SDK'],
+        usage: 'AI 能力接入、移动作业与数据看板',
       },
     ],
   },
@@ -172,13 +172,13 @@ export const skillTiers: SkillTier[] = [
     groups: [
       {
         name: '框架与渲染',
-        items: ['Next.js'],
-        usage: 'CMS / 低代码中台的 SSR 与路由',
+        items: ['Next.js', 'Webpack'],
+        usage: 'CMS / 低代码中台的 SSR、路由与构建',
       },
       {
-        name: '服务端与交付',
-        items: ['Express / Koa', 'RESTful API', 'MySQL（基础）', 'Docker'],
-        usage: 'BFF、接口联调、基础查询与容器化部署',
+        name: '服务端',
+        items: ['Node.js（BFF / 接口层）', 'Express / Koa'],
+        usage: '接口层与联调，复杂服务端逻辑仍以 Java 为主',
       },
     ],
   },
@@ -188,11 +188,6 @@ export const skillTiers: SkillTier[] = [
     title: '正在学习或验证，尚无生产项目',
     note: '以下方向处于学习、练习或方案设计阶段，不作为已交付项目经验展示。',
     groups: [
-      {
-        name: '后端',
-        items: ['Java', 'Spring Boot'],
-        usage: '后端基础、接口开发与部署练习',
-      },
       {
         name: 'AI 应用',
         items: ['RAG', 'Agent', 'MCP'],
@@ -236,15 +231,6 @@ export const explorations: Exploration[] = [
     boundary: '目前处于方案设计与技术选型阶段，尚无公开代码与运行结果，不作为项目经历展示。',
   },
   {
-    id: 'java',
-    status: '学习中',
-    title: 'Java / Spring Boot',
-    summary:
-      '补后端基础：Java 语法、Spring Boot 接口开发、数据库访问与部署，目标是把现有的 BFF 经验延伸到 Java 服务端。',
-    plans: ['RESTful API 设计与实现', '数据库访问与基础建模', 'Spring Boot 项目结构与部署'],
-    boundary: '学习与练习阶段，尚无生产项目。',
-  },
-  {
     id: 'agent',
     status: '学习中',
     title: 'Agent / MCP 与 RAG',
@@ -257,7 +243,7 @@ export const explorations: Exploration[] = [
 
 export const industry = {
   statement:
-    '从 2023 年开始，我在两家企业软件服务商参与 ToB 项目，长期围绕物流、仓储与物资管理场景开发业务系统：从仓库现场的移动作业，到物资审批与 AI 分析，再到服务多条产品线的企业级平台。技术之外，更重要的是理解业务角色、流程状态与系统边界。',
+    '从 2023 年开始，我在两家企业软件服务商参与 ToB 项目，长期围绕物流、仓储与物资管理场景开发业务系统：从仓库现场的移动作业，到物资审批与 AI 分析，再到服务多条产品线的企业级平台；前端为主，也承担接口、缓存与部署等后端工作。技术之外，更重要的是理解业务角色、流程状态与系统边界。',
   tags: ['物流运输', '仓储作业', '物资管理', '审批流程', '现场作业', '数据看板'],
   stats: [
     { value: '近 4 年', label: 'ToB 企业级软件研发' },
@@ -299,21 +285,22 @@ export const industry = {
 
 export const careerDirection = {
   statement:
-    '从工业互联网软件开发出发，持续探索企业 AI 应用与工业智能化落地，希望把软件工程、AI 技术与行业知识结合起来，逐步成长为能够理解业务、设计方案、完成系统集成并推动实际应用的工程师。',
+    '从企业级业务系统与工业互联网出发，把前端、Java 后端与部署链路打通，同时持续探索企业 AI 与工业智能化落地；希望成长为能独立完成系统设计、接口开发与交付的工程师，逐步走向工业 AI 与 FDE。',
   fdeNote:
-    'FDE（Forward Deployed Engineer）是职业发展方向，不是当前职位。下面区分已有项目证据、正在学习与未来目标，不把学习内容写成生产经验。',
+    'FDE（Forward Deployed Engineer）是职业发展方向，不是当前职位。以上区分已有项目证据、正在学习与未来目标，不把学习内容写成生产经验。',
   vertical: [
-    { title: '软件开发', detail: 'Vue / React / TypeScript，能独立完成模块设计与实现' },
+    { title: '前端开发', detail: 'Vue / React / TypeScript，能独立完成模块设计与实现' },
     { title: '前端工程化', detail: 'Monorepo、组件库、构建、测试与 CI/CD' },
     { title: '企业级 B 端系统', detail: '物流、仓储、物资与内容 / 低代码平台的交付经验' },
   ],
   horizontal: [
-    { name: 'Java 后端与全栈', status: '学习中' },
-    { name: '企业 AI 应用 · LLM / RAG / Agent', status: '项目中使用' },
-    { name: 'API 与数据链路设计', status: '项目中使用' },
-    { name: '企业系统集成', status: '项目中实践' },
+    { name: 'Java 后端与全栈', status: '项目中使用' },
+    { name: '企业 AI 应用 · LLM / SSE', status: '项目中使用' },
+    { name: 'Redis / RabbitMQ / 认证授权', status: '项目中使用' },
+    { name: 'Docker 与容器化部署', status: '项目中使用' },
+    { name: 'RAG / Agent / MCP', status: '学习中' },
     { name: '工业设备数据接入', status: '学习中' },
-    { name: '私有化部署与交付', status: '有使用经验' },
+    { name: '工业 AI 与 FDE', status: '学习中' },
     { name: '客户需求与方案设计', status: '项目中实践' },
   ],
   states: [
@@ -324,8 +311,10 @@ export const careerDirection = {
       items: [
         '复杂 B 端系统：物流物资、智慧仓储、CMS 中台与低代码平台',
         '前端架构与工程化：组件库、Monorepo、测试、文档与 CI/CD',
+        'Java 后端：Spring Boot 接口、MyBatis-Plus、Redis 缓存与 RabbitMQ 异步链路',
+        '认证与权限：Spring Security + JWT、RBAC 与方法级鉴权',
+        '云原生交付：Docker 多阶段构建、Nginx 与多环境部署',
         'AI 能力接入：模型 API、SSE 流式输出、上下文与用量管理',
-        '跨端现场作业：uni-app、离线同步、扫码与弱网适配',
       ],
     },
     {
@@ -333,10 +322,10 @@ export const careerDirection = {
       label: '正在学习与实践',
       tone: 'learning',
       items: [
-        'Java / Spring Boot：接口开发、数据库访问与部署练习',
         'RAG / Agent / MCP：检索增强、工具调用与协议实验',
         '工业通信：Modbus TCP / OPC UA 基础与设备数据模拟',
         '工业 AI 设备运维助手：方案设计阶段，尚无公开代码',
+        'FDE 所需能力：客户现场问题拆解、方案设计与私有化交付',
       ],
     },
     {
@@ -347,7 +336,7 @@ export const careerDirection = {
         '理解客户现场的业务问题与约束，而不是只接需求文档',
         '把软件、AI 与行业知识组合成可落地的方案',
         '负责系统集成、私有化部署与交付，推动实际使用',
-        '当前尚未以 FDE 身份工作，以上为职业目标',
+        '当前尚未以 FDE 身份工作，全栈与工业 AI 是通往它的路径',
       ],
     },
   ],

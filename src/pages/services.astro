@@ -12,6 +12,10 @@ const services = [
     detail: 'Monorepo、组件库、CLI 脚手架、代码规范、测试与 CI/CD，把重复的事收敛成可复用的团队基建。',
   },
   {
+    title: 'Java 后端与全栈交付',
+    detail: 'Spring Boot 接口、MyBatis-Plus 持久化、Redis 缓存、RabbitMQ 异步链路、Spring Security + JWT / RBAC 权限，以及前后端 Docker 容器化部署。',
+  },
+  {
     title: 'AI 应用接入',
     detail: '大模型 API 集成、SSE 流式对话、上下文与用量管理、智能分析报告；关注 AI 能力在业务里的实际落地。',
   },
@@ -43,14 +47,14 @@ const process = [
 ---
 <BaseLayout
   title="求职与合作"
-  description="榕（RickRone）寻找 ToB / 工业互联网方向的前端、全栈与 AI 应用岗位，也接受远程协作与项目制合作。"
+  description="榕（RickRone）寻找 ToB / 工业互联网方向的全栈、前端与 AI 应用岗位，也接受远程协作与项目制合作。"
 >
   <article class="services wrap">
     <header class="head">
       <p class="kicker">求职与合作</p>
       <h1>优先寻找全职机会，<br />也接受远程与项目制合作。</h1>
       <p class="lead">
-        主要方向是 ToB / 工业互联网的前端开发、全栈开发（前端为主）与企业 AI 应用；工业 AI / FDE 是正在学习与探索的方向。
+        主要方向是 ToB / 工业互联网的全栈开发（前端为主）、前端开发与企业 AI 应用；Java / Spring Boot 已在 AI 中台项目中落地，工业 AI / FDE 是长期方向。
         如果你在招聘相关岗位，欢迎直接发岗位说明，我会按项目证据说明能承担的部分。
       </p>
       <div class="head-actions">
@@ -277,7 +281,6 @@ const process = [
     justify-content: space-between;
     gap: 1rem;
     padding: 0.45rem 0;
-    border-bottom: 1px solid var(--line);
     font-size: 0.88rem;
   }
 
@@ -300,8 +303,6 @@ const process = [
     gap: 1.4rem 2.5rem;
     margin: 1.4rem 0 0;
     padding: 1.1rem 0;
-    border-top: 1px solid var(--line-strong);
-    border-bottom: 1px solid var(--line);
   }
 
   .intent-grid dt {
@@ -337,12 +338,6 @@ const process = [
 
   .service {
     padding-top: 0.9rem;
-    border-top: 1px solid var(--line-strong);
-  }
-
-  .service:nth-child(1),
-  .service:nth-child(3) {
-    border-top-color: var(--accent);
   }
 
   .service h3 {
@@ -366,7 +361,6 @@ const process = [
 
   .mode {
     padding-top: 0.9rem;
-    border-top: 1px solid var(--line);
   }
 
   .mode-label {
@@ -392,8 +386,6 @@ const process = [
   /* Process ------------------------------------------------------- */
   .project-process {
     padding: 1rem 0;
-    border-top: 1px solid var(--line-strong);
-    border-bottom: 1px solid var(--line);
   }
 
   .project-process summary {
