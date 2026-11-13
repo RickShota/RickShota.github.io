@@ -1,1267 +1,414 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProjectRow from '../components/ProjectRow.astro';
-import SkillTiers from '../components/SkillTiers.astro';
-import DomainExperience from '../components/DomainExperience.astro';
-import CareerDirection from '../components/CareerDirection.astro';
-import BackToTop from '../components/BackToTop.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
-import { site, experience, capabilities, explorations } from '../data/site';
+import ProjectBlueprint from '../components/ProjectBlueprint.astro';
+import { getCollection } from 'astro:content';
+import { site, experience, education, capabilities, explorations } from '../data/site';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const featuredIds = ['smart-warehouse', 'ai-platform', 'aui-components'];
+const featured = featuredIds.flatMap((id) => {
+  const project = projects.find((item) => item.id === id);
+  return project ? [project] : [];
+});
+const archive = projects.filter((project) => !featuredIds.includes(project.id));
 const categories = [
-  { key: 'all', label: '全部' },
-  { key: 'ai', label: 'AI 应用' },
+  { key: 'all', label: '全部项目' },
   { key: 'business', label: '业务系统' },
+  { key: 'ai', label: 'AI 应用' },
   { key: 'infra', label: '工程基建' },
   { key: 'cross-platform', label: '跨端应用' },
-] as const;
-const categoryCounts = projects.reduce<Record<string, number>>((acc, project) => {
-  acc[project.data.category] = (acc[project.data.category] ?? 0) + 1;
-  return acc;
-}, {});
-const featuredCategories = ['ai', 'business', 'infra', 'cross-platform'] as const;
-const featured = featuredCategories
-  .map((key) => projects.find((project) => project.data.category === key))
-  .filter((project): project is CollectionEntry<'projects'> => Boolean(project));
-const categoryLabels = Object.fromEntries(
-  categories.filter((category) => category.key !== 'all').map((category) => [category.key, category.label]),
-) as Record<string, string>;
-
-const statusClasses: Record<string, string> = {
-  学习中: 'learning',
-  实验中: 'experimenting',
-  规划中: 'planned',
-  已有公开代码: 'open',
+];
+const summaries: Record<string, string> = {
+  'smart-warehouse': '扫码、离线缓存与增量同步，让弱网下的仓储作业继续运行。',
+  'ai-platform': '统一模型接入、会话交互与权限，打通前端和 Spring Boot 服务。',
+  'aui-components': '把组件、测试、文档与发布，放进一套可复用的工程体系。',
 };
+const archiveSummaries: Record<string, string> = {
+  'smart-materials': 'Vue 迁移 · 实时通信 · AI 分析',
+  'cms-platform': '内容编排 · 多端分发 · 平台建设',
+  'lowcode-platform': '可视化搭建 · 组件协议 · 工程化',
+};
+const capabilityTitles = ['复杂业务系统', '前端工程基建', '全栈与 AI 接入', '跨端与现场作业'];
+const capabilityDetails = [
+  '从多角色权限到审批流，先理清物流、仓储和物资管理的业务边界。',
+  '组件库、Monorepo、测试与 CI/CD，让多人协作和多产品线复用有据可循。',
+  '用 Spring Boot、Redis 与 RabbitMQ，连接模型 API、认证和异步链路。',
+  '处理扫码、离线同步和平台差异，让现场作业适应真实的网络条件。',
+];
 ---
-<BaseLayout>
-  <section class="hero">
-    <svg
-      class="hero-schematic"
-      viewBox="0 0 300 640"
-      fill="none"
-      aria-hidden="true"
-      preserveAspectRatio="xMidYMin meet"
-    >
-      <path class="trace" pathLength="1" d="M234 -24V120H194V238H266V404H222V664"></path>
-      <path class="branch" d="M234 64H286M286 56V72M194 176H160M160 168V184M266 316H292M292 308V324"></path>
-      <path
-        class="ticks"
-        d="M240 10h7M240 42h7M240 74h7M240 106h7M188 150h-7M188 180h-7M188 210h-7M273 268h7M273 300h7M273 332h7M273 364h7M273 396h7M215 436h-7M215 470h-7M215 504h-7M215 538h-7M215 572h-7M215 606h-7"
-      ></path>
-      <path class="guide" d="M150 -24V664" stroke-dasharray="2 6"></path>
-      <rect class="node" x="230.5" y="116.5" width="7" height="7" fill="currentColor" stroke="none"></rect>
-      <rect class="node" x="190.5" y="234.5" width="7" height="7" fill="currentColor" stroke="none"></rect>
-      <rect class="node" x="262.5" y="400.5" width="7" height="7" fill="currentColor" stroke="none"></rect>
-      <text class="label" x="240" y="140">A-01</text>
-      <text class="label" x="274" y="352">C-03</text>
-    </svg>
-
+<BaseLayout description="榕（RickRone）的工程作品集：近 4 年 ToB 企业级开发经验，前端为主，也写 Java 后端。项目覆盖物流、智慧仓储、AI 应用与工程化基建。">
+  <!-- Industrial workbench: approved grey, charcoal and signal orange.
+       Public Sans; one load entrance and the dealt word-highlight moment. -->
+  <section class="hero" data-enter aria-labelledby="hero-title">
     <div class="wrap hero-inner">
-      <div class="hero-copy">
-        <p class="hero-kicker">ToB 工业互联网全栈开发工程师 · 近 4 年</p>
-        <h1 class="hero-title">
-          <span>深耕 ToB 工业互联网，</span>
-          <span>从页面做到服务端。</span>
-        </h1>
-        <p class="hero-intro">{site.intro}</p>
-        <p class="hero-now">
-          <span class="status-dot" aria-hidden="true"></span>
-          {site.now}
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-solid" href="#projects">查看项目</a>
-          <a class="btn btn-ghost" href="/resume/">查看简历</a>
-          <a class="hero-mail" href={`mailto:${site.email}`}>或直接来信</a>
-        </div>
-        <ul class="hero-stats" aria-label="概览">
-          <li>
-            <strong>近 4 年</strong>
-            <span>ToB 企业级开发</span>
-          </li>
-          <li>
-            <strong>6 个</strong>
-            <span>企业级项目案例</span>
-          </li>
-          <li>
-            <strong>10+</strong>
-            <span>组件库服务的产品线</span>
-          </li>
-        </ul>
+      <div class="hero-topline">
+        <span><span class="square" aria-hidden="true"></span> 工程作品集</span>
+        <span class="mono">RickRone / 2026</span>
       </div>
-
-      <div class="hero-portrait">
-        <img
-          src={site.avatar}
-          alt="榕的头像"
-          width="220"
-          height="220"
-          loading="eager"
-          fetchpriority="high"
-        />
-      </div>
-    </div>
-  </section>
-
-  <DomainExperience />
-
-  <section class="section wrap" aria-labelledby="cap-title">
-    <div class="section-head">
-      <h2 id="cap-title">核心能力</h2>
-      <p class="section-note">从项目里抽出的能力，不是技能标签</p>
-    </div>
-    <div class="cap-grid">
-      {capabilities.map((cap) => (
-        <article class="cap">
-          <span class="cap-index">{cap.index}</span>
-          <h3>{cap.title}</h3>
-          <p class="cap-detail">{cap.detail}</p>
-          <p class="cap-proof">{cap.proof}</p>
-          <a class="cap-link" href={cap.href}>{cap.linkLabel}</a>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section class="feature wrap" aria-labelledby="feature-title">
-    <div class="feature-head">
-      <div>
-        <p class="feature-kicker">案例速览</p>
-        <h2 id="feature-title">一条链路，看清一个项目。</h2>
-      </div>
-      <p class="section-note">按分类切换 · 流程为技术示意，非产品截图</p>
-    </div>
-
-    <div class="feature-switch" role="group" aria-label="选择案例分类">
-      {featured.map((project, i) => (
-        <button
-          type="button"
-          class:list={['feature-btn', { 'is-active': i === 0 }]}
-          data-feature={project.data.category}
-          aria-pressed={i === 0 ? 'true' : 'false'}
-        >
-          {categoryLabels[project.data.category] ?? project.data.category}
-        </button>
-      ))}
-    </div>
-
-    {featured.map((project, i) => (
-      <article
-        class="feature-panel"
-        data-panel={project.data.category}
-        hidden={i !== 0}
-        aria-label={project.data.name}
-      >
-        <div class="feature-flow-wrap">
-          <p class="feature-flow-label">核心链路 · 技术示意</p>
-          <div class="feature-flow" aria-label="核心链路">
-            {project.data.flow.map((step, stepIndex) => (
-              <div class="feature-step">
-                <span class="feature-num">{String(stepIndex + 1).padStart(2, '0')}</span>
-                <b>{step.name}</b>
-                <span class="feature-detail">{step.detail}</span>
-              </div>
-            ))}
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="hero-kicker">榕 · ToB 全栈开发工程师</p>
+          <h1 id="hero-title">工业互联网，<br />从界面到服务<span class="title-stop">。</span></h1>
+          <p class="hero-intro">前端为主，也写 Java 后端。<br />在物流、仓储与 AI 应用里，把业务链路接起来。</p>
+          <div class="hero-actions">
+            <a class="btn btn--primary" href="#projects">查看项目 <span aria-hidden="true">↗</span></a>
+            <a class="btn btn--secondary" href="/resume/">查看简历 <span aria-hidden="true">↓</span></a>
           </div>
-          <p class="feature-flow-note">周期为参与区间，部分项目并行推进。</p>
+          <p class="hero-status"><span class="square" aria-hidden="true"></span> 近 4 年企业级研发经验 · 在职，关注新的机会</p>
         </div>
-
-        <div class="feature-body">
-          <p class="feature-meta">{project.data.period} · {project.data.role}</p>
-          <h3>{project.data.name}</h3>
-          <p class="feature-thesis">{project.data.thesis}</p>
-          <p class="feature-summary">{project.data.summary}</p>
-          <ul class="feature-metrics" aria-label="关键结果">
-            {project.data.metrics.slice(0, 2).map((metric) => <li>{metric}</li>)}
-          </ul>
-          <a class="feature-link" href={`/projects/${project.id}/`}>阅读完整案例</a>
-        </div>
-      </article>
-    ))}
-  </section>
-
-  <section id="projects" class="section wrap">
-    <div class="section-head">
-      <h2>项目</h2>
-      <p class="section-note">{projects.length} 个公司项目 · 内容已脱敏</p>
-    </div>
-    <p class="projects-note">
-      部分项目在时间上并行推进；周期为参与区间，不代表全职投入时长。每篇案例区分了主导设计、独立负责与协作参与。
-    </p>
-    <div class="filters" role="group" aria-label="按类型筛选项目">
-      {categories.map((category) => (
-        <button
-          type="button"
-          class:list={['filter', { 'is-active': category.key === 'all' }]}
-          data-filter={category.key}
-          aria-pressed={category.key === 'all' ? 'true' : 'false'}
-        >
-          {category.label}
-          <span>{category.key === 'all' ? projects.length : (categoryCounts[category.key] ?? 0)}</span>
-        </button>
-      ))}
-    </div>
-    <div class="project-list" id="project-list">
-      {projects.map((project) => <ProjectRow project={project} />)}
-    </div>
-    <p class="filter-empty" hidden>这个分类下还没有项目。</p>
-  </section>
-
-  <section id="experience" class="section wrap">
-    <div class="section-head">
-      <h2>经历</h2>
-      <a class="section-link" href="/about/">完整经历</a>
-    </div>
-    <ul class="timeline">
-      {experience.map((job) => (
-        <li class="job-row">
-          <div class="job-head">
-            <span class="job-period">{job.period}</span>
-            <span class="job-company">{job.company}</span>
-            <span class="job-role">{job.role}</span>
+        <aside class="workbench" data-enter-media aria-label="个人信息与交付链路">
+          <div class="bench-header"><span class="mono">工程档案 / 001</span><span class="bench-cross" aria-hidden="true">+</span></div>
+          <div class="identity">
+            <div class="portrait"><img src={site.avatar} alt="榕的二次元头像" width="112" height="112" loading="eager" fetchpriority="high" /></div>
+            <div class="identity-copy"><span class="mono">Developer</span><p>{site.name}<span>{site.nameEn}</span></p><span class="identity-role">前端 / 全栈 / 工程化</span></div>
           </div>
-          <p class="job-desc">{job.summary}</p>
-          <ul class="job-points">
-            {job.points.slice(0, 2).map((point) => <li>{point}</li>)}
-          </ul>
-          <ul class="job-tags" aria-label="关键词">
-            {job.keywords.map((keyword) => <li>{keyword}</li>)}
-          </ul>
-        </li>
-      ))}
-    </ul>
-  </section>
-
-  <section id="stack" class="section wrap">
-    <div class="section-head">
-      <h2>技术能力</h2>
-      <p class="section-note">按真实使用程度分层</p>
-    </div>
-    <p class="stack-note">
-      分层依据是项目证据，不按熟练度自评。项目实战之外的技术会明确标注；学习中的方向不会写成生产经验。
-    </p>
-    <SkillTiers layout="grid" />
-  </section>
-
-  <CareerDirection />
-
-  <section id="exploring" class="section wrap">
-    <div class="section-head">
-      <h2>技术探索</h2>
-      <a class="section-link" href="/lab/">查看探索页</a>
-    </div>
-    <p class="explore-intro">
-      以下不是已交付项目，是正在学习、规划或验证的方向；没有代码与验证结果的内容不会写成项目经历。
-    </p>
-    <div class="explore-grid">
-      {explorations.map((item) => (
-        <article class="explore-card">
-          <span class:list={['explore-status', `is-${statusClasses[item.status]}`]}>{item.status}</span>
-          <h3>{item.title}</h3>
-          <p class="explore-summary">{item.summary}</p>
-          <ul class="explore-plans">
-            {item.plans.slice(0, 3).map((plan) => <li>{plan}</li>)}
-          </ul>
-          <p class="explore-boundary">{item.boundary}</p>
-          <a class="explore-link" href={`/lab/#${item.id}`}>查看探索记录</a>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section id="cooperate" class="section wrap">
-    <div class="section-head">
-      <h2>求职与合作</h2>
-      <a class="section-link" href="/services/">查看合作方式</a>
-    </div>
-    <div class="coop-primary">
-      <div class="coop-primary-copy">
-        <p class="coop-kicker">优先 · 全职</p>
-        <h3>寻找 ToB / 工业互联网方向的全职机会</h3>
-        <p>
-          目标岗位：全栈开发（前端为主）、前端开发（ToB / 工业互联网）、AI 应用开发；Java / Spring Boot 已在 AI 中台项目中落地，FDE / 工业软件是长期方向。
-          目前在安徽，可到岗；具体岗位与到岗时间可以邮件沟通。
-        </p>
+          <div class="delivery">
+            <div class="delivery-head"><span>交付链路</span><span>技术示意</span></div>
+            <ol class="delivery-nodes">
+              <li><span class="node-index">01</span><div><b>前端交互</b><span>Vue / React / TypeScript</span></div><span class="node-plus" aria-hidden="true">+</span></li>
+              <li><span class="node-index">02</span><div><b>接口服务</b><span>Spring Boot / Redis / MQ</span></div><span class="node-plus" aria-hidden="true">+</span></li>
+              <li><span class="node-index">03</span><div><b>构建交付</b><span>Docker / Nginx / CI/CD</span></div><span class="node-plus" aria-hidden="true">↗</span></li>
+            </ol>
+          </div>
+          <div class="bench-footer"><span>理解业务 → 实现 → 交付</span><span class="registration" aria-hidden="true"></span></div>
+        </aside>
       </div>
-      <div class="coop-actions">
-        <a class="btn btn-solid" href={`mailto:${site.email}`}>发送岗位或约聊</a>
-        <a class="btn btn-ghost" href="/resume/">查看简历</a>
-      </div>
-    </div>
-    <div class="coop-secondary">
-      <div class="coop-item">
-        <span class="coop-index">02</span>
-        <h3>远程协作</h3>
-        <p>远程全职或长期协作，按周同步，以文档、代码和演示推进。</p>
-      </div>
-      <div class="coop-item">
-        <span class="coop-index">03</span>
-        <h3>项目制合作</h3>
-        <p>需求明确的页面、系统、组件库或 AI 应用，按阶段交付与验收。</p>
+      <div class="hero-foot">
+        <dl class="hero-facts"><div><dt>企业级开发</dt><dd>近 4 年</dd></div><div><dt>脱敏项目案例</dt><dd>06</dd></div><div><dt>组件库服务产品线</dt><dd>10+</dd></div></dl>
+        <a class="scroll-cue" href="#projects">向下查看作品 <span aria-hidden="true">↓</span></a>
       </div>
     </div>
   </section>
 
-  <section class="section wrap">
-    <div class="contact">
-      <div>
-        <h2>聊聊</h2>
-        <p class="contact-lead">
-          目前优先寻找全职机会，也接受远程协作与项目制合作。如果我的项目或经历匹配你正在招的岗位，欢迎来信；
-          也欢迎在 GitHub 上交流。
-        </p>
+  <section id="projects" class="work-section" aria-labelledby="projects-title">
+    <div class="wrap section-inner">
+      <div class="section-head"><div><p class="section-index">01 / Selected work</p><h2 id="projects-title">项目档案<span class="signal-dot" aria-hidden="true"></span></h2></div><p class="section-note">{projects.length} 个公司项目，已脱敏。<br />从实际业务出发，记录方案与取舍。</p></div>
+      <div class="filters" role="group" aria-label="按类型筛选项目">
+        {categories.map((category) => <button type="button" class:list={['filter', { 'is-active': category.key === 'all' }]} data-filter={category.key} aria-pressed={category.key === 'all' ? 'true' : 'false'}>{category.label}<span>{category.key === 'all' ? projects.length : projects.filter((project) => project.data.category === category.key).length}</span></button>)}
       </div>
-      <div class="contact-links">
-        <a href={`mailto:${site.email}`}>{site.email}</a>
-        <a href="/resume/">简历</a>
-        <a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+      <div class="featured-grid">
+        {featured.map((project, index) => (
+          <a class="project-card card" href={`/projects/${project.id}/`} data-category={project.data.category}>
+            <div class="project-cover"><div class="cover-head"><span class="mono">P / {String(index + 1).padStart(2, '0')}</span><span>技术示意</span></div><ProjectBlueprint kind={project.id} /></div>
+            <div class="project-copy"><p class="project-period">{project.data.period}</p><h3>{project.data.name}</h3><p class="project-summary">{summaries[project.id]}</p><div class="project-foot"><span>{project.data.role}</span><span class="project-arrow" aria-hidden="true">↗</span></div></div>
+          </a>
+        ))}
       </div>
+      <div class="archive" aria-label="其他项目">
+        {archive.map((project, index) => (
+          <a class="archive-row" href={`/projects/${project.id}/`} data-category={project.data.category}><span class="archive-num mono">{String(index + featured.length + 1).padStart(2, '0')}</span><h3>{project.data.name}</h3><span class="archive-summary">{archiveSummaries[project.id]}</span><span class="archive-year mono">{project.data.period.split(' — ')[0]}</span><span class="project-arrow" aria-hidden="true">↗</span></a>
+        ))}
+      </div>
+      <p class="project-boundary">周期为项目参与区间，部分项目并行；个人职责与指标口径见各案例。</p>
+      <p class="filter-status visually-hidden" role="status" aria-live="polite"></p>
     </div>
   </section>
 
-  <BackToTop />
+  <section id="domain" class="engineering" aria-labelledby="engineering-title" data-moment="word-highlight">
+    <div class="wrap section-inner">
+      <div class="section-head"><div><p class="section-index">02 / Engineering</p><h2 id="engineering-title">工程能力</h2></div><span class="section-note">物流 / 仓储 / 物资管理</span></div>
+      <p class="engineering-statement mo-wh__text">理解业务角色， 理清流程状态，<br />让系统适应 <strong>真实的现场。</strong></p>
+      <div class="capability-grid">
+        {capabilities.map((capability, index) => <a class="capability" href={capability.href}><span class="capability-index mono">{capability.index}</span><div><h3>{capabilityTitles[index]}</h3><p>{capabilityDetails[index]}</p><span class="capability-proof">{capability.proof}</span></div><span class="project-arrow" aria-hidden="true">↗</span></a>)}
+      </div>
+      <div class="stack-strip" id="stack"><span class="mono">项目实战</span><p>Vue / React / TypeScript / Java / Spring Boot / Docker</p><a class="m-link" href="/about/#stack">查看技术分层 ↗</a></div>
+    </div>
+  </section>
+
+  <section id="experience" class="experience-section" aria-labelledby="experience-title">
+    <div class="wrap section-inner">
+      <div class="section-head"><div><p class="section-index">03 / Experience & beyond</p><h2 id="experience-title">经历与下一步</h2></div><a class="section-link m-link" href="/about/">完整经历 ↗</a></div>
+      <div class="experience-grid">
+        <div class="experience-list">
+          {experience.map((job, index) => <article class="job"><div class="job-meta"><span class="job-time mono">{job.period}</span>{index === 0 && <span class="job-current">现在</span>}</div><h3>{job.role}</h3><p class="job-company">{job.company}</p><p class="job-summary">{job.summary}</p><ul class="job-tags" aria-label="工作关键词">{job.keywords.map((keyword) => <li>{keyword}</li>)}</ul></article>)}
+          <div class="education"><span class="mono">Education</span><p><b>{education.school}</b> · {education.major}</p><span class="mono">{education.period}</span></div>
+        </div>
+        <aside class="lab-panel" id="direction" aria-label="正在学习与探索">
+          <div class="lab-heading"><span class="mono">Side projects / Lab</span><span class="lab-mark" aria-hidden="true">↗</span></div>
+          <h3>保持好奇，<br />继续动手。</h3>
+          <p class="lab-intro">工作之外，关注工业 AI 与企业 AI 应用，把新的想法逐步变成可验证的实验。</p>
+          <div class="lab-items">{explorations.map((item) => <div class="lab-item"><span class="lab-status">{item.status}</span><p>{item.title}</p></div>)}</div>
+          <p class="lab-boundary">这些方向处于学习或方案阶段，尚未作为生产项目交付。FDE 是长期职业方向。</p>
+          <a class="lab-link" href="/lab/">查看技术探索 <span aria-hidden="true">↗</span></a>
+        </aside>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 
 <script>
-  const filterButtons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
-  const projectRows = document.querySelectorAll<HTMLElement>('#project-list [data-category]');
-  const emptyState = document.querySelector<HTMLElement>('.filter-empty');
-
-  filterButtons.forEach((button) => {
+  const filters = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const projects = document.querySelectorAll<HTMLElement>('[data-category]');
+  const status = document.querySelector<HTMLElement>('.filter-status');
+  const archive = document.querySelector<HTMLElement>('.archive');
+  const featured = document.querySelector<HTMLElement>('.featured-grid');
+  filters.forEach((button) => {
     button.addEventListener('click', () => {
       const key = button.dataset.filter;
-
-      filterButtons.forEach((item) => {
-        const active = item === button;
-        item.classList.toggle('is-active', active);
-        item.setAttribute('aria-pressed', String(active));
+      document.querySelector('#projects')?.classList.toggle('is-filtered', key !== 'all');
+      filters.forEach((filter) => {
+        const active = filter === button;
+        filter.classList.toggle('is-active', active);
+        filter.setAttribute('aria-pressed', String(active));
       });
-
-      let visible = 0;
-      projectRows.forEach((row) => {
-        const show = key === 'all' || row.dataset.category === key;
-        row.hidden = !show;
-        if (show) visible += 1;
+      let count = 0;
+      projects.forEach((project) => {
+        const visible = key === 'all' || project.dataset.category === key;
+        project.hidden = !visible;
+        if (visible) count += 1;
       });
-
-      if (emptyState) emptyState.hidden = visible > 0;
-    });
-  });
-
-  const featureButtons = document.querySelectorAll<HTMLButtonElement>('[data-feature]');
-  const featurePanels = document.querySelectorAll<HTMLElement>('[data-panel]');
-
-  featureButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      const key = button.dataset.feature;
-
-      featureButtons.forEach((item) => {
-        const active = item === button;
-        item.classList.toggle('is-active', active);
-        item.setAttribute('aria-pressed', String(active));
-      });
-
-      featurePanels.forEach((panel) => {
-        panel.hidden = panel.dataset.panel !== key;
-      });
+      if (archive) archive.hidden = !Array.from(archive.querySelectorAll<HTMLElement>('[data-category]')).some((project) => !project.hidden);
+      if (featured) featured.hidden = !Array.from(featured.querySelectorAll<HTMLElement>('[data-category]')).some((project) => !project.hidden);
+      if (status) status.textContent = `显示 ${count} 个项目`;
     });
   });
 </script>
 
 <style>
-  /* Hero ---------------------------------------------------------- */
-  .hero {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-schematic {
-    position: absolute;
-    top: -32px;
-    right: clamp(1rem, 6vw, 5rem);
-    z-index: 0;
-    height: calc(100% + 64px);
-    width: auto;
-    color: var(--accent);
-    opacity: 0.45;
-    pointer-events: none;
-  }
-
-  .hero-schematic .trace,
-  .hero-schematic .branch,
-  .hero-schematic .ticks,
-  .hero-schematic .guide {
-    stroke: currentColor;
-    stroke-linecap: square;
-    stroke-linejoin: miter;
-  }
-
-  .hero-schematic .trace {
-    stroke-width: 1.15;
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-    animation: draw 1.7s cubic-bezier(0.22, 0.61, 0.36, 1) 0.1s forwards;
-  }
-
-  .hero-schematic .branch {
-    stroke-width: 1;
-    opacity: 0.55;
-  }
-
-  .hero-schematic .ticks {
-    stroke-width: 0.9;
-    opacity: 0.5;
-  }
-
-  .hero-schematic .guide {
-    stroke-width: 0.8;
-    opacity: 0.25;
-  }
-
-  .hero-schematic .label {
-    fill: currentColor;
-    font-family: var(--font-mono);
-    font-size: 7.5px;
-    letter-spacing: 0.12em;
-    opacity: 0.7;
-  }
-
-  @keyframes draw {
-    to {
-      stroke-dashoffset: 0;
-    }
-  }
-
-  .hero-inner {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: clamp(2rem, 6vw, 5rem);
-    padding-block: clamp(4rem, 11vw, 7.5rem);
-  }
-
-  .hero-kicker {
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-  }
-
-  .hero-title {
-    margin-top: 1rem;
-    font-size: clamp(2.4rem, 6.2vw, 4.4rem);
-    line-height: 1.06;
-  }
-
-  .hero-title span {
-    display: block;
-  }
-
-  .hero-intro {
-    max-width: 48ch;
-    margin-top: 1.6rem;
-    font-size: 1.05rem;
-    line-height: 1.8;
-  }
-
-  .hero-now {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    margin-top: 0.9rem;
-    color: var(--muted);
-    font-size: 0.88rem;
-  }
-
-  .status-dot {
-    flex: none;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--seal);
-    transform: translateY(-1px);
-  }
-
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.7rem 1.1rem;
-    margin-top: 2.2rem;
-  }
-
-  .hero-mail {
-    color: var(--muted);
-    font-size: 0.86rem;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.2em;
-  }
-
-  .hero-mail:hover {
-    color: var(--accent);
-  }
-
-  .hero-stats {
-    display: grid;
-    grid-template-columns: repeat(3, auto);
-    justify-content: start;
-    gap: 0 clamp(2rem, 5vw, 3.4rem);
-    margin: 2.6rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .hero-stats li {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-
-  .hero-stats strong {
-    font-family: var(--font-display);
-    font-size: 1.32rem;
-    font-weight: 600;
-    line-height: 1.2;
-  }
-
-  .hero-stats span {
-    color: var(--muted);
-    font-size: 0.76rem;
-    line-height: 1.5;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.68rem 1.35rem;
-    border: 1px solid transparent;
-    border-radius: 2px;
-    font-size: 0.92rem;
-    transition:
-      background-color 0.2s ease,
-      color 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .btn-solid {
-    background: var(--ink);
-    color: var(--paper);
-  }
-
-  .btn-solid:hover {
-    background: var(--accent);
-  }
-
-  .btn-ghost {
-    border-color: var(--line-strong);
-    color: var(--ink);
-  }
-
-  .btn-ghost:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .hero-portrait {
-    position: relative;
-    justify-self: end;
-  }
-
-  .hero-portrait img {
-    width: clamp(150px, 20vw, 220px);
-    aspect-ratio: 1;
-    object-fit: cover;
-    border: 1px solid var(--line-strong);
-    border-radius: 50%;
-  }
-
-  .hero-portrait::after {
-    content: '';
-    position: absolute;
-    inset: -12px;
-    border: 1px dashed var(--line-strong);
-    border-radius: 50%;
-  }
-
-  /* Sections ------------------------------------------------------ */
-  .section {
-    padding-block: clamp(3rem, 7vw, 5rem);
-  }
-
-  .section-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.5rem 1.5rem;
-    margin-bottom: 1.3rem;
-  }
-
-  .section-head h2 {
-    font-size: 1.6rem;
-  }
-
-  .section-note {
-    color: var(--muted);
-    font-size: 0.86rem;
-  }
-
-  .section-link {
-    color: var(--muted);
-    font-size: 0.88rem;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.2em;
-  }
-
-  .section-link:hover {
-    color: var(--accent);
-  }
-
-  /* Capabilities -------------------------------------------------- */
-  .cap-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.6rem 2.5rem;
-  }
-
-  .cap {
-    padding-top: 1rem;
-  }
-
-  .cap-index {
-    color: var(--seal);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-  }
-
-  .cap h3 {
-    margin-top: 0.45rem;
-    font-size: 1.1rem;
-  }
-
-  .cap-detail {
-    max-width: 52ch;
-    margin-top: 0.45rem;
-    color: var(--muted);
-    font-size: 0.9rem;
-    line-height: 1.7;
-  }
-
-  .cap-proof {
-    margin-top: 0.7rem;
-    color: var(--ink);
-    font-size: 0.8rem;
-  }
-
-  .cap-link {
-    display: inline-block;
-    margin-top: 0.7rem;
-    color: var(--muted);
-    font-size: 0.82rem;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.2em;
-  }
-
-  .cap-link:hover {
-    color: var(--accent);
-  }
-
-  /* Feature case --------------------------------------------------- */
-  .feature {
-    padding-block: clamp(3rem, 7vw, 5rem);
-  }
-
-  .feature-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 0.6rem 1.5rem;
-    margin-bottom: 1.4rem;
-  }
-
-  .feature-kicker {
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
-  }
-
-  .feature-head h2 {
-    margin-top: 0.45rem;
-    font-size: 1.6rem;
-  }
-
-  .feature-switch {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem 1.3rem;
-    margin-bottom: 1.1rem;
-  }
-
-  .feature-btn {
-    position: relative;
-    padding: 0.4rem 0;
-    color: var(--muted);
-    font-size: 0.88rem;
-    transition: color 0.2s ease;
-  }
-
-  .feature-btn::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    height: 1.5px;
-    background: transparent;
-  }
-
-  .feature-btn:hover {
-    color: var(--ink);
-  }
-
-  .feature-btn.is-active {
-    color: var(--ink);
-  }
-
-  .feature-btn.is-active::after {
-    background: var(--seal);
-  }
-
-  .feature-panel {
-    display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-    gap: clamp(1.5rem, 4vw, 3rem);
-    padding: clamp(1.3rem, 3vw, 2.2rem);
-    border: 1px solid var(--line-strong);
-    background: var(--paper-raised);
-  }
-
-  .feature-flow-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .feature-flow-label {
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-  }
-
-  .feature-flow {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.9rem;
-    align-content: start;
-  }
-
-  .feature-flow-note {
-    margin-top: auto;
-    color: var(--muted);
-    font-size: 0.76rem;
-  }
-
-  .feature-step {
-    position: relative;
-    padding-top: 0.7rem;
-    border-top: 1px solid var(--line-strong);
-  }
-
-  .feature-num {
-    display: block;
-    color: var(--seal);
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-  }
-
-  .feature-step b {
-    display: block;
-    margin-top: 0.3rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    line-height: 1.35;
-  }
-
-  .feature-detail {
-    display: block;
-    margin-top: 0.2rem;
-    color: var(--muted);
-    font-size: 0.76rem;
-    line-height: 1.55;
-  }
-
-  .feature-meta {
-    color: var(--muted);
-    font-size: 0.76rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .feature-body h3 {
-    margin-top: 0.45rem;
-    font-size: 1.3rem;
-  }
-
-  .feature-thesis {
-    margin-top: 0.7rem;
-    font-family: var(--font-display);
-    font-size: 1.02rem;
-    line-height: 1.55;
-  }
-
-  .feature-summary {
-    margin-top: 0.55rem;
-    color: var(--muted);
-    font-size: 0.86rem;
-    line-height: 1.7;
-  }
-
-  .feature-metrics {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem 1rem;
-    margin: 0.8rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .feature-metrics li {
-    position: relative;
-    padding-left: 0.8rem;
-    font-size: 0.78rem;
-  }
-
-  .feature-metrics li::before {
-    content: '';
-    position: absolute;
-    top: 0.6em;
-    left: 0;
-    width: 6px;
-    height: 1.5px;
-    background: var(--seal);
-  }
-
-  .feature-link {
-    display: inline-block;
-    margin-top: 1rem;
-    color: var(--muted);
-    font-size: 0.86rem;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.2em;
-  }
-
-  .feature-link:hover {
-    color: var(--accent);
-  }
-
-  /* Projects ------------------------------------------------------ */
-  .projects-note,
-  .stack-note,
-  .explore-intro {
-    max-width: 68ch;
-    margin: -0.35rem 0 1.4rem;
-    color: var(--muted);
-    font-size: 0.85rem;
-    line-height: 1.7;
-  }
-
-  .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem 1.3rem;
-    margin-bottom: 0.6rem;
-  }
-
-  .filter {
-    position: relative;
-    padding: 0.4rem 0;
-    color: var(--muted);
-    font-size: 0.88rem;
-    transition: color 0.2s ease;
-  }
-
-  .filter::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    bottom: -0.35rem;
-    left: 0;
-    height: 1.5px;
-    background: transparent;
-  }
-
-  .filter:hover {
-    color: var(--ink);
-  }
-
-  .filter.is-active {
-    color: var(--ink);
-  }
-
-  .filter.is-active::after {
-    background: var(--seal);
-  }
-
-  .filter span {
-    margin-left: 0.3rem;
-    color: var(--muted);
-    font-size: 0.7rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .filter-empty {
-    margin-top: 1.5rem;
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-
-  /* Experience ---------------------------------------------------- */
-  .timeline {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .job-row {
-    padding: 1.3rem 0;
-  }
-
-  .job-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.3rem 1rem;
-  }
-
-  .job-period {
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .job-company {
-    font-size: 1.02rem;
-    font-weight: 500;
-  }
-
-  .job-role {
-    color: var(--muted);
-    font-size: 0.84rem;
-  }
-
-  .job-desc {
-    max-width: 62ch;
-    margin-top: 0.4rem;
-    color: var(--muted);
-    font-size: 0.9rem;
-    line-height: 1.7;
-  }
-
-  .job-points {
-    max-width: 68ch;
-    margin: 0.6rem 0 0;
-    padding-left: 1.1em;
-    font-size: 0.88rem;
-    line-height: 1.75;
-  }
-
-  .job-points li + li {
-    margin-top: 0.25rem;
-  }
-
-  .job-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    margin: 0.75rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .job-tags li {
-    padding: 0.05em 0.45em;
-    border: 1px solid var(--line-strong);
-    border-radius: 2px;
-    color: var(--muted);
-    font-size: 0.68rem;
-    line-height: 1.6;
-  }
-
-  /* Exploration --------------------------------------------------- */
-  .explore-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.6rem 2rem;
-  }
-
-  .explore-card {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding-top: 1rem;
-  }
-
-  .explore-status {
-    padding: 0.02em 0.45em;
-    border: 1px solid var(--line-strong);
-    border-radius: 2px;
-    font-family: var(--font-mono);
-    font-size: 0.66rem;
-    line-height: 1.7;
-  }
-
-  .explore-status.is-learning {
-    border-color: var(--line-strong);
-    color: var(--muted);
-  }
-
-  .explore-status.is-experimenting {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .explore-status.is-planned {
-    border-color: var(--seal);
-    color: var(--seal);
-  }
-
-  .explore-status.is-open {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .explore-card h3 {
-    margin-top: 0.6rem;
-    font-size: 1.06rem;
-    line-height: 1.35;
-  }
-
-  .explore-summary {
-    margin-top: 0.45rem;
-    color: var(--muted);
-    font-size: 0.86rem;
-    line-height: 1.7;
-  }
-
-  .explore-plans {
-    margin: 0.7rem 0 0;
-    padding-left: 1.1em;
-    color: var(--muted);
-    font-size: 0.8rem;
-    line-height: 1.65;
-  }
-
-  .explore-boundary {
-    margin-top: 0.7rem;
-    color: var(--seal);
-    font-size: 0.76rem;
-    line-height: 1.6;
-  }
-
-  .explore-link {
-    margin-top: auto;
-    padding-top: 0.8rem;
-    color: var(--muted);
-    font-size: 0.8rem;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.2em;
-  }
-
-  .explore-link:hover {
-    color: var(--accent);
-  }
-
-  /* Cooperation --------------------------------------------------- */
-  .coop-primary {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.2rem 2.5rem;
-    padding: clamp(1.3rem, 3vw, 2rem);
-    border: 1px solid var(--line-strong);
-    border-left: 3px solid var(--seal);
-    background: var(--paper-raised);
-  }
-
-  .coop-kicker {
-    color: var(--seal);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-  }
-
-  .coop-primary h3 {
-    margin-top: 0.45rem;
-    font-size: 1.25rem;
-  }
-
-  .coop-primary-copy > p:last-child {
-    max-width: 58ch;
-    margin-top: 0.55rem;
-    color: var(--muted);
-    font-size: 0.9rem;
-    line-height: 1.75;
-  }
-
-  .coop-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-  }
-
-  .coop-secondary {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem 2.5rem;
-    margin-top: 1.6rem;
-  }
-
-  .coop-index {
-    color: var(--seal);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-  }
-
-  .coop-item {
-    padding-top: 0.8rem;
-  }
-
-  .coop-item h3 {
-    margin-top: 0.4rem;
-    font-size: 1.02rem;
-  }
-
-  .coop-item p {
-    margin-top: 0.4rem;
-    color: var(--muted);
-    font-size: 0.86rem;
-    line-height: 1.7;
-  }
-
-  /* Contact ------------------------------------------------------- */
-  .contact {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1.5rem 3rem;
-  }
-
-  .contact h2 {
-    font-size: 1.6rem;
-  }
-
-  .contact-lead {
-    max-width: 52ch;
-    margin-top: 0.6rem;
-    color: var(--muted);
-    font-size: 0.95rem;
-    line-height: 1.75;
-  }
-
-  .contact-links {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.35rem;
-    font-size: 0.95rem;
-  }
-
-  .contact-links a {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.2em;
-  }
-
-  .contact-links a:hover {
-    color: var(--accent);
-  }
-
-  /* Responsive ---------------------------------------------------- */
-  @media (max-width: 960px) {
-    .hero-schematic {
-      display: none;
-    }
-
-    .feature-panel {
-      grid-template-columns: 1fr;
-    }
-
-    .feature-flow {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .cap-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .explore-grid {
-      grid-template-columns: 1fr;
-      gap: 1.4rem;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .hero-inner {
-      grid-template-columns: 1fr;
-      gap: 2.5rem;
-      padding-block: 3rem;
-    }
-
-    .hero-portrait {
-      justify-self: start;
-      order: -1;
-    }
-
-    .hero-portrait img {
-      width: 120px;
-    }
-
-    .hero-portrait::after {
-      inset: -9px;
-    }
-
-    .hero-title {
-      font-size: clamp(2.2rem, 10vw, 2.9rem);
-    }
-
-    .hero-stats {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.8rem;
-    }
-
-    .hero-stats li + li {
-      padding-left: 0.8rem;
-    }
-
-    .hero-stats strong {
-      font-size: 1.1rem;
-    }
-
-    .hero-stats span {
-      font-size: 0.7rem;
-    }
-
-    .coop-secondary {
-      grid-template-columns: 1fr;
-      gap: 1.2rem;
-    }
-
-    .feature-flow {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  .mono, .section-index { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .square { display: inline-block; width: 8px; height: 8px; flex: none; background: var(--signal); }
+  .hero { min-height: 100svh; }
+  .hero-inner { display: flex; min-height: 100svh; flex-direction: column; justify-content: space-between; padding-block: calc(var(--nav) + 32px) 32px; }
+  .hero-topline { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
+  .hero-topline > span:first-child { display: flex; align-items: center; gap: 12px; }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 64px; align-items: start; padding-block: 40px; }
+  .hero-kicker { margin-bottom: 24px; font-size: 15px; font-weight: 500; }
+  .hero h1 { font-size: clamp(48px, 5.1vw, 74px); font-weight: 760; line-height: 1.18; letter-spacing: -0.06em; text-wrap: initial; }
+  .title-stop { color: var(--accent); }
+  .hero-intro { margin-top: 28px; font-size: 17px; line-height: 1.8; }
+  .hero-actions { display: flex; gap: 12px; margin-top: 32px; }
+  .hero-status { display: flex; gap: 8px; align-items: center; margin-top: 24px; color: var(--muted); font-size: 13px; }
+  .hero-status .square { width: 6px; height: 6px; }
+  .workbench { border: 1px solid var(--line-strong); background: var(--paper-raised); }
+  .bench-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  .bench-cross { color: var(--accent); font-size: 20px; line-height: 1; }
+  .identity { display: flex; gap: 24px; align-items: center; padding: 24px; }
+  .portrait { flex: none; width: 104px; height: 104px; overflow: hidden; border: 1px solid var(--line-strong); }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; }
+  .identity-copy > .mono { color: var(--muted); font-size: 13px; }
+  .identity-copy p { display: flex; align-items: baseline; gap: 12px; margin-top: 4px; font-size: 32px; font-weight: 700; }
+  .identity-copy p span { font-size: 17px; letter-spacing: -0.04em; }
+  .identity-role { font-size: 13px; color: var(--muted); }
+  .delivery { padding: 0 24px 24px; }
+  .delivery-head { display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 13px; color: var(--muted); }
+  .delivery-nodes { margin: 0; padding: 0; list-style: none; }
+  .delivery-nodes li { position: relative; display: flex; align-items: center; gap: 16px; padding-block: 12px; border-top: 1px solid var(--line); }
+  .node-index { font-family: var(--font-mono); color: var(--accent); font-size: 13px; }
+  .delivery-nodes b { display: block; font-size: 14px; font-weight: 600; }
+  .delivery-nodes div > span { display: block; margin-top: 2px; font-family: var(--font-mono); color: var(--muted); font-size: 13px; }
+  .node-plus { margin-left: auto; color: var(--accent); }
+  .bench-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 24px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  .registration { display: block; width: 44px; height: 16px; background: repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 5px, currentColor 5px 6px, transparent 6px 9px); opacity: .5; }
+  .hero-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding-top: 24px; border-top: 1px solid var(--line-strong); }
+  .hero-facts { display: flex; gap: 64px; margin: 0; }
+  .hero-facts > div { display: flex; flex-direction: column-reverse; gap: 4px; }
+  .hero-facts dt { font-size: 13px; color: var(--muted); }
+  .hero-facts dd { margin: 0; font-size: 28px; font-weight: 650; letter-spacing: -.05em; line-height: 1.2; }
+  .scroll-cue { display: flex; gap: 32px; align-items: center; min-height: 44px; color: var(--muted); font-size: 13px; }
+  .scroll-cue span { color: var(--ink); font-size: 24px; }
+  .section-inner { display: flex; flex-direction: column; justify-content: center; min-height: 100svh; padding-block: 80px 64px; }
+  .section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 32px; }
+  .section-index { margin-bottom: 12px; font-size: 13px; color: var(--muted); }
+  .section-head h2 { font-size: var(--t-h2); letter-spacing: -.05em; }
+  .signal-dot { display: inline-block; width: 10px; height: 10px; margin-left: 12px; background: var(--signal); }
+  .section-note { font-size: 14px; color: var(--muted); line-height: 1.7; }
+  .work-section { background: var(--paper-raised); }
+  .work-section .section-inner { padding-block: 80px 36px; }
+  .work-section.is-filtered .section-inner { min-height: auto; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .filter { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 2px; font-size: 14px; transition: background-color 150ms, color 150ms; }
+  .filter span { font-family: var(--font-mono); font-size: 13px; }
+  .filter:hover { border-color: var(--line-strong); }
+  .filter.is-active { border-color: var(--ink); background: var(--ink); color: var(--paper-raised); }
+  .featured-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .project-card { display: flex; min-width: 0; flex-direction: column; border: 1px solid var(--line); border-radius: 2px; background: var(--paper-raised); }
+  .project-cover { padding: 12px 20px 0; background: var(--paper); border-bottom: 1px solid var(--line); }
+  .cover-head { display: flex; justify-content: space-between; gap: 16px; font-size: 13px; color: var(--muted); }
+  .project-copy { flex: 1; display: flex; flex-direction: column; padding: 16px; }
+  .project-period { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+  .project-copy h3 { margin-top: 8px; font-size: 22px; letter-spacing: -.04em; line-height: 1.4; }
+  .project-summary { margin-top: 8px; font-size: 16px; line-height: 1.7; }
+  .project-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: auto; padding-top: 16px; color: var(--muted); font-size: 13px; }
+  .project-arrow { display: inline-block; flex: none; color: var(--accent); font-size: 22px; line-height: 1; transition: transform 150ms; }
+  a:hover .project-arrow { transform: translate(2px, -2px); }
+  .archive { margin-top: 24px; }
+  .archive-row { display: grid; grid-template-columns: 24px minmax(200px, 1.2fr) minmax(200px, 1fr) 100px 24px; gap: 16px; align-items: center; min-height: 56px; padding-block: 12px; border-bottom: 1px solid var(--line); transition: color 150ms; }
+  .archive-row:hover { color: var(--accent); }
+  .archive-num, .archive-year { color: var(--muted); font-size: 13px; }
+  .archive-row h3 { font-size: 16px; line-height: 1.6; font-weight: 600; }
+  .archive-summary { color: var(--muted); font-size: 14px; }
+  .project-boundary { margin-top: 20px; color: var(--muted); font-size: 13px; }
+  .engineering { --paper: #191d20; --bg: #191d20; --ink: #f0f2ed; --muted: #b5bdbe; --accent: #ff946d; --line: rgba(240,242,237,.2); --line-strong: rgba(240,242,237,.4); background: var(--paper); color: var(--ink); }
+  .engineering-statement { margin-bottom: 40px; font-weight: 650; line-height: 1.35; }
+  .capability-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 64px; }
+  .capability { display: flex; gap: 20px; padding-block: 24px; border-top: 1px solid var(--line); }
+  .capability-index { padding-top: 4px; color: var(--accent); font-size: 13px; }
+  .capability h3 { font-size: 22px; line-height: 1.4; }
+  .capability p { max-width: 40ch; margin-top: 12px; font-size: 16px; line-height: 1.7; }
+  .capability-proof { display: block; margin-top: 16px; font-size: 13px; color: var(--muted); }
+  .capability > .project-arrow { margin-left: auto; padding-top: 4px; }
+  .stack-strip { display: flex; align-items: center; gap: 24px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 13px; }
+  .stack-strip > span { color: var(--muted); white-space: nowrap; }
+  .stack-strip p { font-size: 14px; }
+  .stack-strip a { margin-left: auto; flex: none; min-height: 44px; display: inline-flex; align-items: center; }
+  .experience-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 64px; }
+  .section-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; }
+  .job { position: relative; border-top: 1px solid var(--line-strong); padding-block: 24px; }
+  .job-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .job-time { color: var(--muted); font-size: 13px; }
+  .job-current { background: var(--signal); color: #191d20; padding: 0 8px; font-size: 13px; }
+  .job h3 { font-size: 21px; line-height: 1.4; }
+  .job-company { margin-top: 8px; font-size: 14px; color: var(--muted); }
+  .job-summary { margin-top: 16px; font-size: 16px; line-height: 1.75; }
+  .job-tags { display: flex; gap: 8px 16px; flex-wrap: wrap; list-style: none; padding: 0; margin: 16px 0 0; color: var(--muted); font-size: 13px; }
+  .job-tags li::before { content: '/'; margin-right: 8px; color: var(--accent); }
+  .education { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 20px; border-top: 1px solid var(--line-strong); font-size: 14px; }
+  .education > span { font-size: 13px; color: var(--muted); }
+  .education > span:last-child { display: block; width: 100%; }
+  .lab-panel { display: flex; flex-direction: column; padding: 32px; background: var(--paper-raised); border: 1px solid var(--line-strong); }
+  .lab-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 13px; }
+  .lab-mark { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: var(--signal); color: #191d20; font-size: 28px; }
+  .lab-panel h3 { margin-top: 32px; font-size: 40px; letter-spacing: -.05em; line-height: 1.25; }
+  .lab-intro { margin-top: 24px; font-size: 16px; line-height: 1.75; }
+  .lab-items { margin-top: 32px; }
+  .lab-item { display: flex; align-items: baseline; gap: 12px; padding-block: 16px; border-top: 1px solid var(--line); }
+  .lab-status { flex: none; color: var(--accent); font-size: 13px; }
+  .lab-item p { font-size: 15px; }
+  .lab-boundary { margin-top: 20px; font-size: 13px; color: var(--muted); }
+  .lab-link { display: flex; justify-content: space-between; align-items: center; min-height: 48px; margin-top: auto; padding-top: 24px; font-size: 15px; font-weight: 600; }
+  .lab-link span { color: var(--accent); font-size: 24px; }
+  @media (min-width: 1024px) and (max-height: 800px) {
+    .hero-inner { padding-block: calc(var(--nav) + 24px) 24px; }
+    .hero-grid { padding-block: 24px; }
+    .hero-kicker { margin-bottom: 16px; }
+    .hero-intro { margin-top: 20px; }
+    .hero-actions { margin-top: 24px; }
+    .hero-status { margin-top: 16px; }
+  }
+  @media (min-width: 768px) {
+    .work-section.is-filtered .featured-grid { grid-template-columns: minmax(0, 1fr); }
+    .work-section.is-filtered .project-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .work-section.is-filtered .project-cover { display: flex; min-height: 240px; flex-direction: column; justify-content: center; border-bottom: 0; border-right: 1px solid var(--line); padding: 24px 32px; }
+    .work-section.is-filtered .project-copy { justify-content: center; padding: 32px; }
+    .work-section.is-filtered .project-summary { max-width: 40ch; }
+    .work-section.is-filtered .project-foot { margin-top: 8px; }
+  }
+  @media (min-width: 1024px) {
+    .hero-grid, .experience-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; }
+    .hero-copy, .experience-list { grid-column: span 7; }
+    .workbench, .lab-panel { grid-column: span 5; }
+  }
+  @media (max-width: 1199px) {
+    .hero h1 { font-size: clamp(44px, 5.2vw, 64px); }
+    .identity { gap: 16px; padding: 20px; }
+    .portrait { width: 80px; height: 80px; }
+    .identity-copy p { flex-wrap: wrap; gap: 0 8px; }
+    .delivery { padding-inline: 20px; }
+    .delivery-nodes div > span { font-size: 13px; }
+    .featured-grid { gap: 16px; }
+    .project-copy { padding: 16px; }
+    .project-copy h3 { font-size: 20px; }
+    .archive-row { grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1fr) 24px; }
+    .archive-year { display: none; }
+    .capability-grid { column-gap: 32px; }
+    .lab-panel { padding: 24px; }
+  }
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+    .hero h1 { font-size: 43px; }
+    .hero-intro { font-size: 16px; }
+    .hero-actions { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .hero-actions .btn { width: 100%; }
+    .hero-status { align-items: flex-start; line-height: 1.7; }
+    .hero-status .square { margin-top: 8px; }
+    .identity-copy p { font-size: 28px; }
+    .identity-copy p span { font-size: 15px; }
+    .delivery-nodes li { gap: 12px; }
+    .delivery-nodes div > span { font-size: 13px; }
+    .featured-grid { grid-template-columns: 1fr; }
+    .project-card { display: grid; grid-template-columns: 1fr 1fr; }
+    .project-card .project-cover { display: flex; flex-direction: column; justify-content: center; border-bottom: 0; border-right: 1px solid var(--line); }
+    .experience-grid { grid-template-columns: 1fr; }
+    .lab-panel { display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; }
+    .lab-heading { grid-column: 1 / -1; }
+    .lab-panel h3 { grid-column: 1; }
+    .lab-intro { grid-column: 1; }
+    .lab-items { grid-column: 2; grid-row: 2 / span 2; }
+    .lab-boundary { grid-column: 2; }
+    .lab-link { grid-column: 1 / -1; }
+    .section-inner { min-height: auto; padding-block: 80px; }
+    .engineering-statement { font-size: 36px; }
+    .capability { gap: 12px; }
+    .capability h3 { font-size: 20px; }
+    .stack-strip { flex-wrap: wrap; gap: 12px 24px; }
+    .stack-strip a { margin-left: 0; }
+  }
+  @media (max-width: 767px) {
+    .hero-inner { padding-block: calc(var(--nav) + 24px) 24px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 28px; padding-block: 28px 24px; }
+    .hero-topline { font-size: 13px; }
+    .hero-kicker { margin-bottom: 16px; font-size: 14px; }
+    .hero h1 { font-size: clamp(36px, 9.7vw, 60px); line-height: 1.18; }
+    .hero-intro { margin-top: 20px; font-size: 15px; line-height: 1.8; }
+    .hero-actions { margin-top: 24px; gap: 12px; }
+    .hero-actions .btn { flex: 1; gap: 16px; padding-inline: 16px; }
+    .hero-status { margin-top: 16px; font-size: 13px; }
+    .bench-header, .bench-footer { display: none; }
+    .identity { gap: 16px; padding: 16px; }
+    .portrait { width: 64px; height: 64px; }
+    .identity-copy p { margin-top: 0; font-size: 24px; line-height: 1.5; }
+    .identity-copy > .mono { display: none; }
+    .identity-copy p span { font-size: 17px; }
+    .delivery { padding: 0 16px 16px; }
+    .delivery-head { margin-bottom: 12px; font-size: 13px; }
+    .delivery-nodes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .delivery-nodes li { display: block; padding: 12px 8px 0; border-top-color: var(--line-strong); border-left: 1px solid var(--line); }
+    .delivery-nodes li:first-child { padding-left: 0; border-left: 0; }
+    .node-index { display: inline-block; margin-bottom: 4px; font-size: 13px; }
+    .delivery-nodes b { font-size: 13px; }
+    .delivery-nodes div > span, .node-plus { display: none; }
+    .hero-foot { padding-top: 16px; align-items: center; }
+    .hero-facts { width: 100%; justify-content: space-between; gap: 16px; }
+    .hero-facts dt { font-size: 13px; }
+    .hero-facts dd { font-size: 23px; }
+    .scroll-cue { display: none; }
+    .section-inner, .work-section .section-inner { min-height: auto; padding-block: 64px; }
+    .section-head { align-items: flex-start; margin-bottom: 24px; }
+    .section-index { margin-bottom: 12px; font-size: 13px; }
+    .section-head h2 { font-size: 32px; }
+    .section-head .section-note { display: none; }
+    .filters { gap: 8px; margin-bottom: 24px; }
+    .filter { gap: 8px; padding-inline: 12px; font-size: 13px; }
+    .featured-grid { grid-template-columns: 1fr; gap: 20px; }
+    .project-copy { padding: 20px; }
+    .project-copy h3 { font-size: 23px; }
+    .archive-row { grid-template-columns: 24px minmax(0, 1fr) 24px; gap: 12px; padding-block: 16px; }
+    .archive-summary { grid-column: 2; font-size: 13px; }
+    .archive-row .project-arrow { grid-column: 3; grid-row: 1 / span 2; }
+    .archive-row h3 { font-size: 15px; }
+    .project-boundary { font-size: 13px; }
+    .engineering-statement { font-size: 28px; line-height: 1.45; margin-bottom: 32px; }
+    .engineering-statement br { display: none; }
+    .capability-grid { grid-template-columns: 1fr; }
+    .capability { gap: 16px; padding-block: 24px; }
+    .capability h3 { font-size: 21px; }
+    .capability p { font-size: 15px; }
+    .capability-proof { font-size: 13px; }
+    .stack-strip { display: block; }
+    .stack-strip p { margin-top: 12px; line-height: 1.8; }
+    .stack-strip a { margin-top: 12px; }
+    .section-link { font-size: 13px; }
+    .experience-grid { grid-template-columns: 1fr; gap: 32px; }
+    .job h3 { font-size: 20px; }
+    .job-summary { font-size: 15px; }
+    .lab-panel { padding: 24px; }
+    .lab-panel h3 { font-size: 36px; }
+    .lab-intro { margin-top: 20px; }
+    .lab-items { margin-top: 24px; }
+    .lab-link { margin-top: 24px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .project-arrow { transition: none; }
+    a:hover .project-arrow { transform: none; }
   }
 </style>

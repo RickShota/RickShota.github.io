@@ -3,12 +3,10 @@ import { site } from '../data/site';
 
 const links = [
   { href: '/#projects', label: '项目' },
-  { href: '/#domain', label: '行业' },
+  { href: '/#domain', label: '工程' },
   { href: '/#experience', label: '经历' },
-  { href: '/#stack', label: '能力' },
   { href: '/lab/', label: '探索' },
   { href: '/about/', label: '关于' },
-  { href: '/resume/', label: '简历' },
   { href: '/services/', label: '合作' },
 ];
 
@@ -40,6 +38,7 @@ const isActive = (href: string) => {
     </nav>
 
     <div class="nav-actions">
+      <a class="nav-resume" href="/resume/">查看简历 <span aria-hidden="true">↗</span></a>
       <a
         class="nav-icon nav-github"
         href={site.github}
@@ -91,6 +90,7 @@ const isActive = (href: string) => {
           {link.label}
         </a>
       ))}
+      <a class="mobile-link" href="/resume/">简历</a>
       <div class="mobile-meta">
         <a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href={`mailto:${site.email}`}>{site.email}</a>
@@ -101,10 +101,12 @@ const isActive = (href: string) => {
 
 <script>
   const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
+  toggle?.setAttribute('aria-pressed', String(document.documentElement.dataset.theme === 'dark'));
   toggle?.addEventListener('click', () => {
     const root = document.documentElement;
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     root.dataset.theme = next;
+    toggle?.setAttribute('aria-pressed', String(next === 'dark'));
     try {
       localStorage.setItem('theme', next);
     } catch {
@@ -114,12 +116,19 @@ const isActive = (href: string) => {
 
   const menuToggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const mobileMenu = document.querySelector<HTMLElement>('[data-menu]');
+  const pageContent = document.querySelector<HTMLElement>('main');
+  const footer = document.querySelector<HTMLElement>('footer');
+  let previousOverflow = '';
 
   const setMenu = (open: boolean) => {
     if (!menuToggle || !mobileMenu) return;
     menuToggle.setAttribute('aria-expanded', String(open));
     menuToggle.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
     mobileMenu.toggleAttribute('hidden', !open);
+    if (open) previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = open ? 'hidden' : previousOverflow;
+    if (pageContent) pageContent.inert = open;
+    if (footer) footer.inert = open;
   };
 
   menuToggle?.addEventListener('click', () => {
@@ -139,24 +148,32 @@ const isActive = (href: string) => {
   });
 
   document.addEventListener('keydown', (event) => {
+    if (event.key === 'Tab' && menuToggle?.getAttribute('aria-expanded') === 'true') {
+      const focusable = Array.from(document.querySelectorAll<HTMLElement>('.nav a, .nav button')).filter((item) => item.getClientRects().length > 0);
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    }
     if (event.key !== 'Escape' || menuToggle?.getAttribute('aria-expanded') !== 'true') return;
     setMenu(false);
     menuToggle.focus();
   });
 
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 720) setMenu(false);
+    if (window.innerWidth > 1023 && menuToggle?.getAttribute('aria-expanded') === 'true') setMenu(false);
   });
 </script>
 
 <style>
   .nav {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 10;
     border-bottom: 1px solid var(--line);
-    background: color-mix(in srgb, var(--paper) 88%, transparent);
-    backdrop-filter: blur(10px);
+    background: var(--paper);
   }
 
   .nav-inner {
@@ -164,26 +181,35 @@ const isActive = (href: string) => {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    min-height: 4rem;
+    min-height: calc(var(--nav) - 1px);
   }
 
   .brand {
     display: inline-flex;
-    align-items: baseline;
-    gap: 0.55rem;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
     flex: none;
   }
 
   .brand-name {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--signal);
+    color: #191d20;
     font-family: var(--font-display);
     font-size: 1.3rem;
-    font-weight: 600;
+    font-weight: 750;
   }
 
   .brand-en {
-    color: var(--muted);
-    font-size: 0.78rem;
-    letter-spacing: 0.02em;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 650;
+    letter-spacing: -0.04em;
   }
 
   .nav-links {
@@ -194,6 +220,10 @@ const isActive = (href: string) => {
   }
 
   .nav-link {
+    display: inline-flex;
+    position: relative;
+    align-items: center;
+    min-height: 44px;
     color: var(--muted);
     transition: color 0.2s ease;
   }
@@ -208,7 +238,10 @@ const isActive = (href: string) => {
 
   .nav-link.is-active::after {
     content: '';
-    display: block;
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    right: 0;
     height: 1.5px;
     margin-top: 0.12rem;
     background: var(--seal);
@@ -217,7 +250,7 @@ const isActive = (href: string) => {
   .nav-actions {
     display: flex;
     align-items: center;
-    gap: 0.2rem;
+    gap: 4px;
     flex: none;
   }
 
@@ -225,8 +258,8 @@ const isActive = (href: string) => {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 1.9rem;
-    height: 1.9rem;
+    width: 44px;
+    height: 44px;
     border-radius: 2px;
     color: var(--muted);
     transition: color 0.2s ease;
@@ -234,7 +267,23 @@ const isActive = (href: string) => {
 
   .nav-icon:hover {
     color: var(--ink);
+    background: var(--paper-raised);
   }
+
+  .nav-resume {
+    display: inline-flex;
+    gap: 20px;
+    align-items: center;
+    min-height: 44px;
+    margin-right: 12px;
+    padding: 8px 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    font-size: 14px;
+  }
+
+  .nav-resume:hover { background: var(--paper-raised); }
+  .nav-resume span { color: var(--accent); }
 
   .menu-toggle {
     display: none;
@@ -259,6 +308,8 @@ const isActive = (href: string) => {
     left: 0;
     border-bottom: 1px solid var(--line-strong);
     background: var(--paper);
+    height: calc(100dvh - var(--nav));
+    overflow-y: auto;
     animation: menu-in 0.16s ease-out;
   }
 
@@ -275,11 +326,12 @@ const isActive = (href: string) => {
 
   .mobile-nav {
     display: grid;
-    padding-block: 0.6rem 1rem;
+    padding-block: 24px;
   }
 
   .mobile-link {
-    padding: 0.72rem 0;
+    padding: 16px 0;
+    min-height: 56px;
     border-bottom: 1px solid var(--line);
     color: var(--muted);
     font-size: 1rem;
@@ -301,19 +353,23 @@ const isActive = (href: string) => {
   }
 
   .mobile-meta a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
   }
 
-  @media (max-width: 860px) {
+  @media (max-width: 1023px) {
+    .nav-resume { display: none; }
     .nav-links {
       gap: 0.8rem;
       font-size: 0.84rem;
     }
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: 1023px) {
     .nav-links {
       display: none;
     }
@@ -327,9 +383,5 @@ const isActive = (href: string) => {
     }
   }
 
-  @media (max-width: 480px) {
-    .brand-en {
-      display: none;
-    }
-  }
+  @media (max-width: 359px) { .brand-en { font-size: 14px; } }
 </style>

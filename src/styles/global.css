@@ -2,35 +2,44 @@
    Tokens
    ------------------------------------------------------------------ */
 :root {
-  --paper: #eef0e9;
-  --paper-raised: #f7f8f2;
-  --ink: #1b231c;
-  --muted: #5c665b;
-  --accent: #1f5b47;
-  --seal: #b0432c;
-  --line: rgba(27, 35, 28, 0.14);
-  --line-strong: rgba(27, 35, 28, 0.3);
+  --paper: #e8ebe9;
+  --paper-raised: #f7f8f5;
+  --ink: #191d20;
+  --muted: #535c60;
+  --accent: #ad3b14;
+  --seal: #ad3b14;
+  --signal: #f45d2a;
+  --line: rgba(25, 29, 32, 0.16);
+  --line-strong: rgba(25, 29, 32, 0.36);
 
-  --font-display: 'Fraunces Variable', 'Songti SC', 'Noto Serif SC', 'Source Han Serif SC', SimSun, Georgia, serif;
+  --font-display: 'Public Sans Variable', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   --font-body: 'Public Sans Variable', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
 
-  --max: 1120px;
-  --gutter: clamp(1.25rem, 4vw, 2.75rem);
+  --max: 1360px;
+  --gutter: 40px;
   --measure: 68ch;
+  --bg: var(--paper);
+  --action: var(--signal);
+  --nav: 72px;
+  --s-2: 8px;
+  --display-weight: 700;
+  --display-tracking: -0.04em;
+  --t-h2: clamp(1.875rem, 3.4vw, 3rem);
 
   color-scheme: light;
 }
 
 [data-theme='dark'] {
-  --paper: #11150f;
-  --paper-raised: #1a2018;
-  --ink: #e7e9e0;
-  --muted: #9aa39a;
-  --accent: #7fbf9e;
-  --seal: #d96b4f;
-  --line: rgba(231, 233, 224, 0.14);
-  --line-strong: rgba(231, 233, 224, 0.3);
+  --paper: #191d20;
+  --paper-raised: #22282b;
+  --ink: #f0f2ed;
+  --muted: #afb8ba;
+  --accent: #ff946d;
+  --seal: #ff946d;
+  --action: #ff946d;
+  --line: rgba(240, 242, 237, 0.17);
+  --line-strong: rgba(240, 242, 237, 0.38);
 
   color-scheme: dark;
 }
@@ -53,7 +62,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -82,8 +91,8 @@ main {
   flex: 1 0 auto;
 }
 
-main:focus {
-  outline: none;
+body:not(.is-home) main {
+  padding-top: var(--nav);
 }
 
 h1,
@@ -92,7 +101,7 @@ h3,
 h4 {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.12;
   letter-spacing: -0.015em;
   text-wrap: balance;
@@ -132,8 +141,8 @@ button {
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--paper);
+  background: var(--signal);
+  color: #191d20;
 }
 
 :focus-visible {
@@ -146,10 +155,9 @@ button {
    Layout helpers
    ------------------------------------------------------------------ */
 .wrap {
-  width: 100%;
-  max-width: var(--max);
+  width: calc(100% - 2 * var(--gutter));
+  max-width: calc(var(--max) - 2 * var(--gutter));
   margin-inline: auto;
-  padding-inline: var(--gutter);
 }
 
 .visually-hidden {
@@ -313,4 +321,45 @@ button {
   margin-top: 0.6rem;
   color: var(--muted);
   font-size: 0.95rem;
+}
+
+/* Shared controls keep the same geometry throughout the portfolio. */
+.btn {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 12px 24px;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.btn--primary {
+  border-color: var(--signal);
+  background: var(--signal);
+  color: #191d20;
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--ink);
+}
+
+@media (max-width: 767px) {
+  :root {
+    --gutter: 24px;
+    --nav: 64px;
+  }
+}
+
+@media print {
+  .wrap { width: 100%; max-width: none; }
+  body:not(.is-home) main { padding-top: 0; }
+  :root {
+    --font-display: var(--font-body);
+  }
 }

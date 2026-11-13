@@ -1,5 +1,4 @@
 ---
-import '@fontsource-variable/fraunces';
 import '@fontsource-variable/public-sans';
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
@@ -78,7 +77,7 @@ const websiteJsonLd = {
 };
 ---
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-type="software" data-site-kind="software" data-radius="sharp" data-buttons="solid" data-motion>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -87,6 +86,9 @@ const websiteJsonLd = {
     <meta name="author" content={`${site.name}（${site.nameEn}）`} />
     <meta name="robots" content={noindex ? 'noindex,nofollow' : 'index,follow'} />
     <meta name="format-detection" content="telephone=no" />
+    <meta name="page-type" content="software" />
+    <meta name="site-kind" content="software" />
+    <link rel="stylesheet" href="/assets/motion/motion.css" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.png" type="image/png" />
@@ -109,8 +111,16 @@ const websiteJsonLd = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <meta name="theme-color" content="#eef0e9" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#11150f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#e8ebe9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#191d20" media="(prefers-color-scheme: dark)" />
+
+    {isHome && <script is:inline>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>}
+    {isHome && <>
+      <script is:inline>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+      <link rel="modulepreload" href="/assets/moments/moments.js" />
+      <link rel="modulepreload" href="/assets/moments/lib.js" />
+      <link rel="modulepreload" href="/assets/moments/word-highlight/moment.js" />
+    </>}
 
     <script type="application/ld+json" is:inline set:html={JSON.stringify(personJsonLd)}></script>
     {isHome && (
@@ -129,12 +139,14 @@ const websiteJsonLd = {
       }
     </script>
   </head>
-  <body id="top">
+  <body id="top" class:list={{ 'is-home': isHome }}>
     <a class="skip-link" href="#main">跳到主要内容</a>
     <Nav />
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    <Footer />
+    <Footer home={isHome} />
+    <script is:inline type="module" src="/assets/motion/motion.js"></script>
+    {isHome && <script is:inline type="module" src="/assets/moments/moments.js"></script>}
   </body>
 </html>
