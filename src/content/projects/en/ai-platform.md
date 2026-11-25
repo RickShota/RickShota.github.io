@@ -1,0 +1,98 @@
+---
+name: "AI Platform"
+period: "Jan 2026 — May 2026"
+role: "Front-end lead · Full-stack"
+audience: "Internal teams for smart office, code generation, data analysis and customer support"
+summary: "Multiple business lines each wired their own models; one unified gateway brings chat, generation and embedding capabilities together so teams stop rebuilding the same integration."
+thesis: "Four business lines each had their own model integration. First, collapse the access layer into one."
+category: ai
+domain:
+  - "Enterprise collaboration"
+  - "Smart office"
+  - "Content generation"
+  - "Data analysis"
+scenario: "Serves several internal business lines: smart office, code generation, data analysis and customer support share one set of model capabilities, while teams integrate chat, text-to-image and embeddings by scenario. The platform also owns accounts, permissions and usage management."
+complexity: "Each of the four lines already had its own integration, with different model types and response shapes. Conversations, context, usage and errors needed unified management without forcing a one-off rewrite. The platform also needed unified authentication, permissions and async statistics so the admin console and the API share one rule set."
+systems:
+  - "Business-line front ends"
+  - "Unified model gateway (Spring Boot)"
+  - "Conversation and context storage (MySQL / Redis)"
+  - "Async logs and usage (RabbitMQ)"
+  - "Admin console and monitoring"
+context: "Internal business lines integrated LLMs separately, duplicating capability with inconsistent stacks. Smart office, code generation, data analysis and customer support all needed chat, generation and embedding, but the integrations differed. Beyond the front end, the platform also needed server APIs, authentication, caching and async statistics."
+goals:
+  - "Give multiple business lines one way to integrate AI and reduce duplicate work."
+  - "Absorb the differences between chat, text-to-image and embedding so teams depend on one interface."
+  - "Provide manageable conversations, context, usage and error handling."
+  - "Establish unified authentication, permissions and async statistics shared by the admin console and API."
+constraints:
+  - "Business lines already had their own integrations; a one-off rewrite was not acceptable."
+  - "Different models (chat, text-to-image, embedding) take different inputs and return different shapes."
+  - "Long conversations and long lists put pressure on both rendering performance and token cost."
+  - "Logging and usage statistics must not block the main conversation path."
+flow:
+  - name: "Business entry"
+    detail: "Smart office, code generation, data analysis, customer support"
+  - name: "Conversation"
+    detail: "Multi-model chat, SSE streaming and history"
+  - name: "Service and access"
+    detail: "Spring Boot API, JWT + RBAC, Redis cache"
+  - name: "Async and monitoring"
+    detail: "RabbitMQ logs, token usage and error monitoring"
+decisions:
+  - title: "Unify the service layer before adding models"
+    problem: "Chat, text-to-image and embedding have different inputs and outputs; direct integration spreads model differences into every page."
+    choice: "Wrap useAIService with TypeScript generics and the strategy pattern, keeping model switching, parameter configuration and error handling in one layer."
+    benefit: "Feature teams depend on one interface; adding a model or changing parameters requires no business-code changes."
+  - title: "Virtual scrolling over cutting history"
+    problem: "Conversations and session lists can reach tens of thousands of items; rendering them all causes jank and memory pressure."
+    choice: "Add virtual scrolling that renders only the viewport and recycles DOM, with incremental updates for streamed messages."
+    benefit: "Smooth scrolling at ten-thousand-item scale; history is no longer truncated for performance."
+  - title: "Context management is really budget management"
+    problem: "Longer multi-turn conversations cost more, while naive truncation loses key information."
+    choice: "Make context length configurable, slide the memory window, persist key facts and use smart trimming and compression to control token spend."
+    benefit: "Conversations stay coherent within a controlled cost, tunable per scenario."
+  - title: "Authentication and permissions in one entry point"
+    problem: "Both the admin console and API calls need auth and permissions; per-endpoint checks duplicate work and invite omissions."
+    choice: "Use Spring Security + JWT for stateless authentication, organize roles and permissions with RBAC, and enforce method-level access with @PreAuthorize."
+    benefit: "Auth lives in one layer; a new endpoint only declares its permission, and the console and API behave consistently."
+  - title: "Logging and usage leave the main path"
+    problem: "Model logs and token statistics write frequently; synchronous handling slows conversation responses."
+    choice: "Collect logs and usage asynchronously with RabbitMQ, enable manual ACK, and use Redis for idempotent deduplication."
+    benefit: "Statistics never block the conversation path, and repeated deliveries do not double-count."
+checks:
+  - "When a new model or capability type is added, does business code need to change?"
+  - "With streaming and virtual scrolling running together, do messages misalign or render twice?"
+  - "After context trimming, can key information still be recovered?"
+  - "Does a new endpoint only declare a permission instead of repeating auth logic?"
+  - "When a message is delivered twice, is token usage double-counted?"
+outcome: "One platform serves four business scenarios; the front end has a reusable service layer and component set, the back end has authentication, caching and async pipelines, and both ends ship as containers, noticeably lowering integration cost."
+responsibility: "Own the 0-to-1 front-end architecture and implementation of the platform, and contribute to Spring Boot services: conversation UI, the unified AI service layer, authentication and permissions, caching and async logging, and containerized deployment."
+contribution:
+  led:
+    - "0-to-1 front-end architecture and technology choices for the platform."
+    - "Design of the unified AI service layer, useAIService."
+    - "Conversation interaction, context management and long-list performance."
+    - "Spring Security + JWT authentication and RBAC permissions."
+  owned:
+    - "Chat UI, streaming output, Markdown / code highlighting / formula rendering."
+    - "Spring Boot RESTful APIs, MyBatis-Plus persistence and Redis caching."
+    - "Virtual scrolling and optimization for ten-thousand-message lists."
+    - "RabbitMQ async logs, token usage reporting, manual ACK and idempotent deduplication."
+    - "Shared components for model selection, token statistics and API status monitoring."
+    - "Admin pages for model configuration, permissions, usage and error monitoring."
+    - "Docker multi-stage builds, Nginx deployment and integration docs."
+    - "Docker Compose orchestration for the front end, Spring Boot, MySQL / Redis / RabbitMQ."
+  team:
+    - "Took part in LLM technology selection and worked with back-end / algorithm teams on model integration and streaming APIs."
+    - "Provided integration support and documentation for business teams."
+stack: [Vue3, TypeScript, Spring Boot, MyBatis-Plus, MySQL, Redis, RabbitMQ, Spring Security, Docker]
+metrics: ["4 business scenarios integrated", "10k+ messages rendered smoothly", "Unified JWT + RBAC auth", "Containerized full-stack delivery"]
+metricsNote: "\"4 business scenarios\" is the number of integrated scenarios; \"10k+ messages\" is the performance-validation scale for long lists, not total production messages; the auth system and containerized delivery are architectural facts."
+media:
+  - "AI chat main screen (needs anonymization)"
+  - "Model configuration and usage dashboard"
+  - "Streaming / context-trimming demo recording"
+  - "Service-layer call diagram"
+order: 1
+---

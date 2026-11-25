@@ -1,4 +1,6 @@
 ---
+import type { Lang } from '../i18n';
+
 interface FlowStep {
   name: string;
   detail: string;
@@ -11,23 +13,49 @@ interface Props {
   label?: string;
   note?: string;
   showMedia?: boolean;
+  lang?: Lang;
 }
 
 const {
   flow,
   media = [],
   name,
-  label = '技术链路示意',
-  note = '基于项目流程整理，非产品界面截图。',
+  label,
+  note,
   showMedia = true,
+  lang = 'zh',
 } = Astro.props;
+
+const copy = {
+  zh: {
+    label: '技术链路示意',
+    note: '基于项目流程整理，非产品界面截图。',
+    aria: `${name} 图示与素材`,
+    mediaLabel: '界面与演示素材',
+    pending: '待补充',
+    mediaNote: '公司项目界面需脱敏后补充；当前不展示真实截图，也不使用模拟界面代替。',
+    mediaEmpty: '截图、录屏与架构图待整理。',
+  },
+  en: {
+    label: 'Technical flow (illustrative)',
+    note: 'Compiled from the project flow; not a product screenshot.',
+    aria: `${name} diagrams and material`,
+    mediaLabel: 'UI and demo material',
+    pending: 'Pending',
+    mediaNote: 'Company project screens must be anonymized first; no real screenshots are shown, and no mock UI is used as a substitute.',
+    mediaEmpty: 'Screenshots, recordings and architecture diagrams are pending.',
+  },
+}[lang];
+
+const visualLabel = label ?? copy.label;
+const visualNote = note ?? copy.note;
 ---
-<section class="visuals" aria-label={`${name} 图示与素材`}>
+<section class="visuals" aria-label={copy.aria}>
   {flow.length > 0 && (
     <figure class="flow-figure">
       <figcaption class="visual-head">
-        <span class="visual-label">{label}</span>
-        <span class="visual-note">{note}</span>
+        <span class="visual-label">{visualLabel}</span>
+        <span class="visual-note">{visualNote}</span>
       </figcaption>
       <ol class="flow-map">
         {flow.map((step, index) => (
@@ -44,18 +72,18 @@ const {
   {showMedia && (
     <div class="media-slot">
       <div class="visual-head">
-        <span class="visual-label">界面与演示素材</span>
-        <span class="media-status">待补充</span>
+        <span class="visual-label">{copy.mediaLabel}</span>
+        <span class="media-status">{copy.pending}</span>
       </div>
       <p class="media-note">
-        公司项目界面需脱敏后补充；当前不展示真实截图，也不使用模拟界面代替。
+        {copy.mediaNote}
       </p>
       {media.length > 0 ? (
         <ul class="media-list">
           {media.map((item) => <li>{item}</li>)}
         </ul>
       ) : (
-        <p class="media-empty">截图、录屏与架构图待整理。</p>
+        <p class="media-empty">{copy.mediaEmpty}</p>
       )}
     </div>
   )}

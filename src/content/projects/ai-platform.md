@@ -82,6 +82,7 @@ contribution:
     - 模型选择器、Token 统计、API 状态监控等通用组件。
     - 管理端的模型配置、权限、用量与异常监控页面。
     - Docker 多阶段构建、Nginx 部署与接入文档。
+    - Docker Compose 编排前端、Spring Boot 与 MySQL / Redis / RabbitMQ 服务网络。
   team:
     - 参与大模型技术选型，与后端 / 算法侧联调模型接入与流式接口。
     - 为各业务团队提供接入支持与文档。

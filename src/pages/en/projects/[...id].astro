@@ -1,0 +1,18 @@
+---
+import ProjectCaseView from '../../../views/ProjectCaseView.astro';
+import { getCollection } from 'astro:content';
+import { isEnglishProject, projectSlug } from '../../../i18n';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects'))
+    .filter((project) => isEnglishProject(project.id))
+    .sort((a, b) => a.data.order - b.data.order);
+  return projects.map((project, index) => ({
+    params: { id: projectSlug(project.id) },
+    props: { project, index, total: projects.length },
+  }));
+}
+
+const { project, index, total } = Astro.props;
+---
+<ProjectCaseView project={project} index={index} total={total} lang="en" />

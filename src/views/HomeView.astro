@@ -1,0 +1,550 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectBlueprint from '../components/ProjectBlueprint.astro';
+import { getCollection } from 'astro:content';
+import { getContent } from '../data';
+import { isEnglishProject, localePath, projectSlug, type Lang } from '../i18n';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'zh' } = Astro.props;
+const { site, experience, education, capabilities, explorations } = getContent(lang);
+
+const allProjects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const projects = allProjects.filter((project) => isEnglishProject(project.id) === (lang === 'en'));
+const featuredIds = ['smart-warehouse', 'ai-platform', 'aui-components'];
+const featured = featuredIds.flatMap((id) => {
+  const project = projects.find((item) => projectSlug(item.id) === id);
+  return project ? [project] : [];
+});
+const archive = projects.filter((project) => !featuredIds.includes(projectSlug(project.id)));
+
+const copy = {
+  zh: {
+    description:
+      '榕（RickRone）的工程作品集：3 年+ ToB 企业级开发经验，前端为主，也写 Java 后端。项目覆盖物流、智慧仓储、AI 应用与工程化基建。',
+    portfolio: '工程作品集',
+    kicker: '榕 · ToB 全栈开发工程师',
+    heroTitle: '工业互联网，',
+    heroTitleBreak: '从界面到服务',
+    heroStop: '。',
+    heroIntro: '前端为主，也写 Java 后端。',
+    heroIntroBreak: '在物流、仓储与 AI 应用里，把业务链路接起来。',
+    viewWork: '查看项目',
+    viewResume: '查看简历',
+    status: '3 年+ 企业级研发经验 · 在职，关注新的机会',
+    workbenchAria: '个人信息与交付链路',
+    benchHeader: '工程档案 / 001',
+    avatarAlt: '榕的二次元头像',
+    identityRole: '前端 / 全栈 / 工程化',
+    delivery: '交付链路',
+    illustrative: '技术示意',
+    nodeFrontend: '前端交互',
+    nodeApi: '接口服务',
+    nodeBuild: '构建交付',
+    benchFooter: '理解业务 → 实现 → 交付',
+    factEnterprise: '企业级开发',
+    factEnterpriseValue: '3 年+',
+    factCases: '脱敏项目案例',
+    factLines: '组件库服务产品线',
+    scroll: '向下查看作品',
+    projectsTitle: '项目档案',
+    projectsNoteBreak: '从实际业务出发，记录方案与取舍。',
+    filterAria: '按类型筛选项目',
+    categories: [
+      { key: 'all', label: '全部项目' },
+      { key: 'business', label: '业务系统' },
+      { key: 'ai', label: 'AI 应用' },
+      { key: 'infra', label: '工程基建' },
+      { key: 'cross-platform', label: '跨端应用' },
+    ],
+    summaries: {
+      'smart-warehouse': '扫码、离线缓存与增量同步，让弱网下的仓储作业继续运行。',
+      'ai-platform': '统一模型接入、会话交互与权限，打通前端和 Spring Boot 服务。',
+      'aui-components': '把组件、测试、文档与发布，放进一套可复用的工程体系。',
+    } as Record<string, string>,
+    archiveSummaries: {
+      'smart-materials': 'Vue 迁移 · 实时通信 · AI 分析',
+      'cms-platform': '内容编排 · 多端分发 · 平台建设',
+      'lowcode-platform': '可视化搭建 · 组件协议 · 工程化',
+    } as Record<string, string>,
+    archiveAria: '其他项目',
+    boundary: '周期为项目参与区间，部分项目并行；个人职责与指标口径见各案例。',
+    engineeringTitle: '工程能力',
+    engineeringNote: '物流 / 仓储 / 物资管理',
+    engineeringStatement: '理解业务角色， 理清流程状态，',
+    engineeringStatementBreak: '让系统适应 ',
+    engineeringStatementStrong: '真实的现场。',
+    capabilityTitles: ['复杂业务系统', '前端工程基建', '全栈与 AI 接入', '跨端与现场作业'],
+    capabilityDetails: [
+      '从多角色权限到审批流，先理清物流、仓储和物资管理的业务边界。',
+      '组件库、Monorepo、测试与 CI/CD，让多人协作和多产品线复用有据可循。',
+      '用 Spring Boot、Redis 与 RabbitMQ，连接模型 API、认证和异步链路。',
+      '处理扫码、离线同步和平台差异，让现场作业适应真实的网络条件。',
+    ],
+    stackLabel: '项目实战',
+    stackLink: '查看技术分层 ↗',
+    experienceTitle: '经历与下一步',
+    fullExperience: '完整经历 ↗',
+    now: '现在',
+    labHeading: '保持好奇，',
+    labHeadingBreak: '继续动手。',
+    labIntro: '工作之外，关注工业 AI 与企业 AI 应用，把新的想法逐步变成可验证的实验。',
+    labBoundary: '这些方向处于学习或方案阶段，尚未作为生产项目交付。FDE 是长期职业方向。',
+    labLink: '查看技术探索',
+    filterStatus: '显示 {n} 个项目',
+  },
+  en: {
+    description:
+      "RickRone's engineering portfolio: 3+ years of ToB enterprise development, front-end focused with Java back-end work. Projects across logistics, smart warehousing, AI applications and engineering foundations.",
+    portfolio: 'Engineering portfolio',
+    kicker: '榕 · ToB full-stack engineer',
+    heroTitle: 'Industrial internet,',
+    heroTitleBreak: 'from interface to service',
+    heroStop: '.',
+    heroIntro: 'Front-end first, Java back end too.',
+    heroIntroBreak: 'Connecting business flows across logistics, warehousing and AI.',
+    viewWork: 'View work',
+    viewResume: 'View resume',
+    status: '3+ years in enterprise software · Employed, open to new opportunities',
+    workbenchAria: 'Profile and delivery path',
+    benchHeader: 'Engineering file / 001',
+    avatarAlt: "榕's illustrated avatar",
+    identityRole: 'Front-end / Full-stack / Engineering',
+    delivery: 'Delivery path',
+    illustrative: 'Illustrative',
+    nodeFrontend: 'Front-end',
+    nodeApi: 'API services',
+    nodeBuild: 'Build & ship',
+    benchFooter: 'Understand → Build → Deliver',
+    factEnterprise: 'Enterprise development',
+    factEnterpriseValue: '3+ yrs',
+    factCases: 'Anonymized cases',
+    factLines: 'Product lines served',
+    scroll: 'Scroll to work',
+    projectsTitle: 'Project archive',
+    projectsNoteBreak: 'Grounded in real business, documenting decisions and trade-offs.',
+    filterAria: 'Filter projects by type',
+    categories: [
+      { key: 'all', label: 'All work' },
+      { key: 'business', label: 'Business systems' },
+      { key: 'ai', label: 'AI applications' },
+      { key: 'infra', label: 'Engineering foundations' },
+      { key: 'cross-platform', label: 'Cross-platform' },
+    ],
+    summaries: {
+      'smart-warehouse': 'Scanning, offline cache and incremental sync keep warehouse work running on weak networks.',
+      'ai-platform': 'One model gateway, conversation UI and permissions, connecting the front end to Spring Boot services.',
+      'aui-components': 'Components, tests, docs and releases in one reusable engineering system.',
+    } as Record<string, string>,
+    archiveSummaries: {
+      'smart-materials': 'Vue migration · real-time channels · AI analysis',
+      'cms-platform': 'Content orchestration · multi-site publishing · platform build',
+      'lowcode-platform': 'Visual building · component contracts · engineering',
+    } as Record<string, string>,
+    archiveAria: 'Other projects',
+    boundary: 'Periods are involvement ranges; some projects ran in parallel. See each case for responsibility and metric definitions.',
+    engineeringTitle: 'Engineering capability',
+    engineeringNote: 'Logistics / warehousing / materials',
+    engineeringStatement: 'Understand business roles, clarify process states,',
+    engineeringStatementBreak: 'and let systems adapt to ',
+    engineeringStatementStrong: 'real field conditions.',
+    capabilityTitles: ['Complex business systems', 'Front-end infrastructure', 'Full-stack & AI integration', 'Cross-platform & field work'],
+    capabilityDetails: [
+      'From multi-role permissions to approval flows, clarify the boundaries of logistics, warehousing and materials management first.',
+      'Component libraries, Monorepo, testing and CI/CD make multi-team and multi-product reuse repeatable.',
+      'Spring Boot, Redis and RabbitMQ connect model APIs, authentication and async pipelines.',
+      'Handle scanning, offline sync and platform differences so field work fits real network conditions.',
+    ],
+    stackLabel: 'In production',
+    stackLink: 'View skill breakdown ↗',
+    experienceTitle: 'Experience & next steps',
+    fullExperience: 'Full experience ↗',
+    now: 'Now',
+    labHeading: 'Stay curious,',
+    labHeadingBreak: 'keep building.',
+    labIntro: 'Outside work I explore industrial AI and enterprise AI, turning new ideas into verifiable experiments.',
+    labBoundary: 'These directions are in study or design stages, not delivered production projects. FDE is a long-term career direction.',
+    labLink: 'View the lab',
+    filterStatus: 'Showing {n} projects',
+  },
+}[lang];
+---
+<BaseLayout description={copy.description} lang={lang}>
+  <!-- Industrial workbench: approved grey, charcoal and signal orange.
+       Public Sans; one load entrance and the dealt word-highlight moment. -->
+  <section class="hero" data-enter aria-labelledby="hero-title">
+    <div class="wrap hero-inner">
+      <div class="hero-topline">
+        <span><span class="square" aria-hidden="true"></span> {copy.portfolio}</span>
+        <span class="mono">RickRone / 2026</span>
+      </div>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="hero-kicker">{copy.kicker}</p>
+          <h1 id="hero-title">{copy.heroTitle}<br />{copy.heroTitleBreak}<span class="title-stop">{copy.heroStop}</span></h1>
+          <p class="hero-intro">{copy.heroIntro}<br />{copy.heroIntroBreak}</p>
+          <div class="hero-actions">
+            <a class="btn btn--primary" href="#projects">{copy.viewWork} <span aria-hidden="true">↗</span></a>
+            <a class="btn btn--secondary" href={localePath(lang, '/resume/')}>{copy.viewResume} <span aria-hidden="true">↓</span></a>
+          </div>
+          <p class="hero-status"><span class="square" aria-hidden="true"></span> {copy.status}</p>
+        </div>
+        <aside class="workbench" data-enter-media aria-label={copy.workbenchAria}>
+          <div class="bench-header"><span class="mono">{copy.benchHeader}</span><span class="bench-cross" aria-hidden="true">+</span></div>
+          <div class="identity">
+            <div class="portrait"><img src={site.avatar} alt={copy.avatarAlt} width="112" height="112" loading="eager" fetchpriority="high" /></div>
+            <div class="identity-copy"><span class="mono">Developer</span><p>{site.name}<span>{site.nameEn}</span></p><span class="identity-role">{copy.identityRole}</span></div>
+          </div>
+          <div class="delivery">
+            <div class="delivery-head"><span>{copy.delivery}</span><span>{copy.illustrative}</span></div>
+            <ol class="delivery-nodes">
+              <li><span class="node-index">01</span><div><b>{copy.nodeFrontend}</b><span>Vue / React / TypeScript</span></div><span class="node-plus" aria-hidden="true">+</span></li>
+              <li><span class="node-index">02</span><div><b>{copy.nodeApi}</b><span>Spring Boot / Redis / MQ</span></div><span class="node-plus" aria-hidden="true">+</span></li>
+              <li><span class="node-index">03</span><div><b>{copy.nodeBuild}</b><span>Docker / Nginx / CI/CD</span></div><span class="node-plus" aria-hidden="true">↗</span></li>
+            </ol>
+          </div>
+          <div class="bench-footer"><span>{copy.benchFooter}</span><span class="registration" aria-hidden="true"></span></div>
+        </aside>
+      </div>
+      <div class="hero-foot">
+        <dl class="hero-facts"><div><dt>{copy.factEnterprise}</dt><dd>{copy.factEnterpriseValue}</dd></div><div><dt>{copy.factCases}</dt><dd>06</dd></div><div><dt>{copy.factLines}</dt><dd>10+</dd></div></dl>
+        <a class="scroll-cue" href="#projects">{copy.scroll} <span aria-hidden="true">↓</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="work-section" aria-labelledby="projects-title">
+    <div class="wrap section-inner">
+      <div class="section-head"><div><p class="section-index">01 / Selected work</p><h2 id="projects-title">{copy.projectsTitle}<span class="signal-dot" aria-hidden="true"></span></h2></div><p class="section-note">{projects.length}{lang === 'zh' ? ' 个公司项目，已脱敏。' : ' company projects, anonymized.'}<br />{copy.projectsNoteBreak}</p></div>
+      <div class="filters" role="group" aria-label={copy.filterAria}>
+        {copy.categories.map((category) => <button type="button" class:list={['filter', { 'is-active': category.key === 'all' }]} data-filter={category.key} aria-pressed={category.key === 'all' ? 'true' : 'false'}>{category.label}<span>{category.key === 'all' ? projects.length : projects.filter((project) => project.data.category === category.key).length}</span></button>)}
+      </div>
+      <div class="featured-grid">
+        {featured.map((project, index) => (
+          <a class="project-card card" href={localePath(lang, `/projects/${projectSlug(project.id)}/`)} data-category={project.data.category}>
+            <div class="project-cover"><div class="cover-head"><span class="mono">P / {String(index + 1).padStart(2, '0')}</span><span>{copy.illustrative}</span></div><ProjectBlueprint kind={projectSlug(project.id)} lang={lang} /></div>
+            <div class="project-copy"><p class="project-period">{project.data.period}</p><h3>{project.data.name}</h3><p class="project-summary">{copy.summaries[projectSlug(project.id)]}</p><div class="project-foot"><span>{project.data.role}</span><span class="project-arrow" aria-hidden="true">↗</span></div></div>
+          </a>
+        ))}
+      </div>
+      <div class="archive" aria-label={copy.archiveAria}>
+        {archive.map((project, index) => (
+          <a class="archive-row" href={localePath(lang, `/projects/${projectSlug(project.id)}/`)} data-category={project.data.category}><span class="archive-num mono">{String(index + featured.length + 1).padStart(2, '0')}</span><h3>{project.data.name}</h3><span class="archive-summary">{copy.archiveSummaries[projectSlug(project.id)]}</span><span class="archive-year mono">{project.data.period.split(' — ')[0]}</span><span class="project-arrow" aria-hidden="true">↗</span></a>
+        ))}
+      </div>
+      <p class="project-boundary">{copy.boundary}</p>
+      <p class="filter-status visually-hidden" role="status" aria-live="polite" data-filter-template={copy.filterStatus}></p>
+    </div>
+  </section>
+
+  <section id="domain" class="engineering" aria-labelledby="engineering-title" data-moment="word-highlight">
+    <div class="wrap section-inner">
+      <div class="section-head"><div><p class="section-index">02 / Engineering</p><h2 id="engineering-title">{copy.engineeringTitle}</h2></div><span class="section-note">{copy.engineeringNote}</span></div>
+      <p class="engineering-statement mo-wh__text">{copy.engineeringStatement}<br />{copy.engineeringStatementBreak}<strong>{copy.engineeringStatementStrong}</strong></p>
+      <div class="capability-grid">
+        {capabilities.map((capability, index) => <a class="capability" href={localePath(lang, capability.href)}><span class="capability-index mono">{capability.index}</span><div><h3>{copy.capabilityTitles[index]}</h3><p>{copy.capabilityDetails[index]}</p><span class="capability-proof">{capability.proof}</span></div><span class="project-arrow" aria-hidden="true">↗</span></a>)}
+      </div>
+      <div class="stack-strip" id="stack"><span class="mono">{copy.stackLabel}</span><p>Vue / React / TypeScript / Java / Spring Boot / Docker</p><a class="m-link" href={localePath(lang, '/about/#stack')}>{copy.stackLink}</a></div>
+    </div>
+  </section>
+
+  <section id="experience" class="experience-section" aria-labelledby="experience-title">
+    <div class="wrap section-inner">
+      <div class="section-head"><div><p class="section-index">03 / Experience & beyond</p><h2 id="experience-title">{copy.experienceTitle}</h2></div><a class="section-link m-link" href={localePath(lang, '/about/')}>{copy.fullExperience}</a></div>
+      <div class="experience-grid">
+        <div class="experience-list">
+          {experience.map((job, index) => <article class="job"><div class="job-meta"><span class="job-time mono">{job.period}</span>{index === 0 && <span class="job-current">{copy.now}</span>}</div><h3>{job.role}</h3><p class="job-company">{job.company}</p><p class="job-summary">{job.summary}</p><ul class="job-tags" aria-label={lang === 'zh' ? '工作关键词' : 'Job keywords'}>{job.keywords.map((keyword) => <li>{keyword}</li>)}</ul></article>)}
+          <div class="education"><span class="mono">Education</span><p><b>{education.school}</b> · {education.major}</p><span class="mono">{education.period}</span></div>
+        </div>
+        <aside class="lab-panel" id="direction" aria-label={lang === 'zh' ? '正在学习与探索' : 'Learning and exploring'}>
+          <div class="lab-heading"><span class="mono">Side projects / Lab</span><span class="lab-mark" aria-hidden="true">↗</span></div>
+          <h3>{copy.labHeading}<br />{copy.labHeadingBreak}</h3>
+          <p class="lab-intro">{copy.labIntro}</p>
+          <div class="lab-items">{explorations.map((item) => <div class="lab-item"><span class="lab-status">{item.status}</span><p>{item.title}</p></div>)}</div>
+          <p class="lab-boundary">{copy.labBoundary}</p>
+          <a class="lab-link" href={localePath(lang, '/lab/')}>{copy.labLink} <span aria-hidden="true">↗</span></a>
+        </aside>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const filters = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const projects = document.querySelectorAll<HTMLElement>('[data-category]');
+  const status = document.querySelector<HTMLElement>('.filter-status');
+  const archive = document.querySelector<HTMLElement>('.archive');
+  const featured = document.querySelector<HTMLElement>('.featured-grid');
+  filters.forEach((button) => {
+    button.addEventListener('click', () => {
+      const key = button.dataset.filter;
+      document.querySelector('#projects')?.classList.toggle('is-filtered', key !== 'all');
+      filters.forEach((filter) => {
+        const active = filter === button;
+        filter.classList.toggle('is-active', active);
+        filter.setAttribute('aria-pressed', String(active));
+      });
+      let count = 0;
+      projects.forEach((project) => {
+        const visible = key === 'all' || project.dataset.category === key;
+        project.hidden = !visible;
+        if (visible) count += 1;
+      });
+      if (archive) archive.hidden = !Array.from(archive.querySelectorAll<HTMLElement>('[data-category]')).some((project) => !project.hidden);
+      if (featured) featured.hidden = !Array.from(featured.querySelectorAll<HTMLElement>('[data-category]')).some((project) => !project.hidden);
+      if (status) status.textContent = (status.dataset.filterTemplate ?? '').replace('{n}', String(count));
+    });
+  });
+</script>
+
+<style>
+  .mono, .section-index { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .square { display: inline-block; width: 8px; height: 8px; flex: none; background: var(--signal); }
+  .hero { min-height: 100svh; }
+  .hero-inner { display: flex; min-height: 100svh; flex-direction: column; justify-content: space-between; padding-block: calc(var(--nav) + 32px) 32px; }
+  .hero-topline { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
+  .hero-topline > span:first-child { display: flex; align-items: center; gap: 12px; }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 64px; align-items: start; padding-block: 40px; }
+  .hero-kicker { margin-bottom: 24px; font-size: 15px; font-weight: 500; }
+  .hero h1 { font-size: clamp(48px, 5.1vw, 74px); font-weight: 760; line-height: 1.18; letter-spacing: -0.06em; text-wrap: initial; }
+  .title-stop { color: var(--accent); }
+  .hero-intro { margin-top: 28px; font-size: 17px; line-height: 1.8; }
+  .hero-actions { display: flex; gap: 12px; margin-top: 32px; }
+  .hero-status { display: flex; gap: 8px; align-items: center; margin-top: 24px; color: var(--muted); font-size: 13px; }
+  .hero-status .square { width: 6px; height: 6px; }
+  .workbench { border: 1px solid var(--line-strong); background: var(--paper-raised); }
+  .bench-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  .bench-cross { color: var(--accent); font-size: 20px; line-height: 1; }
+  .identity { display: flex; gap: 24px; align-items: center; padding: 24px; }
+  .portrait { flex: none; width: 104px; height: 104px; overflow: hidden; border: 1px solid var(--line-strong); }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; }
+  .identity-copy > .mono { color: var(--muted); font-size: 13px; }
+  .identity-copy p { display: flex; align-items: baseline; gap: 12px; margin-top: 4px; font-size: 32px; font-weight: 700; }
+  .identity-copy p span { font-size: 17px; letter-spacing: -0.04em; }
+  .identity-role { font-size: 13px; color: var(--muted); }
+  .delivery { padding: 0 24px 24px; }
+  .delivery-head { display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 13px; color: var(--muted); }
+  .delivery-nodes { margin: 0; padding: 0; list-style: none; }
+  .delivery-nodes li { position: relative; display: flex; align-items: center; gap: 16px; padding-block: 12px; border-top: 1px solid var(--line); }
+  .node-index { font-family: var(--font-mono); color: var(--accent); font-size: 13px; }
+  .delivery-nodes b { display: block; font-size: 14px; font-weight: 600; }
+  .delivery-nodes div > span { display: block; margin-top: 2px; font-family: var(--font-mono); color: var(--muted); font-size: 13px; }
+  .node-plus { margin-left: auto; color: var(--accent); }
+  .bench-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 24px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  .registration { display: block; width: 44px; height: 16px; background: repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 5px, currentColor 5px 6px, transparent 6px 9px); opacity: .5; }
+  .hero-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding-top: 24px; border-top: 1px solid var(--line-strong); }
+  .hero-facts { display: flex; gap: 64px; margin: 0; }
+  .hero-facts > div { display: flex; flex-direction: column-reverse; gap: 4px; }
+  .hero-facts dt { font-size: 13px; color: var(--muted); }
+  .hero-facts dd { margin: 0; font-size: 28px; font-weight: 650; letter-spacing: -.05em; line-height: 1.2; }
+  .scroll-cue { display: flex; gap: 32px; align-items: center; min-height: 44px; color: var(--muted); font-size: 13px; }
+  .scroll-cue span { color: var(--ink); font-size: 24px; }
+  .section-inner { display: flex; flex-direction: column; justify-content: center; min-height: 100svh; padding-block: 80px 64px; }
+  .section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 32px; }
+  .section-index { margin-bottom: 12px; font-size: 13px; color: var(--muted); }
+  .section-head h2 { font-size: var(--t-h2); letter-spacing: -.05em; }
+  .signal-dot { display: inline-block; width: 10px; height: 10px; margin-left: 12px; background: var(--signal); }
+  .section-note { font-size: 14px; color: var(--muted); line-height: 1.7; }
+  .work-section { background: var(--paper-raised); }
+  .work-section .section-inner { padding-block: 80px 36px; }
+  .work-section.is-filtered .section-inner { min-height: auto; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .filter { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 2px; font-size: 14px; transition: background-color 150ms, color 150ms; }
+  .filter span { font-family: var(--font-mono); font-size: 13px; }
+  .filter:hover { border-color: var(--line-strong); }
+  .filter.is-active { border-color: var(--ink); background: var(--ink); color: var(--paper-raised); }
+  .featured-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .project-card { display: flex; min-width: 0; flex-direction: column; border: 1px solid var(--line); border-radius: 2px; background: var(--paper-raised); }
+  .project-cover { padding: 12px 20px 0; background: var(--paper); border-bottom: 1px solid var(--line); }
+  .cover-head { display: flex; justify-content: space-between; gap: 16px; font-size: 13px; color: var(--muted); }
+  .project-copy { flex: 1; display: flex; flex-direction: column; padding: 16px; }
+  .project-period { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+  .project-copy h3 { margin-top: 8px; font-size: 22px; letter-spacing: -.04em; line-height: 1.4; }
+  .project-summary { margin-top: 8px; font-size: 16px; line-height: 1.7; }
+  .project-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: auto; padding-top: 16px; color: var(--muted); font-size: 13px; }
+  .project-arrow { display: inline-block; flex: none; color: var(--accent); font-size: 22px; line-height: 1; transition: transform 150ms; }
+  a:hover .project-arrow { transform: translate(2px, -2px); }
+  .archive { margin-top: 24px; }
+  .archive-row { display: grid; grid-template-columns: 24px minmax(200px, 1.2fr) minmax(200px, 1fr) 100px 24px; gap: 16px; align-items: center; min-height: 56px; padding-block: 12px; border-bottom: 1px solid var(--line); transition: color 150ms; }
+  .archive-row:hover { color: var(--accent); }
+  .archive-num, .archive-year { color: var(--muted); font-size: 13px; }
+  .archive-row h3 { font-size: 16px; line-height: 1.6; font-weight: 600; }
+  .archive-summary { color: var(--muted); font-size: 14px; }
+  .project-boundary { margin-top: 20px; color: var(--muted); font-size: 13px; }
+  .engineering { --paper: #191d20; --bg: #191d20; --ink: #f0f2ed; --muted: #b5bdbe; --accent: #ff946d; --line: rgba(240,242,237,.2); --line-strong: rgba(240,242,237,.4); background: var(--paper); color: var(--ink); }
+  .engineering-statement { margin-bottom: 40px; font-weight: 650; line-height: 1.35; }
+  .capability-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 64px; }
+  .capability { display: flex; gap: 20px; padding-block: 24px; border-top: 1px solid var(--line); }
+  .capability-index { padding-top: 4px; color: var(--accent); font-size: 13px; }
+  .capability h3 { font-size: 22px; line-height: 1.4; }
+  .capability p { max-width: 40ch; margin-top: 12px; font-size: 16px; line-height: 1.7; }
+  .capability-proof { display: block; margin-top: 16px; font-size: 13px; color: var(--muted); }
+  .capability > .project-arrow { margin-left: auto; padding-top: 4px; }
+  .stack-strip { display: flex; align-items: center; gap: 24px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 13px; }
+  .stack-strip > span { color: var(--muted); white-space: nowrap; }
+  .stack-strip p { font-size: 14px; }
+  .stack-strip a { margin-left: auto; flex: none; min-height: 44px; display: inline-flex; align-items: center; }
+  .experience-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 64px; }
+  .section-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; }
+  .job { position: relative; border-top: 1px solid var(--line-strong); padding-block: 24px; }
+  .job-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .job-time { color: var(--muted); font-size: 13px; }
+  .job-current { background: var(--signal); color: #191d20; padding: 0 8px; font-size: 13px; }
+  .job h3 { font-size: 21px; line-height: 1.4; }
+  .job-company { margin-top: 8px; font-size: 14px; color: var(--muted); }
+  .job-summary { margin-top: 16px; font-size: 16px; line-height: 1.75; }
+  .job-tags { display: flex; gap: 8px 16px; flex-wrap: wrap; list-style: none; padding: 0; margin: 16px 0 0; color: var(--muted); font-size: 13px; }
+  .job-tags li::before { content: '/'; margin-right: 8px; color: var(--accent); }
+  .education { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 20px; border-top: 1px solid var(--line-strong); font-size: 14px; }
+  .education > span { font-size: 13px; color: var(--muted); }
+  .education > span:last-child { display: block; width: 100%; }
+  .lab-panel { display: flex; flex-direction: column; padding: 32px; background: var(--paper-raised); border: 1px solid var(--line-strong); }
+  .lab-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 13px; }
+  .lab-mark { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: var(--signal); color: #191d20; font-size: 28px; }
+  .lab-panel h3 { margin-top: 32px; font-size: 40px; letter-spacing: -.05em; line-height: 1.25; }
+  .lab-intro { margin-top: 24px; font-size: 16px; line-height: 1.75; }
+  .lab-items { margin-top: 32px; }
+  .lab-item { display: flex; align-items: baseline; gap: 12px; padding-block: 16px; border-top: 1px solid var(--line); }
+  .lab-status { flex: none; color: var(--accent); font-size: 13px; }
+  .lab-item p { font-size: 15px; }
+  .lab-boundary { margin-top: 20px; font-size: 13px; color: var(--muted); }
+  .lab-link { display: flex; justify-content: space-between; align-items: center; min-height: 48px; margin-top: auto; padding-top: 24px; font-size: 15px; font-weight: 600; }
+  .lab-link span { color: var(--accent); font-size: 24px; }
+  @media (min-width: 1024px) and (max-height: 800px) {
+    .hero-inner { padding-block: calc(var(--nav) + 24px) 24px; }
+    .hero-grid { padding-block: 24px; }
+    .hero-kicker { margin-bottom: 16px; }
+    .hero-intro { margin-top: 20px; }
+    .hero-actions { margin-top: 24px; }
+    .hero-status { margin-top: 16px; }
+  }
+  @media (min-width: 768px) {
+    .work-section.is-filtered .featured-grid { grid-template-columns: minmax(0, 1fr); }
+    .work-section.is-filtered .project-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .work-section.is-filtered .project-cover { display: flex; min-height: 240px; flex-direction: column; justify-content: center; border-bottom: 0; border-right: 1px solid var(--line); padding: 24px 32px; }
+    .work-section.is-filtered .project-copy { justify-content: center; padding: 32px; }
+    .work-section.is-filtered .project-summary { max-width: 40ch; }
+    .work-section.is-filtered .project-foot { margin-top: 8px; }
+  }
+  @media (min-width: 1024px) {
+    .hero-grid, .experience-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; }
+    .hero-copy, .experience-list { grid-column: span 7; }
+    .workbench, .lab-panel { grid-column: span 5; }
+  }
+  @media (max-width: 1199px) {
+    .hero h1 { font-size: clamp(44px, 5.2vw, 64px); }
+    .identity { gap: 16px; padding: 20px; }
+    .portrait { width: 80px; height: 80px; }
+    .identity-copy p { flex-wrap: wrap; gap: 0 8px; }
+    .delivery { padding-inline: 20px; }
+    .delivery-nodes div > span { font-size: 13px; }
+    .featured-grid { gap: 16px; }
+    .project-copy { padding: 16px; }
+    .project-copy h3 { font-size: 20px; }
+    .archive-row { grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1fr) 24px; }
+    .archive-year { display: none; }
+    .capability-grid { column-gap: 32px; }
+    .lab-panel { padding: 24px; }
+  }
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+    .hero h1 { font-size: 43px; }
+    .hero-intro { font-size: 16px; }
+    .hero-actions { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .hero-actions .btn { width: 100%; }
+    .hero-status { align-items: flex-start; line-height: 1.7; }
+    .hero-status .square { margin-top: 8px; }
+    .identity-copy p { font-size: 28px; }
+    .identity-copy p span { font-size: 15px; }
+    .delivery-nodes li { gap: 12px; }
+    .delivery-nodes div > span { font-size: 13px; }
+    .featured-grid { grid-template-columns: 1fr; }
+    .project-card { display: grid; grid-template-columns: 1fr 1fr; }
+    .project-card .project-cover { display: flex; flex-direction: column; justify-content: center; border-bottom: 0; border-right: 1px solid var(--line); }
+    .experience-grid { grid-template-columns: 1fr; }
+    .lab-panel { display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; }
+    .lab-heading { grid-column: 1 / -1; }
+    .lab-panel h3 { grid-column: 1; }
+    .lab-intro { grid-column: 1; }
+    .lab-items { grid-column: 2; grid-row: 2 / span 2; }
+    .lab-boundary { grid-column: 2; }
+    .lab-link { grid-column: 1 / -1; }
+    .section-inner { min-height: auto; padding-block: 80px; }
+    .engineering-statement { font-size: 36px; }
+    .capability { gap: 12px; }
+    .capability h3 { font-size: 20px; }
+    .stack-strip { flex-wrap: wrap; gap: 12px 24px; }
+    .stack-strip a { margin-left: 0; }
+  }
+  @media (max-width: 767px) {
+    .hero-inner { padding-block: calc(var(--nav) + 24px) 24px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 28px; padding-block: 28px 24px; }
+    .hero-topline { font-size: 13px; }
+    .hero-kicker { margin-bottom: 16px; font-size: 14px; }
+    .hero h1 { font-size: clamp(36px, 9.7vw, 60px); line-height: 1.18; }
+    .hero-intro { margin-top: 20px; font-size: 15px; line-height: 1.8; }
+    .hero-actions { margin-top: 24px; gap: 12px; }
+    .hero-actions .btn { flex: 1; gap: 16px; padding-inline: 16px; }
+    .hero-status { margin-top: 16px; font-size: 13px; }
+    .bench-header, .bench-footer { display: none; }
+    .identity { gap: 16px; padding: 16px; }
+    .portrait { width: 64px; height: 64px; }
+    .identity-copy p { margin-top: 0; font-size: 24px; line-height: 1.5; }
+    .identity-copy > .mono { display: none; }
+    .identity-copy p span { font-size: 17px; }
+    .delivery { padding: 0 16px 16px; }
+    .delivery-head { margin-bottom: 12px; font-size: 13px; }
+    .delivery-nodes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .delivery-nodes li { display: block; padding: 12px 8px 0; border-top-color: var(--line-strong); border-left: 1px solid var(--line); }
+    .delivery-nodes li:first-child { padding-left: 0; border-left: 0; }
+    .node-index { display: inline-block; margin-bottom: 4px; font-size: 13px; }
+    .delivery-nodes b { font-size: 13px; }
+    .delivery-nodes div > span, .node-plus { display: none; }
+    .hero-foot { padding-top: 16px; align-items: center; }
+    .hero-facts { width: 100%; justify-content: space-between; gap: 16px; }
+    .hero-facts dt { font-size: 13px; }
+    .hero-facts dd { font-size: 23px; }
+    .scroll-cue { display: none; }
+    .section-inner, .work-section .section-inner { min-height: auto; padding-block: 64px; }
+    .section-head { align-items: flex-start; margin-bottom: 24px; }
+    .section-index { margin-bottom: 12px; font-size: 13px; }
+    .section-head h2 { font-size: 32px; }
+    .section-head .section-note { display: none; }
+    .filters { gap: 8px; margin-bottom: 24px; }
+    .filter { gap: 8px; padding-inline: 12px; font-size: 13px; }
+    .featured-grid { grid-template-columns: 1fr; gap: 20px; }
+    .project-copy { padding: 20px; }
+    .project-copy h3 { font-size: 23px; }
+    .archive-row { grid-template-columns: 24px minmax(0, 1fr) 24px; gap: 12px; padding-block: 16px; }
+    .archive-summary { grid-column: 2; font-size: 13px; }
+    .archive-row .project-arrow { grid-column: 3; grid-row: 1 / span 2; }
+    .archive-row h3 { font-size: 15px; }
+    .project-boundary { font-size: 13px; }
+    .engineering-statement { font-size: 28px; line-height: 1.45; margin-bottom: 32px; }
+    .engineering-statement br { display: none; }
+    .capability-grid { grid-template-columns: 1fr; }
+    .capability { gap: 16px; padding-block: 24px; }
+    .capability h3 { font-size: 21px; }
+    .capability p { font-size: 15px; }
+    .capability-proof { font-size: 13px; }
+    .stack-strip { display: block; }
+    .stack-strip p { margin-top: 12px; line-height: 1.8; }
+    .stack-strip a { margin-top: 12px; }
+    .section-link { font-size: 13px; }
+    .experience-grid { grid-template-columns: 1fr; gap: 32px; }
+    .job h3 { font-size: 20px; }
+    .job-summary { font-size: 15px; }
+    .lab-panel { padding: 24px; }
+    .lab-panel h3 { font-size: 36px; }
+    .lab-intro { margin-top: 20px; }
+    .lab-items { margin-top: 24px; }
+    .lab-link { margin-top: 24px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .project-arrow { transition: none; }
+    a:hover .project-arrow { transform: none; }
+  }
+</style>

@@ -1,12 +1,15 @@
 ---
-import { skillTiers } from '../data/site';
+import { getContent } from '../data';
+import type { Lang } from '../i18n';
 
 interface Props {
   layout?: 'grid' | 'stack';
   compact?: boolean;
+  lang?: Lang;
 }
 
-const { layout = 'grid', compact = false } = Astro.props;
+const { layout = 'grid', compact = false, lang = 'zh' } = Astro.props;
+const { skillTiers } = getContent(lang);
 ---
 <div class:list={['tiers', `tiers-${layout}`, { 'is-compact': compact }]}>
   {skillTiers.map((tier) => (

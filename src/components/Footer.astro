@@ -1,25 +1,71 @@
 ---
-import { site } from '../data/site';
-interface Props { home?: boolean; }
-const { home = false } = Astro.props;
+import { getContent } from '../data';
+import { localePath, type Lang } from '../i18n';
+
+interface Props { home?: boolean; lang?: Lang; }
+const { home = false, lang = 'zh' } = Astro.props;
+const { site } = getContent(lang);
 const year = new Date().getFullYear();
+
+const copy = {
+  zh: {
+    index: '04 / Contact',
+    heading: '聊聊工作，',
+    headingBreak: '也聊聊技术',
+    period: '。',
+    lead: '优先寻找 ToB / 工业互联网方向的全职机会，',
+    leadBreak: '也欢迎远程协作与项目制合作。',
+    email: '发封邮件',
+    focusLabel: '目标方向',
+    focus: '前端开发 / 全栈开发',
+    focusBreak: '企业 AI 应用 / 工业软件',
+    emailLabel: '来信地址',
+    moreLabel: '关于我',
+    resume: '查看简历 ↗',
+    services: '合作方式 ↗',
+    note: 'ToB 工业互联网全栈开发 · 公司项目内容已脱敏',
+    nav: { projects: '项目', resume: '简历', lab: '技术探索', email: '邮件' },
+    built: '由',
+    builtAfter: ' 构建',
+  },
+  en: {
+    index: '04 / Contact',
+    heading: "Let's talk work",
+    headingBreak: 'and technology',
+    period: '.',
+    lead: 'Looking for full-time roles in ToB / industrial internet first,',
+    leadBreak: 'and open to remote collaboration and project work.',
+    email: 'Send an email',
+    focusLabel: 'Focus',
+    focus: 'Front-end / Full-stack',
+    focusBreak: 'Enterprise AI / Industrial software',
+    emailLabel: 'Email',
+    moreLabel: 'More',
+    resume: 'Resume ↗',
+    services: 'Ways to work ↗',
+    note: 'Full-stack development for ToB industrial internet · Company projects anonymized',
+    nav: { projects: 'Work', resume: 'Resume', lab: 'Lab', email: 'Email' },
+    built: 'Built with',
+    builtAfter: '',
+  },
+}[lang];
 ---
 <footer class:list={['footer', { 'closing': home }]} id="contact">
   <div class="wrap footer-wrap">
     {home && (
       <div class="contact-content">
-        <p class="contact-index">04 / Contact</p>
+        <p class="contact-index">{copy.index}</p>
         <div class="contact-grid">
-          <div><h2>聊聊工作，<br />也聊聊技术<span>。</span></h2><p class="contact-lead">优先寻找 ToB / 工业互联网方向的全职机会，<br />也欢迎远程协作与项目制合作。</p><a class="btn btn--primary" href={`mailto:${site.email}`}>发封邮件 <span aria-hidden="true">↗</span></a></div>
-          <div class="contact-details"><div class="contact-line"><span>目标方向</span><p>前端开发 / 全栈开发<br />企业 AI 应用 / 工业软件</p></div><div class="contact-line"><span>来信地址</span><a class="m-link" href={`mailto:${site.email}`}>{site.email}</a></div><div class="contact-line"><span>关于我</span><div class="contact-more"><a class="m-link" href="/resume/">查看简历 ↗</a><a class="m-link" href="/services/">合作方式 ↗</a></div></div></div>
+          <div><h2>{copy.heading}<br />{copy.headingBreak}<span>{copy.period}</span></h2><p class="contact-lead">{copy.lead}<br />{copy.leadBreak}</p><a class="btn btn--primary" href={`mailto:${site.email}`}>{copy.email} <span aria-hidden="true">↗</span></a></div>
+          <div class="contact-details"><div class="contact-line"><span>{copy.focusLabel}</span><p>{copy.focus}<br />{copy.focusBreak}</p></div><div class="contact-line"><span>{copy.emailLabel}</span><a class="m-link" href={`mailto:${site.email}`}>{site.email}</a></div><div class="contact-line"><span>{copy.moreLabel}</span><div class="contact-more"><a class="m-link" href={localePath(lang, '/resume/')}>{copy.resume}</a><a class="m-link" href={localePath(lang, '/services/')}>{copy.services}</a></div></div></div>
         </div>
         <div class="footer-wordmark" aria-hidden="true">RickRone<span>↗</span></div>
       </div>
     )}
     <div class="footer-inner">
-      <div class="footer-brand"><p>© {year} {site.name} · {site.nameEn}</p><p class="footer-note">ToB 工业互联网全栈开发 · 公司项目内容已脱敏</p></div>
-      <nav class="footer-links" aria-label="页脚导航"><a href="/#projects">项目</a><a href="/resume/">简历</a><a href="/lab/">技术探索</a><a href={`mailto:${site.email}`}>邮件</a><a href={site.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav>
-      <p class="footer-built">由 <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> 构建</p>
+      <div class="footer-brand"><p>© {year} {site.name} · {site.nameEn}</p><p class="footer-note">{copy.note}</p></div>
+      <nav class="footer-links" aria-label={lang === 'zh' ? '页脚导航' : 'Footer navigation'}><a href={localePath(lang, '/#projects')}>{copy.nav.projects}</a><a href={localePath(lang, '/resume/')}>{copy.nav.resume}</a><a href={localePath(lang, '/lab/')}>{copy.nav.lab}</a><a href={`mailto:${site.email}`}>{copy.nav.email}</a><a href={site.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav>
+      <p class="footer-built">{copy.built} <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>{copy.builtAfter}</p>
     </div>
   </div>
 </footer>

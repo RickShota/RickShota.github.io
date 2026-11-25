@@ -1,9 +1,42 @@
 ---
-interface Props { kind: string; }
-const { kind } = Astro.props;
+import type { Lang } from '../i18n';
+
+interface Props { kind: string; lang?: Lang; }
+const { kind, lang = 'zh' } = Astro.props;
+
+const copy = {
+  zh: {
+    label: kind === 'smart-warehouse' ? '扫码、本地缓存与增量同步的技术链路' : kind === 'ai-platform' ? '业务入口通过统一服务接入模型与异步日志' : '组件源码经过测试与文档体系发布给产品线',
+    scan: '扫码作业',
+    cache: '本地缓存',
+    sync: '增量同步',
+    chat: '对话',
+    generate: '生成',
+    vector: '向量',
+    service: '统一服务',
+    model: '模型 API',
+    logs: '异步日志',
+    components: '组件 / 测试 / 文档',
+    products: '产品线',
+  },
+  en: {
+    label: kind === 'smart-warehouse' ? 'Scanning, local cache and incremental sync pipeline' : kind === 'ai-platform' ? 'Business entry points reach models and async logs through one service layer' : 'Component source published to product lines through testing and docs',
+    scan: 'Scan',
+    cache: 'Local cache',
+    sync: 'Incremental sync',
+    chat: 'Chat',
+    generate: 'Generate',
+    vector: 'Vector',
+    service: 'Unified service',
+    model: 'Model API',
+    logs: 'Async logs',
+    components: 'Components / tests / docs',
+    products: 'Product lines',
+  },
+}[lang];
 ---
-<div class:list={['blueprint', { 'blueprint-warehouse': kind === 'smart-warehouse', 'blueprint-ai': kind === 'ai-platform', 'blueprint-components': kind === 'aui-components' }]} aria-label={kind === 'smart-warehouse' ? '扫码、本地缓存与增量同步的技术链路' : kind === 'ai-platform' ? '业务入口通过统一服务接入模型与异步日志' : '组件源码经过测试与文档体系发布给产品线'} role="img">
-  {kind === 'smart-warehouse' ? <><div class="scan"><span class="scan-bars" aria-hidden="true"></span><span>扫码作业</span></div><span class="connector" aria-hidden="true"></span><div class="module"><span class="module-mark" aria-hidden="true">↳</span><span>本地缓存</span></div><span class="connector" aria-hidden="true"></span><div class="module module-end"><span class="module-mark" aria-hidden="true">⇄</span><span>增量同步</span></div></> : kind === 'ai-platform' ? <><div class="inputs"><span>对话</span><span>生成</span><span>向量</span></div><span class="connector" aria-hidden="true"></span><div class="service"><span class="service-symbol" aria-hidden="true">{'{ }'}</span><span>统一服务</span></div><span class="connector" aria-hidden="true"></span><div class="outputs"><span>模型 API</span><span>异步日志</span></div></> : <><div class="packages" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div class="component-center"><b>AUI</b><span>组件 / 测试 / 文档</span></div><span class="connector" aria-hidden="true"></span><div class="products"><span>产品线</span><span>10+</span></div></>}
+<div class:list={['blueprint', { 'blueprint-warehouse': kind === 'smart-warehouse', 'blueprint-ai': kind === 'ai-platform', 'blueprint-components': kind === 'aui-components' }]} aria-label={copy.label} role="img">
+  {kind === 'smart-warehouse' ? <><div class="scan"><span class="scan-bars" aria-hidden="true"></span><span>{copy.scan}</span></div><span class="connector" aria-hidden="true"></span><div class="module"><span class="module-mark" aria-hidden="true">↳</span><span>{copy.cache}</span></div><span class="connector" aria-hidden="true"></span><div class="module module-end"><span class="module-mark" aria-hidden="true">⇄</span><span>{copy.sync}</span></div></> : kind === 'ai-platform' ? <><div class="inputs"><span>{copy.chat}</span><span>{copy.generate}</span><span>{copy.vector}</span></div><span class="connector" aria-hidden="true"></span><div class="service"><span class="service-symbol" aria-hidden="true">{'{ }'}</span><span>{copy.service}</span></div><span class="connector" aria-hidden="true"></span><div class="outputs"><span>{copy.model}</span><span>{copy.logs}</span></div></> : <><div class="packages" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div class="component-center"><b>AUI</b><span>{copy.components}</span></div><span class="connector" aria-hidden="true"></span><div class="products"><span>{copy.products}</span><span>10+</span></div></>}
 </div>
 <style>
   .blueprint { display: flex; align-items: center; justify-content: center; min-height: 112px; gap: 0; padding-block: 16px; font-size: 13px; font-family: var(--font-mono); color: var(--ink); }

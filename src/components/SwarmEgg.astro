@@ -1,0 +1,187 @@
+---
+import type { Lang } from '../i18n';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'zh' } = Astro.props;
+const label = lang === 'zh' ? '播放页面重建彩蛋' : 'Play the page rebuild easter egg';
+---
+<button class="swarm-egg" type="button" data-swarm-egg aria-label={label} title={label}>
+  <svg viewBox="0 0 40 44" width="24" height="26" aria-hidden="true" focusable="false">
+    <defs>
+      <clipPath id="egg-clip">
+        <path d="M20 3.5 C 28 3.5 35 12 35 23 C 35 33.5 28.8 40.5 20 40.5 C 11.2 40.5 5 33.5 5 23 C 5 12 12 3.5 20 3.5 Z" />
+      </clipPath>
+    </defs>
+
+    <ellipse cx="20" cy="41.3" rx="10.5" ry="1.9" fill="#33261C" opacity=".16" />
+
+    <g clip-path="url(#egg-clip)">
+      <rect x="0" y="0" width="40" height="44" fill="#FFD66B" />
+
+      <path d="M-2 13 C 6 9.5 14 17 20 13.5 C 26 10 34 17.5 42 14 L 42 21 C 34 24.5 26 17.5 20 21 C 14 24.5 6 17.5 -2 21 Z" fill="#FF8A5B" />
+      <path d="M-2 22 C 6 18.5 14 26 20 22.5 C 26 19 34 26.5 42 23 L 42 29.5 C 34 33 26 26 20 29.5 C 14 33 6 26 -2 29.5 Z" fill="#4ECDC4" />
+      <path d="M-2 31 C 6 27.5 14 35 20 31.5 C 26 28 34 35.5 42 32 L 42 38.5 C 34 42 26 35 20 38.5 C 14 42 6 35 -2 38.5 Z" fill="#A78BFA" />
+
+      <circle cx="13.6" cy="8.4" r="1.5" fill="#FF6B6B" />
+      <circle cx="23.8" cy="7.9" r="1.1" fill="#5AA9FF" />
+      <circle cx="29.2" cy="11.2" r=".9" fill="#FF8A5B" />
+      <circle cx="8.8" cy="18.2" r=".8" fill="#FFFFFF" opacity=".55" />
+      <circle cx="31.6" cy="27.4" r=".8" fill="#FFFFFF" opacity=".45" />
+      <circle cx="11.4" cy="33.6" r=".7" fill="#FFFFFF" opacity=".4" />
+
+      <ellipse cx="13.4" cy="14.2" rx="4.3" ry="6.6" transform="rotate(-18 13.4 14.2)" fill="#FFFFFF" opacity=".48" />
+      <ellipse cx="25.2" cy="8.8" rx="1.6" ry="2.5" transform="rotate(-20 25.2 8.8)" fill="#FFFFFF" opacity=".38" />
+      <ellipse cx="18.6" cy="38.6" rx="7.2" ry="2.1" fill="#FFFFFF" opacity=".16" />
+    </g>
+
+    <path d="M20 3.5 C 28 3.5 35 12 35 23 C 35 33.5 28.8 40.5 20 40.5 C 11.2 40.5 5 33.5 5 23 C 5 12 12 3.5 20 3.5 Z" fill="none" stroke="#33261C" stroke-width="2" stroke-linejoin="round" />
+  </svg>
+</button>
+
+<script>
+  const eggButton = document.querySelector<HTMLButtonElement>('[data-swarm-egg]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // The public controller types do not expose the engine, but the runtime
+  // returns it through the wrapped controller's `app`. Pinned to 0.2.3.
+  type SwarmInternals = {
+    _controller?: { app?: { engine?: { speed: number; started?: boolean } } };
+  };
+
+  if (eggButton) {
+    let swarm: import('cursor-build').SwarmController | undefined;
+
+    eggButton.addEventListener('click', async () => {
+      if (reducedMotion.matches) return;
+      eggButton.disabled = true;
+      try {
+        if (!swarm) {
+          const { createSwarm } = await import('cursor-build');
+          swarm = createSwarm({
+            sound: false,
+            tour: true,
+            hud: false,
+            disperse: true,
+            skip: (el) => el.matches('script, style, link, meta') || el.closest('.nav') !== null,
+            onStop: () => {
+              eggButton.hidden = false;
+            },
+          });
+        }
+        const wasActive = swarm.isActive;
+        swarm.toggle();
+        if (!wasActive) {
+          eggButton.hidden = true;
+          // The engine is created asynchronously inside start(); wait for it
+          // before overriding the default 1x build speed.
+          let tries = 0;
+          const tuneSpeed = () => {
+            const engine = (swarm as unknown as SwarmInternals)._controller?.app?.engine;
+            if (engine?.started) {
+              engine.speed = 0.8;
+              return;
+            }
+            if (tries++ < 200) window.setTimeout(tuneSpeed, 30);
+          };
+          tuneSpeed();
+        }
+      } catch (error) {
+        eggButton.hidden = false;
+        console.warn('[cursor-build] the swarm could not start.', error);
+      } finally {
+        eggButton.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .swarm-egg {
+    position: fixed;
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    z-index: 9;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    box-shadow: 0 4px 16px rgb(0 0 0 / 10%);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .swarm-egg:hover {
+    border-color: var(--accent);
+  }
+
+  .swarm-egg svg {
+    display: block;
+    width: 26px;
+    height: 28px;
+    filter: drop-shadow(0 1px 1px rgb(60 30 8 / 16%));
+    transition: transform 0.2s ease;
+  }
+
+  .swarm-egg:hover svg {
+    transform: translateY(-1px) rotate(-7deg) scale(1.06);
+  }
+
+  .swarm-egg:active svg {
+    transform: translateY(0) rotate(-3deg) scale(0.98);
+  }
+
+  .swarm-egg:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .swarm-egg[hidden] {
+    display: none;
+  }
+
+  .swarm-egg:disabled {
+    cursor: wait;
+  }
+
+  @media (max-width: 767px) {
+    .swarm-egg {
+      right: max(12px, env(safe-area-inset-right));
+      bottom: max(12px, env(safe-area-inset-bottom));
+      width: 48px;
+      height: 48px;
+    }
+
+    .swarm-egg svg {
+      width: 23px;
+      height: 25px;
+    }
+  }
+
+  @media print {
+    .swarm-egg {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .swarm-egg {
+      display: none;
+    }
+
+    .swarm-egg svg {
+      transition: none;
+    }
+  }
+</style>

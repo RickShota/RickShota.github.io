@@ -1,32 +1,61 @@
 ---
-import { careerDirection } from '../data/site';
+import { getContent } from '../data';
+import type { Lang } from '../i18n';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'zh' } = Astro.props;
+const { careerDirection } = getContent(lang);
+
+const copy = {
+  zh: {
+    kicker: '职业方向 · Career Direction',
+    heading: '从业务系统，走向工业 AI 与 FDE。',
+    headNote: '发展方向 · 不是现有职位',
+    horizontalLabel: '横向',
+    horizontalTitle: '扩展能力',
+    verticalLabel: '纵向',
+    verticalTitle: '核心能力',
+  },
+  en: {
+    kicker: 'Career direction',
+    heading: 'From business systems toward industrial AI and FDE.',
+    headNote: 'Direction · not a current title',
+    horizontalLabel: 'Horizontal',
+    horizontalTitle: 'Expanding capabilities',
+    verticalLabel: 'Vertical',
+    verticalTitle: 'Core capabilities',
+  },
+}[lang];
 ---
 <section id="direction" class="direction wrap" aria-labelledby="direction-title">
   <div class="head">
     <div>
-      <p class="kicker">职业方向 · Career Direction</p>
-      <h2 id="direction-title">从业务系统，走向工业 AI 与 FDE。</h2>
+      <p class="kicker">{copy.kicker}</p>
+      <h2 id="direction-title">{copy.heading}</h2>
     </div>
-    <p class="head-note">发展方向 · 不是现有职位</p>
+    <p class="head-note">{copy.headNote}</p>
   </div>
 
   <p class="statement">{careerDirection.statement}</p>
 
   <div class="t-model">
     <div class="t-bar">
-      <p class="axis"><span>横向</span>扩展能力</p>
+      <p class="axis"><span>{copy.horizontalLabel}</span>{copy.horizontalTitle}</p>
       <ul>
         {careerDirection.horizontal.map((item) => (
           <li>
             <span class="h-name">{item.name}</span>
-            <span class:list={['h-status', { 'is-learning': item.status === '学习中' }]}>{item.status}</span>
+            <span class:list={['h-status', { 'is-learning': item.statusKey === 'learning' }]}>{item.status}</span>
           </li>
         ))}
       </ul>
     </div>
 
     <div class="t-stem">
-      <p class="axis"><span>纵向</span>核心能力</p>
+      <p class="axis"><span>{copy.verticalLabel}</span>{copy.verticalTitle}</p>
       <div class="core-list">
         {careerDirection.vertical.map((item, index) => (
           <div class="core">

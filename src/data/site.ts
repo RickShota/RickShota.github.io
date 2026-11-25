@@ -8,7 +8,7 @@ export const site = {
   email: 'rickrone@qq.com',
   avatar: '/images/headportrait.jpg',
   intro:
-    '近 4 年 ToB 企业级软件研发经验，长期围绕物流、仓储与物资管理场景建设复杂 B 端系统；Vue / React / TypeScript 前端为主，能独立完成 Java / Spring Boot 接口开发、Redis 缓存、RabbitMQ 异步链路与 Docker 容器化部署。持续关注工业 AI 与企业 AI 应用落地，FDE 是长期发展方向。',
+    '3 年+ 全栈开发经验（前端为主），长期围绕物流、仓储与物资管理场景建设复杂 B 端系统；能独立完成 Vue / React / TypeScript 前端、Java / Spring Boot 接口、Redis 缓存、RabbitMQ 异步链路与 Docker 容器化部署。持续关注工业 AI 与企业 AI 应用落地，FDE 是长期发展方向。',
   now: '在职，负责企业级产品全栈开发与工程化基建；近一年在 AI 中台项目中承担前端与部分 Spring Boot 后端开发，并持续探索工业 AI 与企业 AI 应用落地。',
   availability: '优先寻找全职机会，也接受远程协作与项目制合作',
   resumeUpdated: '2026.11',
@@ -37,7 +37,7 @@ export const experience: ExperienceItem[] = [
     period: '2025.04 — 至今',
     summary: '负责企业级产品线全栈开发与团队工程化、容器化基建，推动 TypeScript、Composition API 与微前端落地；参与物流物资、CMS 与 AI 中台等 ToB 项目。',
     points: [
-      '主导应用级产品线全栈开发，基于 Vben Admin（Vue3 + Vite）负责数据可视化、工作流引擎、权限中心等核心模块，并承担部分后端接口研发，覆盖从原型到生产交付的完整闭环。',
+      '主导应用级产品线全栈开发，基于 Vben Admin（Vue3 + Vite）负责数据可视化、工作流引擎、权限中心等核心模块，并承担核心后端接口研发，覆盖从原型到生产交付的完整闭环。',
       '主导团队工程化与容器化基建：定制 CLI 脚手架、统一代码规范与提交校验，搭建私有 NPM、组件库文档站与 CI/CD 流水线，推动 Docker 构建与自动化部署，保障多环境一致交付。',
       '持续演进技术栈：扩展 Vben Admin 底层模块、维护内部组件库与工具库，推动 TypeScript 与 Composition API 深度应用，落地微前端支撑多团队并行开发。',
       '在 AI 智能化中台项目中承担前端与部分 Spring Boot 后端开发，落地 JWT + RBAC 权限体系与 RabbitMQ 异步日志链路。',
@@ -134,7 +134,7 @@ export const skillTiers: SkillTier[] = [
     groups: [
       {
         name: '框架与语言',
-        items: ['Vue 3 / Vue 2', 'React 18', 'TypeScript', 'HTML/CSS', 'JavaScript (ES6+)'],
+        items: ['Vue 3 / Vue 2', 'React 18', 'Next.js', 'TypeScript', 'Vben Admin', 'HTML/CSS', 'JavaScript (ES6+)'],
         usage: '中后台、CMS、低代码、组件库与跨端应用',
       },
       {
@@ -149,7 +149,7 @@ export const skillTiers: SkillTier[] = [
       },
       {
         name: '工程化与云原生',
-        items: ['Vite', 'Monorepo（pnpm / Lerna）', '私有 NPM', 'CLI 脚手架', 'CI/CD（GitLab CI / GitHub Actions）', 'Docker', 'Nginx'],
+        items: ['Vite', 'Monorepo（pnpm / Lerna）', '私有 NPM', 'CLI 脚手架', 'Vitest', 'Storybook', 'CI/CD（GitLab CI / GitHub Actions）', 'Docker / Docker Compose', 'Nginx'],
         usage: '组件库、团队基建与前后端容器化部署',
       },
       {
@@ -159,7 +159,7 @@ export const skillTiers: SkillTier[] = [
       },
       {
         name: 'AI、跨端与可视化',
-        items: ['大模型 API 集成', 'SSE 流式输出', 'uni-app', 'ECharts', '高德地图 SDK'],
+        items: ['大模型 API 集成', 'SSE 流式输出', 'uni-app', 'ECharts', '高德地图 SDK', 'Cursor / Claude / Copilot'],
         usage: 'AI 能力接入、移动作业与数据看板',
       },
     ],
@@ -172,8 +172,8 @@ export const skillTiers: SkillTier[] = [
     groups: [
       {
         name: '框架与渲染',
-        items: ['Next.js', 'Webpack'],
-        usage: 'CMS / 低代码中台的 SSR、路由与构建',
+        items: ['Webpack', 'react-window / react-virtualized'],
+        usage: '构建配置与长列表虚拟滚动',
       },
       {
         name: '服务端',
@@ -202,11 +202,12 @@ export const skillTiers: SkillTier[] = [
   },
 ];
 
-export type ExplorationStatus = '学习中' | '实验中' | '规划中' | '已有公开代码';
+export type ExplorationStatusKey = 'learning' | 'experimenting' | 'planned' | 'open';
 
 export interface Exploration {
   id: string;
-  status: ExplorationStatus;
+  statusKey: ExplorationStatusKey;
+  status: string;
   title: string;
   summary: string;
   plans: string[];
@@ -216,6 +217,7 @@ export interface Exploration {
 export const explorations: Exploration[] = [
   {
     id: 'industrial-ai',
+    statusKey: 'planned',
     status: '规划中',
     title: '工业 AI 设备运维助手',
     summary:
@@ -232,6 +234,7 @@ export const explorations: Exploration[] = [
   },
   {
     id: 'agent',
+    statusKey: 'learning',
     status: '学习中',
     title: 'Agent / MCP 与 RAG',
     summary:
@@ -246,7 +249,7 @@ export const industry = {
     '从 2023 年开始，我在两家企业软件服务商参与 ToB 项目，长期围绕物流、仓储与物资管理场景开发业务系统：从仓库现场的移动作业，到物资审批与 AI 分析，再到服务多条产品线的企业级平台；前端为主，也承担接口、缓存与部署等后端工作。技术之外，更重要的是理解业务角色、流程状态与系统边界。',
   tags: ['物流运输', '仓储作业', '物资管理', '审批流程', '现场作业', '数据看板'],
   stats: [
-    { value: '近 4 年', label: 'ToB 企业级软件研发' },
+    { value: '3 年+', label: 'ToB 企业级软件研发' },
     { value: '6 个', label: '企业级项目（已脱敏）' },
     { value: '3 类', label: '物流 / 仓储 / 物资场景' },
   ],
@@ -294,14 +297,14 @@ export const careerDirection = {
     { title: '企业级 B 端系统', detail: '物流、仓储、物资与内容 / 低代码平台的交付经验' },
   ],
   horizontal: [
-    { name: 'Java 后端与全栈', status: '项目中使用' },
-    { name: '企业 AI 应用 · LLM / SSE', status: '项目中使用' },
-    { name: 'Redis / RabbitMQ / 认证授权', status: '项目中使用' },
-    { name: 'Docker 与容器化部署', status: '项目中使用' },
-    { name: 'RAG / Agent / MCP', status: '学习中' },
-    { name: '工业设备数据接入', status: '学习中' },
-    { name: '工业 AI 与 FDE', status: '学习中' },
-    { name: '客户需求与方案设计', status: '项目中实践' },
+    { name: 'Java 后端与全栈', status: '项目中使用', statusKey: 'practice' },
+    { name: '企业 AI 应用 · LLM / SSE', status: '项目中使用', statusKey: 'practice' },
+    { name: 'Redis / RabbitMQ / 认证授权', status: '项目中使用', statusKey: 'practice' },
+    { name: 'Docker 与容器化部署', status: '项目中使用', statusKey: 'practice' },
+    { name: 'RAG / Agent / MCP', status: '学习中', statusKey: 'learning' },
+    { name: '工业设备数据接入', status: '学习中', statusKey: 'learning' },
+    { name: '工业 AI 与 FDE', status: '学习中', statusKey: 'learning' },
+    { name: '客户需求与方案设计', status: '项目中实践', statusKey: 'practice' },
   ],
   states: [
     {

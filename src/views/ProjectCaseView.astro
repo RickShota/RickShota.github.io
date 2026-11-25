@@ -1,0 +1,947 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectVisual from '../components/ProjectVisual.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { isEnglishProject, localePath, projectSlug, type Lang } from '../i18n';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  index: number;
+  total: number;
+  lang?: Lang;
+}
+
+const { project, index, total, lang = 'zh' } = Astro.props;
+
+const allProjects = (await getCollection('projects'))
+  .filter((item) => isEnglishProject(item.id) === (lang === 'en'))
+  .sort((a, b) => a.data.order - b.data.order);
+const prev = allProjects[(index - 1 + total) % total];
+const next = allProjects[(index + 1) % total];
+
+const {
+  name,
+  period,
+  role,
+  audience,
+  summary,
+  thesis,
+  category,
+  domain,
+  scenario,
+  complexity,
+  systems,
+  context,
+  goals,
+  constraints,
+  flow,
+  decisions,
+  checks,
+  outcome,
+  responsibility,
+  contribution,
+  stack,
+  metrics,
+  metricsNote,
+  media,
+} = project.data;
+
+const caseNo = String(index + 1).padStart(2, '0');
+
+const copy = {
+  zh: {
+    breadcrumbAria: '面包屑',
+    home: '首页',
+    work: '项目',
+    kickerPrefix: '案例',
+    categoryLabels: {
+      ai: 'AI 应用',
+      business: '业务系统',
+      infra: '工程基建',
+      'cross-platform': '跨端应用',
+    } as Record<string, string>,
+    meta: `${period} · 参与区间 · 公司项目（已脱敏）`,
+    roleLabel: '角色',
+    audienceLabel: '面向用户',
+    stackLabel: '主要技术',
+    domainAria: '行业场景',
+    backToList: '← 返回项目列表',
+    tocAria: '案例目录',
+    tocLabel: '本页目录',
+    businessTitle: '业务场景',
+    businessRoles: '业务角色',
+    relatedSystems: '关联系统',
+    complexityLabel: '流程复杂性',
+    backgroundTitle: '背景与目标',
+    goalsTitle: '项目目标',
+    constraintsTitle: '约束',
+    roleTitle: '我的职责',
+    led: '主导设计',
+    owned: '独立负责',
+    team: '协作参与',
+    solutionTitle: '技术方案与核心难点',
+    solutionNote: '下面按「难点 → 方案 → 取舍」展开，重点说明为什么这样做。',
+    problem: '难点',
+    choice: '方案',
+    benefit: '取舍',
+    resultsTitle: '项目成果',
+    metricsAria: '成果',
+    metricsNoteLabel: '口径说明',
+    checksTitle: '验证关注点',
+    stackTitle: '技术栈',
+    stackAria: '技术栈',
+    mediaTitle: '界面与资料',
+    mediaNote:
+      '公司项目界面需脱敏；当前只展示流程示意与待补充清单。真实截图、录屏和架构图会在脱敏后补充。',
+    otherCasesAria: '其他案例',
+    prevCase: '上一个案例',
+    nextCase: '下一个案例',
+    backLink: '返回项目列表',
+  },
+  en: {
+    breadcrumbAria: 'Breadcrumb',
+    home: 'Home',
+    work: 'Work',
+    kickerPrefix: 'Case',
+    categoryLabels: {
+      ai: 'AI applications',
+      business: 'Business systems',
+      infra: 'Engineering foundations',
+      'cross-platform': 'Cross-platform',
+    } as Record<string, string>,
+    meta: `${period} · involvement period · company project (anonymized)`,
+    roleLabel: 'Role',
+    audienceLabel: 'Audience',
+    stackLabel: 'Main stack',
+    domainAria: 'Industry scenarios',
+    backToList: '← Back to project list',
+    tocAria: 'Case contents',
+    tocLabel: 'On this page',
+    businessTitle: 'Business context',
+    businessRoles: 'Business roles',
+    relatedSystems: 'Related systems',
+    complexityLabel: 'Process complexity',
+    backgroundTitle: 'Background and goals',
+    goalsTitle: 'Goals',
+    constraintsTitle: 'Constraints',
+    roleTitle: 'My role',
+    led: 'Led design',
+    owned: 'Owned',
+    team: 'Contributed',
+    solutionTitle: 'Solution and key challenges',
+    solutionNote: 'Structured as challenge → approach → trade-off, with the reasoning behind each choice.',
+    problem: 'Challenge',
+    choice: 'Approach',
+    benefit: 'Trade-off',
+    resultsTitle: 'Results',
+    metricsAria: 'Results',
+    metricsNoteLabel: 'Metric definitions',
+    checksTitle: 'Verification focus',
+    stackTitle: 'Stack',
+    stackAria: 'Stack',
+    mediaTitle: 'UI and material',
+    mediaNote:
+      'Company project screens require anonymization; only flow diagrams and a pending list are shown. Real screenshots, recordings and architecture diagrams will be added after anonymization.',
+    otherCasesAria: 'Other cases',
+    prevCase: 'Previous case',
+    nextCase: 'Next case',
+    backLink: 'Back to project list',
+  },
+}[lang];
+
+const tocItems = [
+  ...(scenario ? [{ id: 'business', label: copy.businessTitle }] : []),
+  { id: 'background', label: copy.backgroundTitle },
+  { id: 'role', label: copy.roleTitle },
+  { id: 'solution', label: copy.solutionTitle },
+  { id: 'results', label: copy.resultsTitle },
+  ...(checks.length > 0 ? [{ id: 'checks', label: copy.checksTitle }] : []),
+  { id: 'stack', label: copy.stackTitle },
+  { id: 'media', label: copy.mediaTitle },
+];
+---
+<BaseLayout title={name} description={summary} type="article" lang={lang}>
+  <article class="case wrap">
+    <nav class="crumbs" aria-label={copy.breadcrumbAria}>
+      <a href={localePath(lang, '/')}>{copy.home}</a>
+      <span aria-hidden="true">/</span>
+      <a href={localePath(lang, '/#projects')}>{copy.work}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{name}</span>
+    </nav>
+
+    <header class="head">
+      <p class="kicker">{copy.kickerPrefix} {caseNo} · {copy.categoryLabels[category] ?? category}</p>
+      <h1>{name}</h1>
+      <p class="thesis">{thesis}</p>
+      <p class="meta">{copy.meta}</p>
+      <dl class="facts">
+        <div>
+          <dt>{copy.roleLabel}</dt>
+          <dd>{role}</dd>
+        </div>
+        <div>
+          <dt>{copy.audienceLabel}</dt>
+          <dd>{audience}</dd>
+        </div>
+        <div>
+          <dt>{copy.stackLabel}</dt>
+          <dd>{stack.slice(0, 4).join(' · ')}</dd>
+        </div>
+      </dl>
+      {domain.length > 0 && (
+        <ul class="domain-tags head-tags" aria-label={copy.domainAria}>
+          {domain.map((tag) => <li>{tag}</li>)}
+        </ul>
+      )}
+      <a class="back-link" href={localePath(lang, '/#projects')}>{copy.backToList}</a>
+    </header>
+
+    <div class="case-body">
+      <aside class="case-toc">
+        <nav aria-label={copy.tocAria}>
+          <p class="toc-label">{copy.tocLabel}</p>
+          <ol>
+            {tocItems.map((item) => (
+              <li><a href={`#${item.id}`}>{item.label}</a></li>
+            ))}
+          </ol>
+        </nav>
+      </aside>
+
+      <div class="case-content">
+        {scenario && (
+          <section id="business" class="block">
+            <h2>{copy.businessTitle}</h2>
+            <p class="body-text">{scenario}</p>
+            <dl class="business-facts">
+              <div>
+                <dt>{copy.businessRoles}</dt>
+                <dd>{audience}</dd>
+              </div>
+              {systems.length > 0 && (
+                <div>
+                  <dt>{copy.relatedSystems}</dt>
+                  <dd>{systems.join(' · ')}</dd>
+                </div>
+              )}
+              {complexity && (
+                <div>
+                  <dt>{copy.complexityLabel}</dt>
+                  <dd>{complexity}</dd>
+                </div>
+              )}
+            </dl>
+          </section>
+        )}
+
+        <section id="background" class="block">
+          <h2>{copy.backgroundTitle}</h2>
+          <p class="body-text">{context}</p>
+          <div class="two-col">
+            {goals.length > 0 && (
+              <div>
+                <h3>{copy.goalsTitle}</h3>
+                <ul class="dash-list">
+                  {goals.map((goal) => <li>{goal}</li>)}
+                </ul>
+              </div>
+            )}
+            {constraints.length > 0 && (
+              <div>
+                <h3>{copy.constraintsTitle}</h3>
+                <ul class="dash-list">
+                  {constraints.map((constraint) => <li>{constraint}</li>)}
+                </ul>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section id="role" class="block">
+          <h2>{copy.roleTitle}</h2>
+          <p class="body-text">{responsibility}</p>
+          {(contribution.led.length > 0 || contribution.owned.length > 0 || contribution.team.length > 0) && (
+            <div class="contribution-grid">
+              {contribution.led.length > 0 && (
+                <div class="contribution">
+                  <h3>{copy.led}</h3>
+                  <ul>
+                    {contribution.led.map((item) => <li>{item}</li>)}
+                  </ul>
+                </div>
+              )}
+              {contribution.owned.length > 0 && (
+                <div class="contribution">
+                  <h3>{copy.owned}</h3>
+                  <ul>
+                    {contribution.owned.map((item) => <li>{item}</li>)}
+                  </ul>
+                </div>
+              )}
+              {contribution.team.length > 0 && (
+                <div class="contribution">
+                  <h3>{copy.team}</h3>
+                  <ul>
+                    {contribution.team.map((item) => <li>{item}</li>)}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </section>
+
+        <section id="solution" class="block">
+          <h2>{copy.solutionTitle}</h2>
+          <p class="note">{copy.solutionNote}</p>
+          <ProjectVisual flow={flow} name={name} showMedia={false} lang={lang} />
+          {decisions.length > 0 && (
+            <ol class="decisions">
+              {decisions.map((item, i) => (
+                <li class="decision">
+                  <div class="decision-head">
+                    <span class="num">{String(i + 1).padStart(2, '0')}</span>
+                    <h3>{item.title}</h3>
+                  </div>
+                  <dl class="tradeoff">
+                    <dt>{copy.problem}</dt>
+                    <dd>{item.problem}</dd>
+                    <dt>{copy.choice}</dt>
+                    <dd>{item.choice}</dd>
+                    <dt>{copy.benefit}</dt>
+                    <dd>{item.benefit}</dd>
+                  </dl>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
+
+        <section id="results" class="block">
+          <h2>{copy.resultsTitle}</h2>
+          <p class="outcome">{outcome}</p>
+          {metrics.length > 0 && (
+            <ul class="metrics" aria-label={copy.metricsAria}>
+              {metrics.map((metric) => <li>{metric}</li>)}
+            </ul>
+          )}
+          {metricsNote && (
+            <p class="metrics-note">
+              <span>{copy.metricsNoteLabel}</span>
+              {metricsNote}
+            </p>
+          )}
+        </section>
+
+        {checks.length > 0 && (
+          <section id="checks" class="block">
+            <h2>{copy.checksTitle}</h2>
+            <ul class="checks">
+              {checks.map((check) => <li>{check}</li>)}
+            </ul>
+          </section>
+        )}
+
+        <section id="stack" class="block">
+          <h2>{copy.stackTitle}</h2>
+          <ul class="stack" aria-label={copy.stackAria}>
+            {stack.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+
+        <section id="media" class="block">
+          <h2>{copy.mediaTitle}</h2>
+          <p class="note">{copy.mediaNote}</p>
+          <ProjectVisual flow={[]} media={media} name={name} lang={lang} />
+        </section>
+
+        <nav class="case-nav" aria-label={copy.otherCasesAria}>
+          <a href={localePath(lang, `/projects/${projectSlug(prev.id)}/`)}>
+            <span class="nav-label">{copy.prevCase}</span>
+            <strong>{prev.data.name}</strong>
+            <span class="nav-desc">{prev.data.thesis}</span>
+          </a>
+          <a href={localePath(lang, `/projects/${projectSlug(next.id)}/`)}>
+            <span class="nav-label">{copy.nextCase}</span>
+            <strong>{next.data.name}</strong>
+            <span class="nav-desc">{next.data.thesis}</span>
+          </a>
+        </nav>
+
+        <footer class="foot">
+          <a href={localePath(lang, '/#projects')}>{copy.backLink}</a>
+        </footer>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .case {
+    padding-block: clamp(2.5rem, 7vw, 4.5rem);
+  }
+
+  /* Breadcrumb ---------------------------------------------------- */
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    color: var(--muted);
+    font-size: 0.76rem;
+  }
+
+  .crumbs a:hover {
+    color: var(--accent);
+  }
+
+  .crumbs span[aria-current='page'] {
+    color: var(--ink);
+  }
+
+  /* Header -------------------------------------------------------- */
+  .head {
+    max-width: 54rem;
+    margin-top: 1.6rem;
+  }
+
+  .kicker {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+
+  .head h1 {
+    margin-top: 0.8rem;
+    font-size: clamp(2rem, 4.8vw, 2.9rem);
+  }
+
+  .thesis {
+    max-width: 42ch;
+    margin-top: 1.1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.12rem, 2.2vw, 1.36rem);
+    line-height: 1.55;
+  }
+
+  .meta {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.84rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem 2rem;
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 0;
+  }
+
+  .facts dt {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+  }
+
+  .facts dd {
+    margin: 0.25rem 0 0;
+    font-size: 0.86rem;
+    line-height: 1.6;
+  }
+
+  .domain-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .domain-tags li {
+    padding: 0.08em 0.55em;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.02em;
+    line-height: 1.7;
+  }
+
+  .head-tags li {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Business context --------------------------------------------- */
+  .business-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 2rem;
+    margin: 1.5rem 0 0;
+    padding-top: 1rem;
+  }
+
+  .business-facts > div:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .business-facts dt {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+  }
+
+  .business-facts dd {
+    margin: 0.3rem 0 0;
+    font-size: 0.9rem;
+    line-height: 1.75;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.84rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .back-link:hover {
+    color: var(--accent);
+  }
+
+  /* Layout -------------------------------------------------------- */
+  .case-body {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .case-toc {
+    align-self: start;
+    position: sticky;
+    top: 5.5rem;
+  }
+
+  .toc-label {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+  }
+
+  .case-toc ol {
+    margin: 0.8rem 0 0;
+    padding: 0 0 0 0.9rem;
+    border-left: 1px solid var(--line);
+    list-style: none;
+  }
+
+  .case-toc li + li {
+    margin-top: 0.45rem;
+  }
+
+  .case-toc a {
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .case-toc a:hover {
+    color: var(--accent);
+  }
+
+  .case-content {
+    max-width: 48rem;
+  }
+
+  /* Blocks -------------------------------------------------------- */
+  .block {
+    margin-top: clamp(2.6rem, 6vw, 3.8rem);
+    padding-top: 1rem;
+    scroll-margin-top: 5.5rem;
+  }
+
+  .block:first-child {
+    margin-top: 0;
+  }
+
+  .block h2 {
+    font-size: 1.4rem;
+  }
+
+  .note {
+    margin-top: 0.8rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.65;
+  }
+
+  .body-text {
+    max-width: 64ch;
+    margin-top: 1.1rem;
+    font-size: 0.98rem;
+    line-height: 1.85;
+  }
+
+  /* Goals & constraints ------------------------------------------ */
+  .two-col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem 2.5rem;
+    margin-top: 1.6rem;
+  }
+
+  .two-col > div {
+    padding-top: 0.9rem;
+  }
+
+  .two-col h3 {
+    font-size: 0.96rem;
+  }
+
+  .dash-list {
+    margin: 0.7rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .dash-list li {
+    position: relative;
+    padding-left: 1rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .dash-list li + li {
+    margin-top: 0.35rem;
+  }
+
+  .dash-list li::before {
+    content: '';
+    position: absolute;
+    top: 0.68em;
+    left: 0;
+    width: 7px;
+    height: 1.5px;
+    background: var(--seal);
+  }
+
+  /* Contribution -------------------------------------------------- */
+  .contribution-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.4rem 1.8rem;
+    margin-top: 1.6rem;
+  }
+
+  .contribution {
+    padding-top: 0.9rem;
+  }
+
+  .contribution h3 {
+    font-size: 0.92rem;
+  }
+
+  .contribution ul {
+    margin: 0.7rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contribution li {
+    position: relative;
+    padding-left: 0.9rem;
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.68;
+  }
+
+  .contribution li + li {
+    margin-top: 0.4rem;
+  }
+
+  .contribution li::before {
+    content: '';
+    position: absolute;
+    top: 0.62em;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    background: var(--line-strong);
+  }
+
+  /* Decisions ----------------------------------------------------- */
+  .decisions {
+    margin: 1.8rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .decision {
+    padding-top: 1.2rem;
+  }
+
+  .decision + .decision {
+    margin-top: 1.4rem;
+  }
+
+  .decision-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .num {
+    flex: none;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+  }
+
+  .decision h3 {
+    font-size: 1.08rem;
+  }
+
+  .tradeoff {
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    gap: 0.55rem 1rem;
+    margin: 0.8rem 0 0 1.6rem;
+  }
+
+  .tradeoff dt {
+    padding-top: 0.12em;
+    color: var(--muted);
+    font-size: 0.76rem;
+  }
+
+  .tradeoff dd {
+    margin: 0;
+    font-size: 0.94rem;
+    line-height: 1.78;
+  }
+
+  /* Results ------------------------------------------------------- */
+  .outcome {
+    max-width: 64ch;
+    margin-top: 1.2rem;
+    padding: 0.9rem 0 0.9rem 1.1rem;
+    border-left: 2px solid var(--seal);
+    font-size: 0.98rem;
+    line-height: 1.8;
+  }
+
+  .metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 1.4rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .metrics li {
+    position: relative;
+    padding-left: 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .metrics li::before {
+    content: '';
+    position: absolute;
+    top: 0.6em;
+    left: 0;
+    width: 7px;
+    height: 1.5px;
+    background: var(--seal);
+  }
+
+  .metrics-note {
+    max-width: 64ch;
+    margin-top: 1rem;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--line);
+    background: var(--paper-raised);
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.7;
+  }
+
+  .metrics-note span {
+    display: inline-block;
+    margin-right: 0.5rem;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* Checks -------------------------------------------------------- */
+  .checks {
+    max-width: 62ch;
+    margin: 1.2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .checks li {
+    position: relative;
+    padding-left: 1.15rem;
+    font-size: 0.94rem;
+    line-height: 1.75;
+  }
+
+  .checks li + li {
+    margin-top: 0.5rem;
+  }
+
+  .checks li::before {
+    content: '';
+    position: absolute;
+    top: 0.62em;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    background: var(--seal);
+  }
+
+  /* Stack --------------------------------------------------------- */
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 1.2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stack li {
+    padding: 0.08em 0.5em;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    line-height: 1.7;
+  }
+
+  /* Case nav ------------------------------------------------------ */
+  .case-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2rem;
+    margin-top: clamp(3rem, 7vw, 4.5rem);
+    padding-top: 1.5rem;
+  }
+
+  .nav-label {
+    display: block;
+    color: var(--muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+
+  .case-nav strong {
+    display: block;
+    margin-top: 0.35rem;
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+
+  .case-nav a:hover strong {
+    color: var(--accent);
+  }
+
+  .nav-desc {
+    display: block;
+    margin-top: 0.3rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.65;
+  }
+
+  .case-nav a:last-child {
+    text-align: right;
+  }
+
+  .foot {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+  }
+
+  .foot a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .foot a:hover {
+    color: var(--accent);
+  }
+
+  /* Responsive ---------------------------------------------------- */
+  @media (max-width: 900px) {
+    .case-toc {
+      display: none;
+    }
+
+    .case-body {
+      grid-template-columns: 1fr;
+    }
+
+    .case-content {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .facts {
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+    }
+
+    .business-facts {
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
+    }
+
+    .business-facts > div:last-child:nth-child(odd) {
+      grid-column: auto;
+    }
+
+    .two-col,
+    .contribution-grid {
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+    }
+
+    .tradeoff {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+      margin-left: 0;
+    }
+
+    .tradeoff dd + dt {
+      margin-top: 0.55rem;
+    }
+
+    .case-nav {
+      grid-template-columns: 1fr;
+    }
+
+    .case-nav a:last-child {
+      text-align: left;
+    }
+  }
+</style>

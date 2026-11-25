@@ -1,0 +1,420 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getContent } from '../data';
+import { localePath, type Lang } from '../i18n';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'zh' } = Astro.props;
+const { site, explorations } = getContent(lang);
+
+const copy = {
+  zh: {
+    title: '技术探索',
+    description:
+      '榕（RickRone）的技术探索记录：工业 AI 设备运维助手、Agent / MCP 与 RAG。这里记录学习与规划，不是已交付项目。',
+    kicker: '技术探索',
+    heading: '在学与在做的方向。',
+    lead: '这里记录学习、实验与规划中的项目，不是工作履历。没有代码和验证结果的内容不会写成已完成项目，也不展示虚构的完成度百分比。',
+    legendAria: '状态说明',
+    legendLearning: '学习中',
+    legendExperimenting: '实验中',
+    legendPlanned: '规划中',
+    legendOpen: '已有公开代码',
+    legendNote: '状态按真实进度标注；后续有可运行代码或验证记录时，会补充链接与结果。',
+    planLabel: '规划中的技术链路 · 尚未实现',
+    planNote: '这条链路目前只是方案设计，用于说明目标与边界；没有可运行代码、真实设备数据或验证结果。',
+    plansTitle: '计划能力 / 学习内容',
+    boundaryTitle: '当前边界',
+    moreLabel: '相关阅读：',
+    moreStack: '技术能力分层',
+    moreCase: 'AI 智能化中台案例',
+    recordTitle: '记录方式',
+    recordSummary:
+      '每个实验会尽量记录目标、当前进度、验证方式、已知限制与代码 / 笔记链接；没有验证结果的部分会明确标为「待验证」。',
+    recordGoal: '目标',
+    recordGoalText: '要解决的具体问题，而不是技术名词。',
+    recordProgress: '进度',
+    recordProgressText: '当前完成到哪一步，是否有可运行代码。',
+    recordValidation: '验证',
+    recordValidationText: '如何证明它有效，哪些还没有验证。',
+    recordLimits: '限制',
+    recordLimitsText: '已知问题、未覆盖场景与下一步计划。',
+    linksTitle: '相关链接',
+    linksPrefix: 'GitHub：',
+    linksSuffix:
+      '目前没有工业 AI 项目的公开仓库；后续有可运行代码会在 GitHub 与这里同步。',
+  },
+  en: {
+    title: 'Lab',
+    description:
+      "RickRone's exploration log: an industrial AI maintenance assistant, Agent / MCP and RAG. These are learning and planning notes, not delivered projects.",
+    kicker: 'Exploration',
+    heading: 'What I am learning and building.',
+    lead: 'Notes on projects in learning, experimentation or planning, not a work history. Work without code or validation results is never written up as finished, and no invented completion percentages are shown.',
+    legendAria: 'Status legend',
+    legendLearning: 'Learning',
+    legendExperimenting: 'Experimenting',
+    legendPlanned: 'Planned',
+    legendOpen: 'Public code',
+    legendNote: 'Status reflects real progress; when runnable code or validation records exist, links and results will be added.',
+    planLabel: 'Planned technical flow · not implemented',
+    planNote: 'This flow is a design sketch to clarify goals and boundaries; there is no runnable code, real device data or validation result.',
+    plansTitle: 'Planned capabilities / learning topics',
+    boundaryTitle: 'Current boundaries',
+    moreLabel: 'Related: ',
+    moreStack: 'Skill breakdown',
+    moreCase: 'AI platform case',
+    recordTitle: 'How I keep records',
+    recordSummary:
+      'Each experiment records its goal, current progress, validation approach, known limits and code / notes links where possible; anything unverified is marked "to be validated".',
+    recordGoal: 'Goal',
+    recordGoalText: 'The concrete problem to solve, not a technology label.',
+    recordProgress: 'Progress',
+    recordProgressText: 'What is done so far, and whether there is runnable code.',
+    recordValidation: 'Validation',
+    recordValidationText: 'How it is shown to work, and what remains unverified.',
+    recordLimits: 'Limits',
+    recordLimitsText: 'Known issues, uncovered scenarios and next steps.',
+    linksTitle: 'Related links',
+    linksPrefix: 'GitHub: ',
+    linksSuffix:
+      'There is no public industrial AI repository yet; when runnable code exists it will be published on GitHub and here.',
+  },
+}[lang];
+
+const plannedFlow = [
+  { name: lang === 'zh' ? '设备数据采集' : 'Device data acquisition', detail: lang === 'zh' ? 'Modbus TCP 模拟与采集' : 'Modbus TCP simulation and collection' },
+  { name: lang === 'zh' ? '状态监控' : 'Condition monitoring', detail: lang === 'zh' ? '设备信息、告警与运行状态' : 'Asset info, alerts and runtime status' },
+  { name: lang === 'zh' ? '知识库检索' : 'Knowledge retrieval', detail: lang === 'zh' ? '设备手册与维修记录，RAG' : 'Equipment manuals and repair records, RAG' },
+  { name: lang === 'zh' ? '故障诊断建议' : 'Fault diagnosis', detail: lang === 'zh' ? '大模型结合检索结果生成建议' : 'LLM combines retrieved results into suggestions' },
+  { name: lang === 'zh' ? '维修工单' : 'Maintenance work orders', detail: lang === 'zh' ? '建议进入工单闭环' : 'Suggestions flow into a work-order loop' },
+];
+---
+<BaseLayout title={copy.title} description={copy.description} lang={lang}>
+  <article class="lab wrap">
+    <header class="head">
+      <p class="kicker">{copy.kicker}</p>
+      <h1>{copy.heading}</h1>
+      <p class="lead">{copy.lead}</p>
+    </header>
+
+    <section class="legend" aria-label={copy.legendAria}>
+      <div class="legend-badges">
+        <span class="status is-learning">{copy.legendLearning}</span>
+        <span class="status is-experimenting">{copy.legendExperimenting}</span>
+        <span class="status is-planned">{copy.legendPlanned}</span>
+        <span class="status is-open">{copy.legendOpen}</span>
+      </div>
+      <p>{copy.legendNote}</p>
+    </section>
+
+    {explorations.map((item) => (
+      <section id={item.id} class="entry">
+        <header class="entry-head">
+          <span class:list={['status', `is-${item.statusKey}`]}>{item.status}</span>
+          <h2>{item.title}</h2>
+        </header>
+        <p class="entry-summary">{item.summary}</p>
+
+        {item.id === 'industrial-ai' && (
+          <div class="plan-block">
+            <p class="plan-label">{copy.planLabel}</p>
+            <ol class="plan-flow">
+              {plannedFlow.map((step, index) => (
+                <li>
+                  <span class="plan-index">{String(index + 1).padStart(2, '0')}</span>
+                  <b>{step.name}</b>
+                  <span>{step.detail}</span>
+                </li>
+              ))}
+            </ol>
+            <p class="plan-note">{copy.planNote}</p>
+          </div>
+        )}
+
+        <div class="entry-grid">
+          <div>
+            <h3>{copy.plansTitle}</h3>
+            <ul>
+              {item.plans.map((plan) => <li>{plan}</li>)}
+            </ul>
+          </div>
+          <div>
+            <h3>{copy.boundaryTitle}</h3>
+            <p>{item.boundary}</p>
+          </div>
+        </div>
+
+        <p class="entry-more">
+          {copy.moreLabel}<a href={localePath(lang, '/#stack')}>{copy.moreStack}</a> ·
+          <a href={localePath(lang, '/projects/ai-platform/')}>{copy.moreCase}</a>
+        </p>
+      </section>
+    ))}
+
+    <section class="entry">
+      <h2>{copy.recordTitle}</h2>
+      <p class="entry-summary">{copy.recordSummary}</p>
+      <ul class="record-list">
+        <li><b>{copy.recordGoal}</b>{lang === 'zh' ? '：' : ': '}{copy.recordGoalText}</li>
+        <li><b>{copy.recordProgress}</b>{lang === 'zh' ? '：' : ': '}{copy.recordProgressText}</li>
+        <li><b>{copy.recordValidation}</b>{lang === 'zh' ? '：' : ': '}{copy.recordValidationText}</li>
+        <li><b>{copy.recordLimits}</b>{lang === 'zh' ? '：' : ': '}{copy.recordLimitsText}</li>
+      </ul>
+    </section>
+
+    <section class="entry">
+      <h2>{copy.linksTitle}</h2>
+      <p class="entry-summary">
+        {copy.linksPrefix}<a href={site.github} target="_blank" rel="noopener noreferrer">RickShota</a>{lang === 'zh' ? '。' : '. '}{copy.linksSuffix}
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .lab {
+    max-width: 54rem;
+    margin-inline: auto;
+    padding-block: clamp(3rem, 8vw, 5rem);
+  }
+
+  .kicker {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+
+  .head h1 {
+    margin-top: 0.8rem;
+    font-size: clamp(2rem, 4.8vw, 2.9rem);
+    line-height: 1.18;
+  }
+
+  .lead {
+    max-width: 58ch;
+    margin-top: 1.1rem;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .legend {
+    margin-top: 2rem;
+    padding: 0.9rem 0;
+  }
+
+  .legend-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .legend p {
+    margin-top: 0.6rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .status {
+    display: inline-block;
+    padding: 0.02em 0.45em;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    line-height: 1.7;
+  }
+
+  .status.is-learning {
+    color: var(--muted);
+  }
+
+  .status.is-experimenting,
+  .status.is-open {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .status.is-planned {
+    border-color: var(--seal);
+    color: var(--seal);
+  }
+
+  .entry {
+    margin-top: clamp(2.4rem, 6vw, 3.5rem);
+    padding-top: 1rem;
+    scroll-margin-top: 5.5rem;
+  }
+
+  .entry-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.8rem;
+  }
+
+  .entry-head h2 {
+    font-size: 1.35rem;
+  }
+
+  .entry h2 {
+    font-size: 1.25rem;
+  }
+
+  .entry-summary {
+    max-width: 66ch;
+    margin-top: 0.8rem;
+    color: var(--muted);
+    font-size: 0.94rem;
+    line-height: 1.8;
+  }
+
+  .plan-block {
+    margin-top: 1.4rem;
+    padding: clamp(1rem, 3vw, 1.5rem);
+    border: 1px dashed var(--line-strong);
+    background: var(--paper-raised);
+  }
+
+  .plan-label {
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+  }
+
+  .plan-flow {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .plan-flow li {
+    padding-top: 0.8rem;
+  }
+
+  .plan-index {
+    display: block;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+  }
+
+  .plan-flow b {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.86rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .plan-flow li > span:last-child {
+    display: block;
+    margin-top: 0.2rem;
+    color: var(--muted);
+    font-size: 0.74rem;
+    line-height: 1.55;
+  }
+
+  .plan-note {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.65;
+  }
+
+  .entry-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem 2.5rem;
+    margin-top: 1.6rem;
+  }
+
+  .entry-grid > div {
+    padding-top: 0.8rem;
+  }
+
+  .entry-grid h3 {
+    font-size: 0.92rem;
+  }
+
+  .entry-grid ul {
+    margin: 0.65rem 0 0;
+    padding-left: 1.1em;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+
+  .entry-grid li + li {
+    margin-top: 0.25rem;
+  }
+
+  .entry-grid p {
+    margin-top: 0.65rem;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+
+  .entry-more {
+    margin-top: 1.1rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .entry-more a,
+  .entry-summary a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .entry-more a:hover,
+  .entry-summary a:hover {
+    color: var(--accent);
+  }
+
+  .record-list {
+    margin: 1rem 0 0;
+    padding-left: 1.1em;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.75;
+  }
+
+  .record-list li + li {
+    margin-top: 0.35rem;
+  }
+
+  .record-list b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  @media (max-width: 800px) {
+    .plan-flow {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .entry-grid {
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+    }
+  }
+
+  @media (max-width: 440px) {
+    .plan-flow {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

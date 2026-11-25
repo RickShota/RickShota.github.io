@@ -1,36 +1,87 @@
 ---
-import { site } from '../data/site';
+import { getContent } from '../data';
+import { alternatePath, localePath, type Lang } from '../i18n';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'zh' } = Astro.props;
+const { site } = getContent(lang);
+
+const labels = {
+  zh: {
+    projects: '项目',
+    engineering: '工程',
+    experience: '经历',
+    lab: '探索',
+    about: '关于',
+    services: '合作',
+    resume: '查看简历',
+    resumeShort: '简历',
+    home: `${site.name} ${site.nameEn} 首页`,
+    mainNav: '主导航',
+    mobileNav: '移动端导航',
+    github: 'GitHub（新窗口打开）',
+    theme: '切换深浅色主题',
+    openMenu: '打开菜单',
+    closeMenu: '关闭菜单',
+    language: '切换到英文',
+    languageShort: 'EN',
+  },
+  en: {
+    projects: 'Work',
+    engineering: 'Engineering',
+    experience: 'Experience',
+    lab: 'Lab',
+    about: 'About',
+    services: 'Contact',
+    resume: 'Resume',
+    resumeShort: 'Resume',
+    home: `${site.name} ${site.nameEn} home`,
+    mainNav: 'Main navigation',
+    mobileNav: 'Mobile navigation',
+    github: 'GitHub (opens in a new tab)',
+    theme: 'Toggle color theme',
+    openMenu: 'Open menu',
+    closeMenu: 'Close menu',
+    language: 'Switch to Chinese',
+    languageShort: '中',
+  },
+}[lang];
 
 const links = [
-  { href: '/#projects', label: '项目' },
-  { href: '/#domain', label: '工程' },
-  { href: '/#experience', label: '经历' },
-  { href: '/lab/', label: '探索' },
-  { href: '/about/', label: '关于' },
-  { href: '/services/', label: '合作' },
-];
+  { path: '/#projects', label: labels.projects, match: '/projects/' },
+  { path: '/#domain', label: labels.engineering },
+  { path: '/#experience', label: labels.experience },
+  { path: '/lab/', label: labels.lab },
+  { path: '/about/', label: labels.about },
+  { path: '/services/', label: labels.services },
+].map((link) => ({ ...link, href: localePath(lang, link.path) }));
 
 const currentPath = Astro.url.pathname;
-const isActive = (href: string) => {
-  if (href === '/#projects') return currentPath.startsWith('/projects/');
-  const path = href.split('#')[0];
-  if (path === '/') return false;
+const isActive = (link: { path: string; match?: string }) => {
+  if (link.match) return currentPath.startsWith(localePath(lang, link.match));
+  const path = localePath(lang, link.path).split('#')[0];
+  if (path === localePath(lang, '/')) return false;
   return currentPath === path || currentPath.startsWith(path);
 };
+
+const switchHref = alternatePath(lang, currentPath);
 ---
 <header class="nav">
   <div class="wrap nav-inner">
-    <a class="brand" href="/" aria-label={`${site.name} ${site.nameEn} 首页`}>
+    <a class="brand" href={localePath(lang, '/')} aria-label={labels.home}>
       <span class="brand-name">榕</span>
       <span class="brand-en">{site.nameEn}</span>
     </a>
 
-    <nav class="nav-links" aria-label="主导航">
+    <nav class="nav-links" aria-label={labels.mainNav}>
       {links.map((link) => (
         <a
-          class:list={['nav-link', { 'is-active': isActive(link.href) }]}
+          class:list={['nav-link', { 'is-active': isActive(link) }]}
           href={link.href}
-          aria-current={isActive(link.href) ? 'page' : undefined}
+          aria-current={isActive(link) ? 'page' : undefined}
         >
           {link.label}
         </a>
@@ -38,13 +89,16 @@ const isActive = (href: string) => {
     </nav>
 
     <div class="nav-actions">
-      <a class="nav-resume" href="/resume/">查看简历 <span aria-hidden="true">↗</span></a>
+      <a class="nav-lang" href={switchHref} aria-label={labels.language} hreflang={lang === 'zh' ? 'en' : 'zh-CN'}>
+        {labels.languageShort}
+      </a>
+      <a class="nav-resume" href={localePath(lang, '/resume/')}>{labels.resume} <span aria-hidden="true">↗</span></a>
       <a
         class="nav-icon nav-github"
         href={site.github}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="GitHub（新窗口打开）"
+        aria-label={labels.github}
       >
         <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true" fill="currentColor">
           <path
@@ -52,7 +106,7 @@ const isActive = (href: string) => {
           ></path>
         </svg>
       </a>
-      <button class="theme-toggle nav-icon" type="button" aria-label="切换深浅色主题">
+      <button class="theme-toggle nav-icon" type="button" aria-label={labels.theme}>
         <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
           <circle cx="12" cy="12" r="4"></circle>
           <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
@@ -64,7 +118,7 @@ const isActive = (href: string) => {
       <button
         class="menu-toggle nav-icon"
         type="button"
-        aria-label="打开菜单"
+        aria-label={labels.openMenu}
         aria-expanded="false"
         aria-controls="mobile-menu"
         data-menu-toggle
@@ -80,17 +134,20 @@ const isActive = (href: string) => {
   </div>
 
   <div class="mobile-panel" id="mobile-menu" data-menu hidden>
-    <nav class="wrap mobile-nav" aria-label="移动端导航">
+    <nav class="wrap mobile-nav" aria-label={labels.mobileNav}>
       {links.map((link) => (
         <a
-          class:list={['mobile-link', { 'is-active': isActive(link.href) }]}
+          class:list={['mobile-link', { 'is-active': isActive(link) }]}
           href={link.href}
-          aria-current={isActive(link.href) ? 'page' : undefined}
+          aria-current={isActive(link) ? 'page' : undefined}
         >
           {link.label}
         </a>
       ))}
-      <a class="mobile-link" href="/resume/">简历</a>
+      <a class="mobile-link" href={localePath(lang, '/resume/')}>{labels.resumeShort}</a>
+      <a class="mobile-link mobile-lang" href={switchHref} hreflang={lang === 'zh' ? 'en' : 'zh-CN'}>
+        {lang === 'zh' ? 'English' : '中文'}
+      </a>
       <div class="mobile-meta">
         <a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href={`mailto:${site.email}`}>{site.email}</a>
@@ -100,6 +157,7 @@ const isActive = (href: string) => {
 </header>
 
 <script>
+  const isZh = document.documentElement.dataset.lang === 'zh';
   const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
   toggle?.setAttribute('aria-pressed', String(document.documentElement.dataset.theme === 'dark'));
   toggle?.addEventListener('click', () => {
@@ -110,7 +168,7 @@ const isActive = (href: string) => {
     try {
       localStorage.setItem('theme', next);
     } catch {
-      /* 隐私模式下忽略 */
+      /* ignore in private mode */
     }
   });
 
@@ -123,7 +181,7 @@ const isActive = (href: string) => {
   const setMenu = (open: boolean) => {
     if (!menuToggle || !mobileMenu) return;
     menuToggle.setAttribute('aria-expanded', String(open));
-    menuToggle.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
+    menuToggle.setAttribute('aria-label', open ? (isZh ? '关闭菜单' : 'Close menu') : (isZh ? '打开菜单' : 'Open menu'));
     mobileMenu.toggleAttribute('hidden', !open);
     if (open) previousOverflow = document.body.style.overflow;
     document.body.style.overflow = open ? 'hidden' : previousOverflow;
@@ -270,6 +328,24 @@ const isActive = (href: string) => {
     background: var(--paper-raised);
   }
 
+  .nav-lang {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    min-height: 44px;
+    padding: 0 6px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    transition: color 0.2s ease;
+  }
+
+  .nav-lang:hover {
+    color: var(--accent);
+  }
+
   .nav-resume {
     display: inline-flex;
     gap: 20px;
@@ -340,6 +416,12 @@ const isActive = (href: string) => {
   .mobile-link:hover,
   .mobile-link.is-active {
     color: var(--ink);
+  }
+
+  .mobile-lang {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
   }
 
   .mobile-meta {

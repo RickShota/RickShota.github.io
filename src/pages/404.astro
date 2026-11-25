@@ -1,12 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<BaseLayout title="页面不存在" description="这个地址没有对应的页面。" noindex>
+<BaseLayout title="页面不存在 / Page not found" description="这个地址没有对应的页面。This page does not exist." noindex lang="zh">
   <section class="wrap notfound">
     <p class="code">404</p>
-    <h1>这页不见了</h1>
-    <p class="lead">地址可能打错了，或者内容已经移走。</p>
-    <a class="btn" href="/">回到首页</a>
+    <h1>这页不见了 <span>Page not found</span></h1>
+    <p class="lead">地址可能打错了，或者内容已经移走。<br />The address may be mistyped, or the page has moved.</p>
+    <div class="actions">
+      <a class="btn" href="/">回到首页</a>
+      <a class="btn btn-ghost" href="/en/">Go to English home</a>
+    </div>
   </section>
 </BaseLayout>
 
@@ -27,23 +30,56 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-size: clamp(2rem, 5vw, 3rem);
   }
 
+  .notfound h1 span {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--muted);
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 2.2vw, 1.25rem);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
   .lead {
     margin-top: 0.8rem;
     color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 2rem;
   }
 
   .btn {
     display: inline-flex;
-    margin-top: 2rem;
+    align-items: center;
     padding: 0.68rem 1.35rem;
+    border: 1px solid transparent;
     border-radius: 2px;
     background: var(--ink);
     color: var(--paper);
     font-size: 0.92rem;
-    transition: background-color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
   }
 
   .btn:hover {
     background: var(--accent);
+  }
+
+  .btn-ghost {
+    border-color: var(--line-strong);
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
   }
 </style>

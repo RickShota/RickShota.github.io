@@ -1,0 +1,769 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SkillTiers from '../components/SkillTiers.astro';
+import { getContent } from '../data';
+import { localePath, type Lang } from '../i18n';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'zh' } = Astro.props;
+const { site, experience, education, explorations, industry, careerDirection } = getContent(lang);
+
+const copy = {
+  zh: {
+    title: '关于我',
+    description:
+      '榕（RickRone），深耕 ToB 工业互联网的全栈开发工程师，3 年+ 企业级系统研发经验，专注物流 / 仓储 / 物资业务系统、Vue / React 双栈、Java / Spring Boot 后端与企业 AI / 工业 AI 应用。',
+    heading: '关于我',
+    lead: '榕 · ToB 工业互联网全栈开发工程师 · 3 年+ 企业级系统经验',
+    intro1:
+      '我是榕（RickRone），安徽人，3 年+ ToB 企业级软件开发经验。长期在物流、仓储与物资管理场景做业务系统，也做过组件库、低代码、CMS 与 AI 中台；现在在一家企业软件服务商负责企业级产品全栈开发与工程化基建。',
+    intro2:
+      '我的工作大致分三块：把业务系统做稳（多角色权限、审批流、数据可视化、业务不停摆的迁移），把重复的事工程化（Monorepo、组件库、CI/CD），把 AI 真正接进业务（模型接入、流式对话、智能分析）。',
+    intro3:
+      '前端之外，我在 AI 中台项目里承担了 Spring Boot 接口、MyBatis-Plus 持久化、Redis 缓存、RabbitMQ 异步链路与 Docker 部署；同时持续探索工业 AI 与企业 AI 应用，FDE 是长期发展方向。',
+    summary:
+      '主导过组件库、低代码平台与 AI 中台从 0 到 1 的建设；更擅长把复杂业务与重复建设收敛成可复用的系统。',
+    availabilityLink: '查看求职与合作方式',
+    industryTitle: '行业经验',
+    industryNote: '3 年+ ToB 企业级软件研发，长期围绕物流、仓储与物资管理场景。',
+    industryAria: '行业场景',
+    industryMore: '查看工程能力概览',
+    boundaryTitle: '能力边界',
+    boundaryPractice: '有项目证据',
+    boundaryPracticeText:
+      'Vue 3 / Vue 2、React、TypeScript、uni-app、组件库与前端工程化、Java / Spring Boot、MyBatis-Plus、MySQL、Redis、RabbitMQ、Spring Security + JWT、Docker；大模型 API 与 SSE 流式输出；物流 / 仓储 / 物资管理业务系统。',
+    boundaryFamiliar: '有使用经验',
+    boundaryFamiliarText:
+      'Next.js、Node.js（BFF / 接口层）、Webpack、Nginx、GitLab CI / GitHub Actions。能完成常规开发与联调，复杂场景仍需协作。',
+    boundaryLearning: '学习中',
+    boundaryLearningText: 'RAG、Agent / MCP、Modbus TCP / OPC UA、工业 AI 与 FDE 方向。',
+    boundaryNote:
+      '网站只把有项目证据的能力写成「实战」；学习中的方向会明确标注，不包装成生产经验。',
+    workTitle: '工作方式',
+    work1: '先拆问题',
+    work1Text: '确认业务目标、用户、现有系统与约束，再讨论技术方案，不先堆技术名词。',
+    work2: '写清取舍',
+    work2Text: '方案文档里说明为什么选它、放弃了什么、风险在哪里，方便团队评审和后续维护。',
+    work3: '交付闭环',
+    work3Text: '类型、测试、文档、CI/CD 与上线后的可观测性一起考虑，而不是只把页面做出来。',
+    experienceTitle: '工作经历',
+    latest: '最近一段',
+    keywordAria: '关键词',
+    directionTitle: '职业方向',
+    directionMore: '查看学习与探索方向',
+    educationTitle: '教育',
+    skillsTitle: '技术能力',
+    skillsNote: '按真实使用程度分层，学习中的技术不会写成生产经验。',
+    explorationTitle: '技术探索',
+    explorationNote: '以下方向处于学习、规划或验证阶段，不是已交付项目。',
+    explorationMore: '查看技术探索页',
+    contactTitle: '联系',
+    emailLabel: '邮件：',
+    resumeLabel: '简历：',
+    resumeLink: '网页版简历',
+  },
+  en: {
+    title: 'About',
+    description:
+      'RickRone (榕), a full-stack engineer in ToB industrial internet with 3+ years of enterprise systems experience, focused on logistics / warehousing / materials systems, Vue and React, Java / Spring Boot back ends, and enterprise / industrial AI.',
+    heading: 'About',
+    lead: '榕 · ToB industrial internet full-stack engineer · 3+ years in enterprise systems',
+    intro1:
+      "I'm 榕 (RickRone), from Anhui, with 3+ years of ToB enterprise software experience. I've built business systems for logistics, warehousing and materials management, as well as component libraries, low-code platforms, a CMS and an AI platform. I currently own full-stack development and engineering foundations for an enterprise product line at an enterprise software provider.",
+    intro2:
+      'My work roughly falls into three parts: making business systems dependable (multi-role permissions, approval flows, data visualization, migrations that never stop the business), turning repetition into engineering (Monorepo, component libraries, CI/CD), and bringing AI into real business flows (model integration, streaming conversation, intelligent analysis).',
+    intro3:
+      'Beyond the front end, on the AI platform project I took on Spring Boot APIs, MyBatis-Plus persistence, Redis caching, RabbitMQ async pipelines and Docker deployment. I keep exploring industrial AI and enterprise AI; FDE is the long-term direction.',
+    summary:
+      'I have led the 0-to-1 build of a component library, a low-code platform and an AI platform; what I do best is turning complex business and repeated builds into reusable systems.',
+    availabilityLink: 'See how we could work together',
+    industryTitle: 'Industry experience',
+    industryNote: '3+ years of ToB enterprise software, long focused on logistics, warehousing and materials management.',
+    industryAria: 'Industry scenarios',
+    industryMore: 'View capability overview',
+    boundaryTitle: 'Capability boundaries',
+    boundaryPractice: 'Backed by projects',
+    boundaryPracticeText:
+      'Vue 3 / Vue 2, React, TypeScript, uni-app, component libraries and front-end engineering, Java / Spring Boot, MyBatis-Plus, MySQL, Redis, RabbitMQ, Spring Security + JWT, Docker; LLM APIs and SSE streaming; logistics / warehousing / materials business systems.',
+    boundaryFamiliar: 'Working knowledge',
+    boundaryFamiliarText:
+      'Next.js, Node.js (BFF / API layer), Webpack, Nginx, GitLab CI / GitHub Actions. I can handle routine development and integration; complex scenarios still need collaboration.',
+    boundaryLearning: 'Learning',
+    boundaryLearningText: 'RAG, Agent / MCP, Modbus TCP / OPC UA, industrial AI and FDE.',
+    boundaryNote:
+      'The site only labels capabilities with project evidence as hands-on; learning directions are clearly marked and never packaged as production experience.',
+    workTitle: 'How I work',
+    work1: 'Frame the problem first',
+    work1Text: 'Confirm business goals, users, existing systems and constraints before discussing technology; no jargon-first proposals.',
+    work2: 'Document the trade-offs',
+    work2Text: 'State why this option, what was given up and where the risks are, so the team can review and maintain it later.',
+    work3: 'Close the delivery loop',
+    work3Text: 'Consider types, tests, docs, CI/CD and post-launch observability together, not just shipping the page.',
+    experienceTitle: 'Experience',
+    latest: 'Most recent',
+    keywordAria: 'Keywords',
+    directionTitle: 'Career direction',
+    directionMore: 'View learning and exploration',
+    educationTitle: 'Education',
+    skillsTitle: 'Technical skills',
+    skillsNote: 'Layered by real usage; learning technologies are never written up as production experience.',
+    explorationTitle: 'Exploration',
+    explorationNote: 'The following are in learning, planning or validation stages, not delivered projects.',
+    explorationMore: 'View the lab',
+    contactTitle: 'Contact',
+    emailLabel: 'Email: ',
+    resumeLabel: 'Resume: ',
+    resumeLink: 'Web resume',
+  },
+}[lang];
+---
+<BaseLayout title={copy.title} description={copy.description} lang={lang}>
+  <article class="about wrap">
+    <header class="about-head">
+      <h1>{copy.heading}</h1>
+      <p class="about-lead">{copy.lead}</p>
+    </header>
+
+    <div class="about-intro">
+      <p>{copy.intro1}</p>
+      <p>{copy.intro2}</p>
+      <p>{copy.intro3}</p>
+    </div>
+
+    <p class="about-summary">{copy.summary}</p>
+
+    <p class="about-availability">
+      <span class="status-dot" aria-hidden="true"></span>
+      {site.availability}{lang === 'zh' ? '。' : '. '}<a href={localePath(lang, '/services/')}>{copy.availabilityLink}</a>
+    </p>
+
+    <section class="block">
+      <h2>{copy.industryTitle}</h2>
+      <p class="block-note">{copy.industryNote}</p>
+      <ul class="industry-tags" aria-label={copy.industryAria}>
+        {industry.tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+      <div class="industry-grid">
+        {industry.evidence.map((item) => (
+          <article class="industry-item">
+            <h3>{item.title}</h3>
+            <p>{item.scenario}</p>
+            <p class="industry-response">{item.response}</p>
+            <a href={localePath(lang, item.href)}>{item.linkLabel} →</a>
+          </article>
+        ))}
+      </div>
+      <p class="boundary-note">
+        {industry.boundary}
+        <a href={localePath(lang, '/#domain')}>{copy.industryMore}</a>
+      </p>
+    </section>
+
+    <section class="block">
+      <h2>{copy.boundaryTitle}</h2>
+      <div class="boundary-grid">
+        <div class="boundary-item is-practice">
+          <h3>{copy.boundaryPractice}</h3>
+          <p>{copy.boundaryPracticeText}</p>
+        </div>
+        <div class="boundary-item">
+          <h3>{copy.boundaryFamiliar}</h3>
+          <p>{copy.boundaryFamiliarText}</p>
+        </div>
+        <div class="boundary-item is-learning">
+          <h3>{copy.boundaryLearning}</h3>
+          <p>{copy.boundaryLearningText}</p>
+        </div>
+      </div>
+      <p class="boundary-note">{copy.boundaryNote}</p>
+    </section>
+
+    <section class="block">
+      <h2>{copy.workTitle}</h2>
+      <div class="work-grid">
+        <div>
+          <span class="work-index">01</span>
+          <h3>{copy.work1}</h3>
+          <p>{copy.work1Text}</p>
+        </div>
+        <div>
+          <span class="work-index">02</span>
+          <h3>{copy.work2}</h3>
+          <p>{copy.work2Text}</p>
+        </div>
+        <div>
+          <span class="work-index">03</span>
+          <h3>{copy.work3}</h3>
+          <p>{copy.work3Text}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>{copy.experienceTitle}</h2>
+      <ol class="timeline">
+        {experience.map((job, index) => (
+          <li class="stint">
+            <p class="stint-time">
+              {job.period}
+              {index === 0 && <span class="badge">{copy.latest}</span>}
+            </p>
+            <h3>{job.company}</h3>
+            <p class="stint-role">{job.role}</p>
+            <p class="stint-summary">{job.summary}</p>
+            <ul>
+              {job.points.map((point) => <li>{point}</li>)}
+            </ul>
+            <ul class="stint-tags" aria-label={copy.keywordAria}>
+              {job.keywords.map((keyword) => <li>{keyword}</li>)}
+            </ul>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="block">
+      <h2>{copy.directionTitle}</h2>
+      <p class="block-note">{careerDirection.statement}</p>
+      <div class="direction-grid">
+        {careerDirection.states.map((state) => (
+          <div class:list={['direction-state', `is-${state.tone}`]}>
+            <div class="direction-head">
+              <span>{state.key}</span>
+              <h3>{state.label}</h3>
+            </div>
+            <ul>
+              {state.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <p class="boundary-note">
+        {careerDirection.fdeNote}
+        <a href={localePath(lang, '/#direction')}>{copy.directionMore}</a>
+      </p>
+    </section>
+
+    <section class="block">
+      <h2>{copy.educationTitle}</h2>
+      <p class="edu-line">{education.school} · {education.major} · {education.period}</p>
+      <ul class="plain-list">
+        {education.honors.map((honor) => <li>{honor}</li>)}
+      </ul>
+    </section>
+
+    <section class="block" id="stack">
+      <h2>{copy.skillsTitle}</h2>
+      <p class="block-note">{copy.skillsNote}</p>
+      <SkillTiers layout="stack" lang={lang} />
+    </section>
+
+    <section class="block">
+      <h2>{copy.explorationTitle}</h2>
+      <p class="block-note">{copy.explorationNote}</p>
+      <ul class="explore-list">
+        {explorations.map((item) => (
+          <li>
+            <span class="explore-status">{item.status}</span>
+            <a href={localePath(lang, `/lab/#${item.id}`)}>{item.title}</a>
+            <span class="explore-boundary">{item.boundary}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="explore-more"><a href={localePath(lang, '/lab/')}>{copy.explorationMore}</a></p>
+    </section>
+
+    <section class="block">
+      <h2>{copy.contactTitle}</h2>
+      <p class="contact-line">
+        {copy.emailLabel}<a href={`mailto:${site.email}`}>{site.email}</a><br />
+        {lang === 'zh' ? 'GitHub：' : 'GitHub: '}<a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a><br />
+        {copy.resumeLabel}<a href={localePath(lang, '/resume/')}>{copy.resumeLink}</a>
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .about {
+    padding-block: clamp(3rem, 8vw, 5rem);
+  }
+
+  .about-head {
+    margin-bottom: 2.5rem;
+  }
+
+  .about-head h1 {
+    font-size: clamp(2rem, 4.5vw, 2.8rem);
+  }
+
+  .about-lead {
+    margin-top: 0.6rem;
+    color: var(--muted);
+  }
+
+  .about-intro {
+    max-width: 66ch;
+    font-size: 1.02rem;
+    line-height: 1.85;
+  }
+
+  .about-intro p + p {
+    margin-top: 1em;
+  }
+
+  .about-summary {
+    max-width: 54ch;
+    margin-top: 2rem;
+    padding: 0.15rem 0 0.15rem 1.1rem;
+    border-left: 2px solid var(--seal);
+    font-family: var(--font-display);
+    font-size: clamp(1.08rem, 2vw, 1.28rem);
+    line-height: 1.6;
+  }
+
+  .about-availability {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.45rem;
+    margin-top: 1.4rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .status-dot {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--seal);
+    transform: translateY(-1px);
+  }
+
+  .about-availability a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .about-availability a:hover {
+    color: var(--accent);
+  }
+
+  .block {
+    margin-top: clamp(2.6rem, 6vw, 4rem);
+  }
+
+  .block h2 {
+    font-size: 1.5rem;
+  }
+
+  .block-note {
+    max-width: 62ch;
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font-size: 0.86rem;
+  }
+
+  /* Ability boundary ---------------------------------------------- */
+  .boundary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+    margin-top: 1.5rem;
+  }
+
+  .boundary-item {
+    padding-top: 0.9rem;
+  }
+
+  .boundary-item h3 {
+    font-size: 0.98rem;
+  }
+
+  .boundary-item p {
+    margin-top: 0.45rem;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+
+  .boundary-note {
+    max-width: 64ch;
+    margin-top: 1.2rem;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--line);
+    background: var(--paper-raised);
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.65;
+  }
+
+  /* Industry ------------------------------------------------------ */
+  .industry-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .industry-tags li {
+    padding: 0.08em 0.5em;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1.7;
+  }
+
+  .industry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+    margin-top: 1.5rem;
+  }
+
+  .industry-item {
+    padding-top: 0.9rem;
+  }
+
+  .industry-item h3 {
+    font-size: 0.98rem;
+  }
+
+  .industry-item p {
+    margin-top: 0.45rem;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+
+  .industry-item .industry-response {
+    color: var(--ink);
+    font-size: 0.82rem;
+  }
+
+  .industry-item a {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .industry-item a:hover {
+    color: var(--accent);
+  }
+
+  .boundary-note a {
+    margin-left: 0.3rem;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .boundary-note a:hover {
+    color: var(--accent);
+  }
+
+  /* Career direction ---------------------------------------------- */
+  .direction-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+    margin-top: 1.5rem;
+  }
+
+  .direction-state {
+    padding-top: 0.9rem;
+  }
+
+  .direction-head {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .direction-head span {
+    display: grid;
+    flex: none;
+    width: 1.3rem;
+    height: 1.3rem;
+    place-items: center;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+  }
+
+  .direction-head h3 {
+    font-size: 0.96rem;
+  }
+
+  .direction-state ul {
+    margin: 0.8rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .direction-state li {
+    position: relative;
+    padding-left: 0.9rem;
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.68;
+  }
+
+  .direction-state li + li {
+    margin-top: 0.4rem;
+  }
+
+  .direction-state li::before {
+    content: '';
+    position: absolute;
+    top: 0.62em;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    background: var(--line-strong);
+  }
+
+  /* Work style ---------------------------------------------------- */
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.6rem 2rem;
+    margin-top: 1.5rem;
+  }
+
+  .work-index {
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+  }
+
+  .work-grid h3 {
+    margin-top: 0.4rem;
+    font-size: 1rem;
+  }
+
+  .work-grid p {
+    margin-top: 0.4rem;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+
+  /* Timeline ------------------------------------------------------ */
+  .timeline {
+    position: relative;
+    margin: 1.6rem 0 0;
+    padding: 0 0 0 1.75rem;
+    border-left: 1px solid var(--line-strong);
+    list-style: none;
+  }
+
+  .stint {
+    position: relative;
+    padding-bottom: 2rem;
+  }
+
+  .stint:last-child {
+    padding-bottom: 0;
+  }
+
+  .stint::before {
+    content: '';
+    position: absolute;
+    top: 0.62em;
+    left: calc(-1.75rem - 3.5px);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .stint-time {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .badge {
+    padding: 0.02em 0.4em;
+    border: 1px solid var(--seal);
+    border-radius: 2px;
+    color: var(--seal);
+    font-size: 0.7rem;
+    line-height: 1.6;
+  }
+
+  .stint h3 {
+    margin-top: 0.35rem;
+    font-size: 1.15rem;
+  }
+
+  .stint-role {
+    margin-top: 0.1rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .stint-summary {
+    max-width: 64ch;
+    margin-top: 0.55rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .stint ul {
+    max-width: 64ch;
+    margin: 0.8rem 0 0;
+    padding-left: 1.2em;
+    font-size: 0.94rem;
+    line-height: 1.8;
+  }
+
+  .stint li + li,
+  .plain-list li + li {
+    margin-top: 0.35em;
+  }
+
+  .stint-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0.8rem 0 0;
+    padding: 0 !important;
+    list-style: none;
+  }
+
+  .stint-tags li {
+    padding: 0.05em 0.45em;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    color: var(--muted);
+    font-size: 0.68rem;
+    line-height: 1.6;
+  }
+
+  .edu-line {
+    margin-top: 1.3rem;
+    font-size: 0.98rem;
+  }
+
+  .plain-list {
+    max-width: 62ch;
+    margin: 0.8rem 0 0;
+    padding-left: 1.2em;
+    font-size: 0.94rem;
+  }
+
+  /* Exploration list ---------------------------------------------- */
+  .explore-list {
+    margin: 1.3rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .explore-list li {
+    display: grid;
+    grid-template-columns: 4.5rem 12rem minmax(0, 1fr);
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+    padding: 0.8rem 0;
+  }
+
+  .explore-status {
+    color: var(--seal);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+  }
+
+  .explore-list a {
+    font-size: 0.92rem;
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .explore-list a:hover {
+    color: var(--accent);
+  }
+
+  .explore-boundary {
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .explore-more {
+    margin-top: 1rem;
+    font-size: 0.86rem;
+  }
+
+  .explore-more a,
+  .contact-line a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .explore-more a:hover,
+  .contact-line a:hover {
+    color: var(--accent);
+  }
+
+  .contact-line {
+    margin-top: 1.2rem;
+    font-size: 0.98rem;
+    line-height: 1.9;
+  }
+
+  @media (max-width: 860px) {
+    .boundary-grid,
+    .work-grid,
+    .industry-grid,
+    .direction-grid {
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+    }
+
+    .explore-list li {
+      grid-template-columns: 4.5rem minmax(0, 1fr);
+    }
+
+    .explore-boundary {
+      grid-column: 2;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .explore-list li {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
+
+    .explore-boundary {
+      grid-column: 1;
+    }
+  }
+</style>

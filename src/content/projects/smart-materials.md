@@ -51,10 +51,15 @@ decisions:
     problem: 固定报表只能看数，异常出现后仍要靠人判断原因与处理方式。
     choice: 结合时序异常检测与大模型生成可能原因、影响范围与处理建议，支持一键生成标准工单。
     benefit: 分析结果直接进入工单闭环，从看到异常推进到处理异常。
+  - title: 申领链路以异步与幂等为底线
+    problem: 物资申领触发库存扣减，高并发下同步写库与消息重复消费都可能造成超卖或重复扣减。
+    choice: 用 RabbitMQ 解耦申领下单与库存扣减，Redis SETNX 配合订单唯一索引实现消费幂等，再用乐观锁与条件更新防止超卖。
+    benefit: 申领链路在高并发下保持响应，重试或重复投递不会破坏库存数据。
 checks:
   - 迁移后的业务模块，行为与旧系统是否一致？
   - 网络抖动或断连时，SSE 与 WebSocket 是否按预期恢复？
   - AI 报告的原因与建议，能否追溯到对应数据与异常检测结果？
+  - 并发申领或消息重复投递时，库存是否只扣减一次？
 outcome: 系统完成技术栈与架构重构，固定报表升级为可交互的智能分析报告，老系统的性能与可维护性问题得到系统性解决。
 responsibility: 主导 Vue2 到 Vue3 的迁移与前端架构重写，设计 AI 智能分析报告、混合实时通信与工业 PAD 适配方案。
 contribution:
@@ -67,10 +72,11 @@ contribution:
     - SSE / WebSocket 连接管理、断线重连与状态同步。
     - ECharts 图表配置、智能图表推荐与工业 PAD 适配。
     - 渐进式数据加载与高频查询缓存。
+    - RabbitMQ 异步申领链路、Redis SETNX 幂等与乐观锁库存更新。
   team:
     - 与后端联调模型、时序异常检测与工单接口。
     - 与业务方按模块推进迁移验收，保证业务连续。
-stack: [Vue3, TypeScript, Vite, Pinia, Ant Design Vue, ECharts, SSE, WebSocket]
+stack: [Vue3, TypeScript, Vite, Pinia, Ant Design Vue, ECharts, SSE, WebSocket, Spring Boot, RabbitMQ, Redis]
 metrics: [Vue2 → Vue3 全量迁移, 双通道实时通信, 弱网离线可用]
 metricsNote: 迁移范围与双通道架构为项目事实；「弱网可用」为现场测试结论，未附量化记录。
 media:

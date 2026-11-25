@@ -1,38 +1,58 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { localePath, projectSlug, type Lang } from '../i18n';
 
 interface Props {
   project: CollectionEntry<'projects'>;
+  lang?: Lang;
 }
 
-const { project } = Astro.props;
+const { project, lang = 'zh' } = Astro.props;
 const { name, period, role, summary, stack, metrics, category, domain } = project.data;
 
-const categoryLabels: Record<string, string> = {
-  ai: 'AI 应用',
-  business: '业务系统',
-  infra: '工程基建',
-  'cross-platform': '跨端应用',
-};
+const copy = {
+  zh: {
+    roleLabel: '角色',
+    metricsAria: '成果',
+    stackAria: '技术栈',
+    categoryLabels: {
+      ai: 'AI 应用',
+      business: '业务系统',
+      infra: '工程基建',
+      'cross-platform': '跨端应用',
+    } as Record<string, string>,
+  },
+  en: {
+    roleLabel: 'Role',
+    metricsAria: 'Results',
+    stackAria: 'Stack',
+    categoryLabels: {
+      ai: 'AI applications',
+      business: 'Business systems',
+      infra: 'Engineering foundations',
+      'cross-platform': 'Cross-platform',
+    } as Record<string, string>,
+  },
+}[lang];
 ---
-<a class="project" href={`/projects/${project.id}/`} data-category={category}>
+<a class="project" href={localePath(lang, `/projects/${projectSlug(project.id)}/`)} data-category={category}>
   <div class="project-body">
     <div class="project-meta">
-      <span class="category">{categoryLabels[category] ?? category}</span>
+      <span class="category">{copy.categoryLabels[category] ?? category}</span>
       <span class="period">{period}</span>
       {domain.length > 0 && <span class="domains">{domain.slice(0, 3).join(' / ')}</span>}
     </div>
     <h3>{name}</h3>
-    <p class="role"><span>角色</span>{role}</p>
+    <p class="role"><span>{copy.roleLabel}</span>{role}</p>
     <p class="summary">{summary}</p>
     {metrics.length > 0 && (
-      <ul class="metrics" aria-label="成果">
+      <ul class="metrics" aria-label={copy.metricsAria}>
         {metrics.map((metric) => <li>{metric}</li>)}
       </ul>
     )}
   </div>
   <div class="project-side">
-    <ul class="stack" aria-label="技术栈">
+    <ul class="stack" aria-label={copy.stackAria}>
       {stack.slice(0, 4).map((item) => <li>{item}</li>)}
       {stack.length > 4 && <li>+{stack.length - 4}</li>}
     </ul>

@@ -1,18 +1,45 @@
 ---
-import { industry } from '../data/site';
+import { getContent } from '../data';
+import { localePath, type Lang } from '../i18n';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'zh' } = Astro.props;
+const { industry } = getContent(lang);
+
+const copy = {
+  zh: {
+    kicker: '行业经验 · Domain Experience',
+    heading: '3 年+，在物流与仓储的业务现场。',
+    headNote: 'ToB 企业级软件 · 内容已脱敏',
+    tagsAria: '行业场景',
+    responseLabel: '工程回应',
+    understandingTitle: '从项目里长出的业务理解',
+  },
+  en: {
+    kicker: 'Domain experience',
+    heading: '3+ years on the logistics and warehouse floor.',
+    headNote: 'ToB enterprise software · anonymized',
+    tagsAria: 'Industry scenarios',
+    responseLabel: 'Engineering response',
+    understandingTitle: 'Business understanding earned on projects',
+  },
+}[lang];
 ---
 <section id="domain" class="domain wrap" aria-labelledby="domain-title">
   <div class="head">
     <div>
-      <p class="kicker">行业经验 · Domain Experience</p>
-      <h2 id="domain-title">近 4 年，在物流与仓储的业务现场。</h2>
+      <p class="kicker">{copy.kicker}</p>
+      <h2 id="domain-title">{copy.heading}</h2>
     </div>
-    <p class="head-note">ToB 企业级软件 · 内容已脱敏</p>
+    <p class="head-note">{copy.headNote}</p>
   </div>
 
   <p class="statement">{industry.statement}</p>
 
-  <ul class="tags" aria-label="行业场景">
+  <ul class="tags" aria-label={copy.tagsAria}>
     {industry.tags.map((tag) => <li>{tag}</li>)}
   </ul>
 
@@ -31,14 +58,14 @@ import { industry } from '../data/site';
         <span class="index">{String(index + 1).padStart(2, '0')}</span>
         <h3>{item.title}</h3>
         <p class="scenario">{item.scenario}</p>
-        <p class="response"><span>工程回应</span>{item.response}</p>
-        <a href={item.href}>{item.linkLabel} →</a>
+        <p class="response"><span>{copy.responseLabel}</span>{item.response}</p>
+        <a href={localePath(lang, item.href)}>{item.linkLabel} →</a>
       </article>
     ))}
   </div>
 
   <div class="understanding">
-    <h3>从项目里长出的业务理解</h3>
+    <h3>{copy.understandingTitle}</h3>
     <ul>
       {industry.understanding.map((item) => <li>{item}</li>)}
     </ul>

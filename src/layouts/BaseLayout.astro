@@ -3,7 +3,9 @@ import '@fontsource-variable/public-sans';
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import { site, education } from '../data/site';
+import SwarmEgg from '../components/SwarmEgg.astro';
+import { getContent } from '../data';
+import { alternatePath, type Lang } from '../i18n';
 
 interface Props {
   title?: string;
@@ -11,20 +13,29 @@ interface Props {
   type?: 'website' | 'article';
   image?: string;
   noindex?: boolean;
+  lang?: Lang;
 }
 
 const {
   title,
-  description = site.intro,
+  description,
   type = 'website',
   image = '/images/og-cover.png',
   noindex = false,
+  lang = 'zh',
 } = Astro.props;
+
+const { site, education } = getContent(lang);
+const htmlLang = lang === 'zh' ? 'zh-CN' : 'en';
+const ogLocale = lang === 'zh' ? 'zh_CN' : 'en_US';
+const pageDescription = description ?? site.intro;
 
 const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.title}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
-const isHome = Astro.url.pathname === '/';
+const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/en/';
+const zhPath = lang === 'zh' ? Astro.url.pathname : alternatePath(lang, Astro.url.pathname);
+const enPath = lang === 'en' ? Astro.url.pathname : alternatePath(lang, Astro.url.pathname);
 
 const personJsonLd = {
   '@context': 'https://schema.org',
@@ -72,24 +83,31 @@ const websiteJsonLd = {
   name: `${site.name} · ${site.nameEn}`,
   alternateName: `${site.nameEn} Portfolio`,
   url: Astro.site?.toString(),
-  inLanguage: 'zh-CN',
-  description,
+  inLanguage: lang === 'zh' ? 'zh-CN' : 'en',
+  description: pageDescription,
 };
 ---
 <!doctype html>
-<html lang="zh-CN" data-type="software" data-site-kind="software" data-radius="sharp" data-buttons="solid" data-motion>
+<html lang={htmlLang} data-lang={lang} data-type="software" data-site-kind="software" data-radius="sharp" data-buttons="solid" data-motion>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
-    <meta name="description" content={description} />
-    <meta name="author" content={`${site.name}（${site.nameEn}）`} />
+    <meta name="description" content={pageDescription} />
+    <meta name="author" content={lang === 'zh' ? `${site.name}（${site.nameEn}）` : `${site.name} (${site.nameEn})`} />
     <meta name="robots" content={noindex ? 'noindex,nofollow' : 'index,follow'} />
     <meta name="format-detection" content="telephone=no" />
     <meta name="page-type" content="software" />
     <meta name="site-kind" content="software" />
     <link rel="stylesheet" href="/assets/motion/motion.css" />
     <link rel="canonical" href={canonical} />
+    {!noindex && (
+      <>
+        <link rel="alternate" hreflang="zh-CN" href={new URL(zhPath, Astro.site)} />
+        <link rel="alternate" hreflang="en" href={new URL(enPath, Astro.site)} />
+        <link rel="alternate" hreflang="x-default" href={new URL(zhPath, Astro.site)} />
+      </>
+    )}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
@@ -97,10 +115,11 @@ const websiteJsonLd = {
 
     <meta property="og:type" content={type} />
     <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={`${site.name} · ${site.nameEn}`} />
-    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale:alternate" content={lang === 'zh' ? 'en_US' : 'zh_CN'} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -108,7 +127,7 @@ const websiteJsonLd = {
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={ogImage} />
 
     <meta name="theme-color" content="#e8ebe9" media="(prefers-color-scheme: light)" />
@@ -140,12 +159,13 @@ const websiteJsonLd = {
     </script>
   </head>
   <body id="top" class:list={{ 'is-home': isHome }}>
-    <a class="skip-link" href="#main">跳到主要内容</a>
-    <Nav />
+    <a class="skip-link" href="#main">{lang === 'zh' ? '跳到主要内容' : 'Skip to main content'}</a>
+    <Nav lang={lang} />
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    <Footer home={isHome} />
+    <Footer home={isHome} lang={lang} />
+    <SwarmEgg lang={lang} />
     <script is:inline type="module" src="/assets/motion/motion.js"></script>
     {isHome && <script is:inline type="module" src="/assets/moments/moments.js"></script>}
   </body>
