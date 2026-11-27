@@ -1,5 +1,6 @@
 ---
 import { getContent } from '../data';
+import Icon from './Icon.astro';
 import { alternatePath, localePath, type Lang } from '../i18n';
 
 interface Props {
@@ -16,7 +17,7 @@ const labels = {
     experience: '经历',
     lab: '探索',
     about: '关于',
-    services: '合作',
+    contact: '联系',
     resume: '查看简历',
     resumeShort: '简历',
     home: `${site.name} ${site.nameEn} 首页`,
@@ -35,7 +36,7 @@ const labels = {
     experience: 'Experience',
     lab: 'Lab',
     about: 'About',
-    services: 'Contact',
+    contact: 'Contact',
     resume: 'Resume',
     resumeShort: 'Resume',
     home: `${site.name} ${site.nameEn} home`,
@@ -56,7 +57,7 @@ const links = [
   { path: '/#experience', label: labels.experience },
   { path: '/lab/', label: labels.lab },
   { path: '/about/', label: labels.about },
-  { path: '/services/', label: labels.services },
+  { path: '/contact/', label: labels.contact },
 ].map((link) => ({ ...link, href: localePath(lang, link.path) }));
 
 const currentPath = Astro.url.pathname;
@@ -92,7 +93,7 @@ const switchHref = alternatePath(lang, currentPath);
       <a class="nav-lang" href={switchHref} aria-label={labels.language} hreflang={lang === 'zh' ? 'en' : 'zh-CN'}>
         {labels.languageShort}
       </a>
-      <a class="nav-resume" href={localePath(lang, '/resume/')}>{labels.resume} <span aria-hidden="true">↗</span></a>
+      <a class="nav-resume" href={localePath(lang, '/resume/')}>{labels.resume} <span aria-hidden="true"><Icon name="arrow-up-right" /></span></a>
       <a
         class="nav-icon nav-github"
         href={site.github}
@@ -257,7 +258,7 @@ const switchHref = alternatePath(lang, currentPath);
     width: 36px;
     height: 36px;
     background: var(--signal);
-    color: #191d20;
+    color: #fff;
     font-family: var(--font-display);
     font-size: 1.3rem;
     font-weight: 750;
@@ -273,8 +274,8 @@ const switchHref = alternatePath(lang, currentPath);
   .nav-links {
     display: flex;
     align-items: center;
-    gap: 1.15rem;
-    font-size: 0.9rem;
+    gap: clamp(1.5rem, 2.6vw, 2.5rem);
+    font-size: 0.9375rem;
   }
 
   .nav-link {
@@ -282,28 +283,29 @@ const switchHref = alternatePath(lang, currentPath);
     position: relative;
     align-items: center;
     min-height: 44px;
+    padding-inline: 2px;
     color: var(--muted);
-    transition: color 0.2s ease;
+    transition: color var(--m-out, 120ms) ease;
   }
 
-  .nav-link:hover {
-    color: var(--ink);
+  .nav-link:is(:hover, :focus-visible, .is-active) {
+    color: var(--accent);
   }
 
-  .nav-link.is-active {
-    color: var(--ink);
-  }
-
-  .nav-link.is-active::after {
+  .nav-link::after {
     content: '';
     position: absolute;
     bottom: 4px;
     left: 0;
     right: 0;
-    height: 1.5px;
-    margin-top: 0.12rem;
-    background: var(--seal);
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--m-in, 150ms) var(--m-ease, ease-out);
   }
+
+  .nav-link:is(:hover, :focus-visible, .is-active)::after { transform: scaleX(1); }
 
   .nav-actions {
     display: flex;
@@ -320,12 +322,12 @@ const switchHref = alternatePath(lang, currentPath);
     height: 44px;
     border-radius: 2px;
     color: var(--muted);
-    transition: color 0.2s ease;
+    transition: color 150ms ease, background-color 150ms ease;
   }
 
-  .nav-icon:hover {
-    color: var(--ink);
-    background: var(--paper-raised);
+  .nav-icon:is(:hover, :focus-visible) {
+    color: var(--accent);
+    background: var(--accent-soft);
   }
 
   .nav-lang {
@@ -356,10 +358,15 @@ const switchHref = alternatePath(lang, currentPath);
     border: 1px solid var(--line-strong);
     border-radius: 2px;
     font-size: 14px;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
   }
 
-  .nav-resume:hover { background: var(--paper-raised); }
-  .nav-resume span { color: var(--accent); }
+  .nav-resume:is(:hover, :focus-visible) { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+  .nav-resume span { display: inline-block; color: var(--accent); transition: transform 150ms ease; }
+  .nav-resume:focus-visible span { transform: translate(2px, -2px); }
+  @media (hover: hover) and (pointer: fine) {
+    .nav-resume:hover span { transform: translate(2px, -2px); }
+  }
 
   .menu-toggle {
     display: none;
@@ -411,12 +418,16 @@ const switchHref = alternatePath(lang, currentPath);
     border-bottom: 1px solid var(--line);
     color: var(--muted);
     font-size: 1rem;
+    transition: color 150ms ease;
   }
 
   .mobile-link:hover,
+  .mobile-link:focus-visible,
   .mobile-link.is-active {
-    color: var(--ink);
+    color: var(--accent);
   }
+
+  .mobile-link.is-active { box-shadow: inset 3px 0 var(--accent); padding-left: 12px; }
 
   .mobile-lang {
     color: var(--accent);
@@ -466,4 +477,7 @@ const switchHref = alternatePath(lang, currentPath);
   }
 
   @media (max-width: 359px) { .brand-en { font-size: 14px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-resume:is(:hover, :focus-visible) span { transform: none; }
+  }
 </style>

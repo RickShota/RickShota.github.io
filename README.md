@@ -32,6 +32,7 @@ npm run check    # Astro + TypeScript 类型检查
 | 简历页文案与打印样式 | `src/views/ResumeView.astro` |
 | 技术探索页 | `src/views/LabView.astro` |
 | 求职与合作文案 | `src/views/ServicesView.astro` |
+| 联系页（邮件与微信二维码） | `src/views/ContactView.astro`，路由 `/contact/` 与 `/en/contact/` |
 | 图片资源 | `public/images/` |
 | 页面样式 | `src/styles/global.css`、各组件内 scoped style |
 | 右下角彩蛋动画 | `src/components/SwarmEgg.astro`（依赖 `cursor-build`） |
@@ -135,6 +136,7 @@ public/
 
 - 配色：设备冷灰 + 炭黑 + 信号橙；深浅色主题使用同一套中性色与橙色状态色。
 - 字体：本地托管 Public Sans + 中文黑体，标题使用粗字重；等宽字体用于日期、编号与技术标记。
+- 图标：本地打包 Bootstrap Icons 字体图标，通过 `src/components/Icon.astro` 引用；界面箭头使用图标，不使用 Unicode 文本符号。
 - 首页按个人定位、项目档案、工程能力、经历与探索、联系五段组织；二次元头像保留在工牌式信息面板中。
 - 项目展示包含 3 个精选案例与 3 个档案列表，全部支持分类筛选。技术图示来自案例内容，明确标识为示意，不冒充产品截图。
 - 完整技术分层保留在关于页与简历页；学习中的 AI 与工业协议方向继续单独标注。

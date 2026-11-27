@@ -1,5 +1,6 @@
 ---
 import '@fontsource-variable/public-sans';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -108,8 +109,7 @@ const websiteJsonLd = {
         <link rel="alternate" hreflang="x-default" href={new URL(zhPath, Astro.site)} />
       </>
     )}
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate icon" href="/favicon.png" type="image/png" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 

@@ -14,6 +14,7 @@
     "@fontsource-variable/fraunces": "^5.3.0",
     "@fontsource-variable/public-sans": "^5.3.0",
     "astro": "^7.4.7",
+    "bootstrap-icons": "^1.13.2",
     "cursor-build": "0.2.3"
   },
   "devDependencies": {

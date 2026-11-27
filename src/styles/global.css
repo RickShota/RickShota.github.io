@@ -2,19 +2,29 @@
    Tokens
    ------------------------------------------------------------------ */
 :root {
-  --paper: #e8ebe9;
-  --paper-raised: #f7f8f5;
+  --paper: #e9ecea;
+  --paper-section: #f2f4f1;
+  --paper-raised: #fcfdfa;
+  --paper-inset: #edf0ed;
   --ink: #191d20;
   --muted: #535c60;
+  --ink-secondary: color-mix(in srgb, var(--ink) 18%, var(--muted));
   --accent: #ad3b14;
   --seal: #ad3b14;
   --signal: #f45d2a;
-  --line: rgba(25, 29, 32, 0.16);
-  --line-strong: rgba(25, 29, 32, 0.36);
+  --accent-soft: #fff0e7;
+  --accent-line: #cf7957;
+  --line: rgba(25, 29, 32, 0.12);
+  --line-strong: rgba(25, 29, 32, 0.26);
+  --surface-shadow: 0 2px 8px rgba(25, 29, 32, 0.035);
+  --card: var(--paper-raised);
 
   --font-display: 'Public Sans Variable', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   --font-body: 'Public Sans Variable', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  --text-meta: 0.8125rem;
+  --text-note: 0.875rem;
+  --text-body: 1rem;
 
   --max: 1360px;
   --gutter: 40px;
@@ -32,14 +42,19 @@
 
 [data-theme='dark'] {
   --paper: #191d20;
-  --paper-raised: #22282b;
+  --paper-section: #1d2326;
+  --paper-raised: #272e31;
+  --paper-inset: #21272a;
   --ink: #f0f2ed;
   --muted: #afb8ba;
   --accent: #ff946d;
   --seal: #ff946d;
   --action: #ff946d;
-  --line: rgba(240, 242, 237, 0.17);
-  --line-strong: rgba(240, 242, 237, 0.38);
+  --accent-soft: #392b24;
+  --accent-line: #b16b4e;
+  --line: rgba(240, 242, 237, 0.14);
+  --line-strong: rgba(240, 242, 237, 0.28);
+  --surface-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
 
   color-scheme: dark;
 }
@@ -122,6 +137,21 @@ img {
   max-width: 100%;
   height: auto;
 }
+
+.ui-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  font-style: normal;
+  letter-spacing: normal;
+  line-height: 1;
+  vertical-align: -0.125em;
+}
+
+.ui-icon::before { vertical-align: 0; }
 
 [hidden] {
   display: none !important;
@@ -347,6 +377,34 @@ button {
 .btn--secondary {
   background: transparent;
   color: var(--ink);
+}
+
+/* Keep keyboard feedback as clear as pointer feedback. Motion comes from motion.css. */
+.btn--primary:focus-visible {
+  background: color-mix(in oklab, var(--signal) 86%, var(--paper));
+}
+
+.btn--secondary:focus-visible {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.btn > span[aria-hidden='true'] {
+  display: inline-block;
+  transition: transform var(--m-out, 120ms) var(--m-ease, ease-out);
+}
+
+.btn:focus-visible > span[aria-hidden='true'] {
+  transform: translateY(-2px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover > span[aria-hidden='true'] { transform: translateY(-2px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:is(:hover, :focus-visible) > span[aria-hidden='true'] { transform: none; }
 }
 
 @media (max-width: 767px) {

@@ -1,0 +1,9 @@
+---
+interface Props {
+  name: 'arrow-up-right' | 'arrow-up' | 'arrow-down' | 'arrow-left' | 'envelope';
+  class?: string;
+}
+
+const { name, class: className } = Astro.props;
+---
+<i class:list={['ui-icon', 'bi', `bi-${name}`, className]} aria-hidden="true"></i>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectBlueprint from '../components/ProjectBlueprint.astro';
+import Icon from '../components/Icon.astro';
 import { getCollection } from 'astro:content';
 import { getContent } from '../data';
 import { isEnglishProject, localePath, projectSlug, type Lang } from '../i18n';
@@ -33,7 +34,7 @@ const copy = {
     heroIntro: '前端为主，也写 Java 后端。',
     heroIntroBreak: '在物流、仓储与 AI 应用里，把业务链路接起来。',
     viewWork: '查看项目',
-    viewResume: '查看简历',
+    contactMe: '联系我',
     status: '3 年+ 企业级研发经验 · 在职，关注新的机会',
     workbenchAria: '个人信息与交付链路',
     benchHeader: '工程档案 / 001',
@@ -85,9 +86,9 @@ const copy = {
       '处理扫码、离线同步和平台差异，让现场作业适应真实的网络条件。',
     ],
     stackLabel: '项目实战',
-    stackLink: '查看技术分层 ↗',
+    stackLink: '查看技术分层',
     experienceTitle: '经历与下一步',
-    fullExperience: '完整经历 ↗',
+    fullExperience: '完整经历',
     now: '现在',
     labHeading: '保持好奇，',
     labHeadingBreak: '继续动手。',
@@ -107,7 +108,7 @@ const copy = {
     heroIntro: 'Front-end first, Java back end too.',
     heroIntroBreak: 'Connecting business flows across logistics, warehousing and AI.',
     viewWork: 'View work',
-    viewResume: 'View resume',
+    contactMe: 'Contact me',
     status: '3+ years in enterprise software · Employed, open to new opportunities',
     workbenchAria: 'Profile and delivery path',
     benchHeader: 'Engineering file / 001',
@@ -159,9 +160,9 @@ const copy = {
       'Handle scanning, offline sync and platform differences so field work fits real network conditions.',
     ],
     stackLabel: 'In production',
-    stackLink: 'View skill breakdown ↗',
+    stackLink: 'View skill breakdown',
     experienceTitle: 'Experience & next steps',
-    fullExperience: 'Full experience ↗',
+    fullExperience: 'Full experience',
     now: 'Now',
     labHeading: 'Stay curious,',
     labHeadingBreak: 'keep building.',
@@ -187,8 +188,8 @@ const copy = {
           <h1 id="hero-title">{copy.heroTitle}<br />{copy.heroTitleBreak}<span class="title-stop">{copy.heroStop}</span></h1>
           <p class="hero-intro">{copy.heroIntro}<br />{copy.heroIntroBreak}</p>
           <div class="hero-actions">
-            <a class="btn btn--primary" href="#projects">{copy.viewWork} <span aria-hidden="true">↗</span></a>
-            <a class="btn btn--secondary" href={localePath(lang, '/resume/')}>{copy.viewResume} <span aria-hidden="true">↓</span></a>
+            <a class="btn btn--primary" href="#projects">{copy.viewWork} <span aria-hidden="true"><Icon name="arrow-up-right" /></span></a>
+            <a class="btn btn--secondary" href={localePath(lang, '/contact/')}>{copy.contactMe} <span aria-hidden="true"><Icon name="envelope" /></span></a>
           </div>
           <p class="hero-status"><span class="square" aria-hidden="true"></span> {copy.status}</p>
         </div>
@@ -203,7 +204,7 @@ const copy = {
             <ol class="delivery-nodes">
               <li><span class="node-index">01</span><div><b>{copy.nodeFrontend}</b><span>Vue / React / TypeScript</span></div><span class="node-plus" aria-hidden="true">+</span></li>
               <li><span class="node-index">02</span><div><b>{copy.nodeApi}</b><span>Spring Boot / Redis / MQ</span></div><span class="node-plus" aria-hidden="true">+</span></li>
-              <li><span class="node-index">03</span><div><b>{copy.nodeBuild}</b><span>Docker / Nginx / CI/CD</span></div><span class="node-plus" aria-hidden="true">↗</span></li>
+              <li><span class="node-index">03</span><div><b>{copy.nodeBuild}</b><span>Docker / Nginx / CI/CD</span></div><span class="node-plus" aria-hidden="true"><Icon name="arrow-up-right" /></span></li>
             </ol>
           </div>
           <div class="bench-footer"><span>{copy.benchFooter}</span><span class="registration" aria-hidden="true"></span></div>
@@ -211,7 +212,7 @@ const copy = {
       </div>
       <div class="hero-foot">
         <dl class="hero-facts"><div><dt>{copy.factEnterprise}</dt><dd>{copy.factEnterpriseValue}</dd></div><div><dt>{copy.factCases}</dt><dd>06</dd></div><div><dt>{copy.factLines}</dt><dd>10+</dd></div></dl>
-        <a class="scroll-cue" href="#projects">{copy.scroll} <span aria-hidden="true">↓</span></a>
+        <a class="scroll-cue" href="#projects">{copy.scroll} <span aria-hidden="true"><Icon name="arrow-down" /></span></a>
       </div>
     </div>
   </section>
@@ -226,13 +227,13 @@ const copy = {
         {featured.map((project, index) => (
           <a class="project-card card" href={localePath(lang, `/projects/${projectSlug(project.id)}/`)} data-category={project.data.category}>
             <div class="project-cover"><div class="cover-head"><span class="mono">P / {String(index + 1).padStart(2, '0')}</span><span>{copy.illustrative}</span></div><ProjectBlueprint kind={projectSlug(project.id)} lang={lang} /></div>
-            <div class="project-copy"><p class="project-period">{project.data.period}</p><h3>{project.data.name}</h3><p class="project-summary">{copy.summaries[projectSlug(project.id)]}</p><div class="project-foot"><span>{project.data.role}</span><span class="project-arrow" aria-hidden="true">↗</span></div></div>
+            <div class="project-copy"><p class="project-period">{project.data.period}</p><h3>{project.data.name}</h3><p class="project-summary">{copy.summaries[projectSlug(project.id)]}</p><div class="project-foot"><span>{project.data.role}</span><span class="project-arrow" aria-hidden="true"><Icon name="arrow-up-right" /></span></div></div>
           </a>
         ))}
       </div>
       <div class="archive" aria-label={copy.archiveAria}>
         {archive.map((project, index) => (
-          <a class="archive-row" href={localePath(lang, `/projects/${projectSlug(project.id)}/`)} data-category={project.data.category}><span class="archive-num mono">{String(index + featured.length + 1).padStart(2, '0')}</span><h3>{project.data.name}</h3><span class="archive-summary">{copy.archiveSummaries[projectSlug(project.id)]}</span><span class="archive-year mono">{project.data.period.split(' — ')[0]}</span><span class="project-arrow" aria-hidden="true">↗</span></a>
+          <a class="archive-row" href={localePath(lang, `/projects/${projectSlug(project.id)}/`)} data-category={project.data.category}><span class="archive-num mono">{String(index + featured.length + 1).padStart(2, '0')}</span><h3>{project.data.name}</h3><span class="archive-summary">{copy.archiveSummaries[projectSlug(project.id)]}</span><span class="archive-year mono">{project.data.period.split(' — ')[0]}</span><span class="project-arrow" aria-hidden="true"><Icon name="arrow-up-right" /></span></a>
         ))}
       </div>
       <p class="project-boundary">{copy.boundary}</p>
@@ -245,27 +246,27 @@ const copy = {
       <div class="section-head"><div><p class="section-index">02 / Engineering</p><h2 id="engineering-title">{copy.engineeringTitle}</h2></div><span class="section-note">{copy.engineeringNote}</span></div>
       <p class="engineering-statement mo-wh__text">{copy.engineeringStatement}<br />{copy.engineeringStatementBreak}<strong>{copy.engineeringStatementStrong}</strong></p>
       <div class="capability-grid">
-        {capabilities.map((capability, index) => <a class="capability" href={localePath(lang, capability.href)}><span class="capability-index mono">{capability.index}</span><div><h3>{copy.capabilityTitles[index]}</h3><p>{copy.capabilityDetails[index]}</p><span class="capability-proof">{capability.proof}</span></div><span class="project-arrow" aria-hidden="true">↗</span></a>)}
+        {capabilities.map((capability, index) => <a class="capability" href={localePath(lang, capability.href)}><span class="capability-index mono">{capability.index}</span><div><h3>{copy.capabilityTitles[index]}</h3><p>{copy.capabilityDetails[index]}</p><span class="capability-proof">{capability.proof}</span></div><span class="project-arrow" aria-hidden="true"><Icon name="arrow-up-right" /></span></a>)}
       </div>
-      <div class="stack-strip" id="stack"><span class="mono">{copy.stackLabel}</span><p>Vue / React / TypeScript / Java / Spring Boot / Docker</p><a class="m-link" href={localePath(lang, '/about/#stack')}>{copy.stackLink}</a></div>
+      <div class="stack-strip" id="stack"><span class="mono">{copy.stackLabel}</span><p>Vue / React / TypeScript / Java / Spring Boot / Docker</p><a class="m-link" href={localePath(lang, '/about/#stack')}>{copy.stackLink}<Icon name="arrow-up-right" /></a></div>
     </div>
   </section>
 
   <section id="experience" class="experience-section" aria-labelledby="experience-title">
     <div class="wrap section-inner">
-      <div class="section-head"><div><p class="section-index">03 / Experience & beyond</p><h2 id="experience-title">{copy.experienceTitle}</h2></div><a class="section-link m-link" href={localePath(lang, '/about/')}>{copy.fullExperience}</a></div>
+      <div class="section-head"><div><p class="section-index">03 / Experience & beyond</p><h2 id="experience-title">{copy.experienceTitle}</h2></div><a class="section-link m-link" href={localePath(lang, '/about/')}>{copy.fullExperience}<Icon name="arrow-up-right" /></a></div>
       <div class="experience-grid">
         <div class="experience-list">
           {experience.map((job, index) => <article class="job"><div class="job-meta"><span class="job-time mono">{job.period}</span>{index === 0 && <span class="job-current">{copy.now}</span>}</div><h3>{job.role}</h3><p class="job-company">{job.company}</p><p class="job-summary">{job.summary}</p><ul class="job-tags" aria-label={lang === 'zh' ? '工作关键词' : 'Job keywords'}>{job.keywords.map((keyword) => <li>{keyword}</li>)}</ul></article>)}
           <div class="education"><span class="mono">Education</span><p><b>{education.school}</b> · {education.major}</p><span class="mono">{education.period}</span></div>
         </div>
         <aside class="lab-panel" id="direction" aria-label={lang === 'zh' ? '正在学习与探索' : 'Learning and exploring'}>
-          <div class="lab-heading"><span class="mono">Side projects / Lab</span><span class="lab-mark" aria-hidden="true">↗</span></div>
+          <div class="lab-heading"><span class="mono">Side projects / Lab</span><span class="lab-mark" aria-hidden="true"><Icon name="arrow-up-right" /></span></div>
           <h3>{copy.labHeading}<br />{copy.labHeadingBreak}</h3>
           <p class="lab-intro">{copy.labIntro}</p>
           <div class="lab-items">{explorations.map((item) => <div class="lab-item"><span class="lab-status">{item.status}</span><p>{item.title}</p></div>)}</div>
           <p class="lab-boundary">{copy.labBoundary}</p>
-          <a class="lab-link" href={localePath(lang, '/lab/')}>{copy.labLink} <span aria-hidden="true">↗</span></a>
+          <a class="lab-link" href={localePath(lang, '/lab/')}>{copy.labLink} <span aria-hidden="true"><Icon name="arrow-up-right" /></span></a>
         </aside>
       </div>
     </div>
@@ -301,7 +302,7 @@ const copy = {
 </script>
 
 <style>
-  .mono, .section-index { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .mono, .section-index { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: 0.025em; }
   .square { display: inline-block; width: 8px; height: 8px; flex: none; background: var(--signal); }
   .hero { min-height: 100svh; }
   .hero-inner { display: flex; min-height: 100svh; flex-direction: column; justify-content: space-between; padding-block: calc(var(--nav) + 32px) 32px; }
@@ -315,7 +316,7 @@ const copy = {
   .hero-actions { display: flex; gap: 12px; margin-top: 32px; }
   .hero-status { display: flex; gap: 8px; align-items: center; margin-top: 24px; color: var(--muted); font-size: 13px; }
   .hero-status .square { width: 6px; height: 6px; }
-  .workbench { border: 1px solid var(--line-strong); background: var(--paper-raised); }
+  .workbench { border: 1px solid var(--line-strong); background: var(--paper-raised); box-shadow: var(--surface-shadow); }
   .bench-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 13px; }
   .bench-cross { color: var(--accent); font-size: 20px; line-height: 1; }
   .identity { display: flex; gap: 24px; align-items: center; padding: 24px; }
@@ -324,14 +325,14 @@ const copy = {
   .identity-copy > .mono { color: var(--muted); font-size: 13px; }
   .identity-copy p { display: flex; align-items: baseline; gap: 12px; margin-top: 4px; font-size: 32px; font-weight: 700; }
   .identity-copy p span { font-size: 17px; letter-spacing: -0.04em; }
-  .identity-role { font-size: 13px; color: var(--muted); }
+  .identity-role { font-size: var(--text-note); color: var(--muted); line-height: 1.65; }
   .delivery { padding: 0 24px 24px; }
   .delivery-head { display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 13px; color: var(--muted); }
   .delivery-nodes { margin: 0; padding: 0; list-style: none; }
   .delivery-nodes li { position: relative; display: flex; align-items: center; gap: 16px; padding-block: 12px; border-top: 1px solid var(--line); }
   .node-index { font-family: var(--font-mono); color: var(--accent); font-size: 13px; }
-  .delivery-nodes b { display: block; font-size: 14px; font-weight: 600; }
-  .delivery-nodes div > span { display: block; margin-top: 2px; font-family: var(--font-mono); color: var(--muted); font-size: 13px; }
+  .delivery-nodes b { display: block; font-size: 15px; font-weight: 600; }
+  .delivery-nodes div > span { display: block; margin-top: 4px; color: var(--muted); font-size: var(--text-note); line-height: 1.6; }
   .node-plus { margin-left: auto; color: var(--accent); }
   .bench-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 24px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
   .registration { display: block; width: 44px; height: 16px; background: repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 5px, currentColor 5px 6px, transparent 6px 9px); opacity: .5; }
@@ -348,32 +349,44 @@ const copy = {
   .section-head h2 { font-size: var(--t-h2); letter-spacing: -.05em; }
   .signal-dot { display: inline-block; width: 10px; height: 10px; margin-left: 12px; background: var(--signal); }
   .section-note { font-size: 14px; color: var(--muted); line-height: 1.7; }
-  .work-section { background: var(--paper-raised); }
-  .work-section .section-inner { padding-block: 80px 36px; }
+  .work-section { background: var(--paper-section); }
+  .work-section .section-inner { padding-block: 72px 24px; }
   .work-section.is-filtered .section-inner { min-height: auto; }
   .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
-  .filter { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 2px; font-size: 14px; transition: background-color 150ms, color 150ms; }
-  .filter span { font-family: var(--font-mono); font-size: 13px; }
-  .filter:hover { border-color: var(--line-strong); }
-  .filter.is-active { border-color: var(--ink); background: var(--ink); color: var(--paper-raised); }
+  .filter { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 2px; font-size: var(--text-note); font-weight: 600; transition: background-color 150ms, border-color 150ms, color 150ms; }
+  .filter span { min-width: 1.5em; padding-left: 10px; border-left: 1px solid var(--line); font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: var(--text-meta); }
+  .filter:is(:hover, :focus-visible) { border-color: var(--accent-line); color: var(--accent); background: var(--accent-soft); }
+  .filter.is-active { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent); }
+  .filter.is-active span { border-color: var(--accent-line); }
   .featured-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-  .project-card { display: flex; min-width: 0; flex-direction: column; border: 1px solid var(--line); border-radius: 2px; background: var(--paper-raised); }
-  .project-cover { padding: 12px 20px 0; background: var(--paper); border-bottom: 1px solid var(--line); }
+  .project-card { position: relative; display: flex; min-width: 0; flex-direction: column; border: 1px solid var(--line); border-radius: 2px; background: var(--paper-raised); box-shadow: var(--surface-shadow); }
+  .project-card::before { content: ''; position: absolute; top: -1px; left: 20px; width: 32px; height: 2px; background: var(--signal); opacity: 0; transition: opacity 150ms; }
+  .project-card:focus-visible { border-color: var(--accent-line); }
+  .project-card:focus-visible::before { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .project-card:focus-visible { transform: translateY(-2px); }
+  }
+  .project-cover { padding: 16px 20px 4px; background: var(--paper-inset); border-bottom: 1px solid var(--line); }
   .cover-head { display: flex; justify-content: space-between; gap: 16px; font-size: 13px; color: var(--muted); }
   .project-copy { flex: 1; display: flex; flex-direction: column; padding: 16px; }
-  .project-period { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+  .project-period { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: var(--text-meta); color: var(--muted); }
   .project-copy h3 { margin-top: 8px; font-size: 22px; letter-spacing: -.04em; line-height: 1.4; }
-  .project-summary { margin-top: 8px; font-size: 16px; line-height: 1.7; }
-  .project-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: auto; padding-top: 16px; color: var(--muted); font-size: 13px; }
+  .project-summary { margin-top: 8px; font-size: var(--text-body); line-height: 1.8; }
+  .project-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: auto; padding-top: 16px; color: var(--muted); font-size: var(--text-note); line-height: 1.6; }
   .project-arrow { display: inline-block; flex: none; color: var(--accent); font-size: 22px; line-height: 1; transition: transform 150ms; }
-  a:hover .project-arrow { transform: translate(2px, -2px); }
-  .archive { margin-top: 24px; }
-  .archive-row { display: grid; grid-template-columns: 24px minmax(200px, 1.2fr) minmax(200px, 1fr) 100px 24px; gap: 16px; align-items: center; min-height: 56px; padding-block: 12px; border-bottom: 1px solid var(--line); transition: color 150ms; }
-  .archive-row:hover { color: var(--accent); }
+  a:focus-visible .project-arrow { transform: translate(2px, -2px); }
+  @media (hover: hover) and (pointer: fine) {
+    a:hover .project-arrow { transform: translate(2px, -2px); }
+    .project-card:hover::before { opacity: 1; }
+  }
+  .archive { margin-top: 20px; }
+  .archive-row { display: grid; grid-template-columns: 24px minmax(200px, 1.2fr) minmax(200px, 1fr) 100px 24px; gap: 16px; align-items: center; min-height: 56px; padding-block: 12px; border-bottom: 1px solid var(--line); transition: color 150ms, background-color 150ms; }
+  .archive-row:is(:hover, :focus-visible) { color: var(--accent); background: var(--accent-soft); }
   .archive-num, .archive-year { color: var(--muted); font-size: 13px; }
-  .archive-row h3 { font-size: 16px; line-height: 1.6; font-weight: 600; }
+  .archive-row h3 { font-size: 16px; line-height: 26px; font-weight: 600; }
   .archive-summary { color: var(--muted); font-size: 14px; }
-  .project-boundary { margin-top: 20px; color: var(--muted); font-size: 13px; }
+  .archive-num, .archive-year, .archive-summary, .archive-row .project-arrow { line-height: 26px; }
+  .project-boundary { margin-top: 16px; max-width: 72ch; color: var(--ink-secondary); font-size: var(--text-note); line-height: 1.75; }
   .engineering { --paper: #191d20; --bg: #191d20; --ink: #f0f2ed; --muted: #b5bdbe; --accent: #ff946d; --line: rgba(240,242,237,.2); --line-strong: rgba(240,242,237,.4); background: var(--paper); color: var(--ink); }
   .engineering-statement { margin-bottom: 40px; font-weight: 650; line-height: 1.35; }
   .capability-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 64px; }
@@ -381,14 +394,16 @@ const copy = {
   .capability-index { padding-top: 4px; color: var(--accent); font-size: 13px; }
   .capability h3 { font-size: 22px; line-height: 1.4; }
   .capability p { max-width: 40ch; margin-top: 12px; font-size: 16px; line-height: 1.7; }
-  .capability-proof { display: block; margin-top: 16px; font-size: 13px; color: var(--muted); }
+  .capability-proof { display: block; margin-top: 16px; font-size: var(--text-note); line-height: 1.7; color: var(--muted); }
+  .capability h3 { transition: color 150ms; }
+  .capability:is(:hover, :focus-visible) h3 { color: var(--accent); }
   .capability > .project-arrow { margin-left: auto; padding-top: 4px; }
   .stack-strip { display: flex; align-items: center; gap: 24px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 13px; }
   .stack-strip > span { color: var(--muted); white-space: nowrap; }
   .stack-strip p { font-size: 14px; }
-  .stack-strip a { margin-left: auto; flex: none; min-height: 44px; display: inline-flex; align-items: center; }
+  .stack-strip a { margin-left: auto; flex: none; min-height: 44px; display: inline-flex; align-items: center; gap: 8px; }
   .experience-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 64px; }
-  .section-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; }
+  .section-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; }
   .job { position: relative; border-top: 1px solid var(--line-strong); padding-block: 24px; }
   .job-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
   .job-time { color: var(--muted); font-size: 13px; }
@@ -401,18 +416,23 @@ const copy = {
   .education { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 20px; border-top: 1px solid var(--line-strong); font-size: 14px; }
   .education > span { font-size: 13px; color: var(--muted); }
   .education > span:last-child { display: block; width: 100%; }
-  .lab-panel { display: flex; flex-direction: column; padding: 32px; background: var(--paper-raised); border: 1px solid var(--line-strong); }
+  .lab-panel { display: flex; flex-direction: column; padding: 32px; background: var(--paper-raised); border: 1px solid var(--line); box-shadow: var(--surface-shadow); }
   .lab-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 13px; }
   .lab-mark { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: var(--signal); color: #191d20; font-size: 28px; }
   .lab-panel h3 { margin-top: 32px; font-size: 40px; letter-spacing: -.05em; line-height: 1.25; }
   .lab-intro { margin-top: 24px; font-size: 16px; line-height: 1.75; }
   .lab-items { margin-top: 32px; }
   .lab-item { display: flex; align-items: baseline; gap: 12px; padding-block: 16px; border-top: 1px solid var(--line); }
-  .lab-status { flex: none; color: var(--accent); font-size: 13px; }
+  .lab-status { flex: none; color: var(--accent); font-size: var(--text-note); }
   .lab-item p { font-size: 15px; }
-  .lab-boundary { margin-top: 20px; font-size: 13px; color: var(--muted); }
+  .lab-boundary { margin-top: 20px; font-size: var(--text-note); line-height: 1.75; color: var(--ink-secondary); }
   .lab-link { display: flex; justify-content: space-between; align-items: center; min-height: 48px; margin-top: auto; padding-top: 24px; font-size: 15px; font-weight: 600; }
-  .lab-link span { color: var(--accent); font-size: 24px; }
+  .lab-link span { color: var(--accent); font-size: 24px; transition: transform 150ms; }
+  .lab-link:is(:hover, :focus-visible) { color: var(--accent); }
+  .lab-link:focus-visible span { transform: translate(2px, -2px); }
+  @media (hover: hover) and (pointer: fine) {
+    .lab-link:hover span { transform: translate(2px, -2px); }
+  }
   @media (min-width: 1024px) and (max-height: 800px) {
     .hero-inner { padding-block: calc(var(--nav) + 24px) 24px; }
     .hero-grid { padding-block: 24px; }
@@ -513,8 +533,10 @@ const copy = {
     .section-index { margin-bottom: 12px; font-size: 13px; }
     .section-head h2 { font-size: 32px; }
     .section-head .section-note { display: none; }
-    .filters { gap: 8px; margin-bottom: 24px; }
-    .filter { gap: 8px; padding-inline: 12px; font-size: 13px; }
+    .filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 24px; }
+    .filter { justify-content: space-between; gap: 8px; padding-inline: 12px; font-size: 13px; line-height: 1.5; text-align: left; }
+    .filter:first-child { grid-column: 1 / -1; }
+    .filter span { flex: none; }
     .featured-grid { grid-template-columns: 1fr; gap: 20px; }
     .project-copy { padding: 20px; }
     .project-copy h3 { font-size: 23px; }
@@ -522,21 +544,20 @@ const copy = {
     .archive-summary { grid-column: 2; font-size: 13px; }
     .archive-row .project-arrow { grid-column: 3; grid-row: 1 / span 2; }
     .archive-row h3 { font-size: 15px; }
-    .project-boundary { font-size: 13px; }
+    .project-boundary { font-size: var(--text-note); }
     .engineering-statement { font-size: 28px; line-height: 1.45; margin-bottom: 32px; }
     .engineering-statement br { display: none; }
     .capability-grid { grid-template-columns: 1fr; }
     .capability { gap: 16px; padding-block: 24px; }
     .capability h3 { font-size: 21px; }
-    .capability p { font-size: 15px; }
-    .capability-proof { font-size: 13px; }
+    .capability p { font-size: var(--text-body); }
     .stack-strip { display: block; }
     .stack-strip p { margin-top: 12px; line-height: 1.8; }
     .stack-strip a { margin-top: 12px; }
     .section-link { font-size: 13px; }
     .experience-grid { grid-template-columns: 1fr; gap: 32px; }
     .job h3 { font-size: 20px; }
-    .job-summary { font-size: 15px; }
+    .job-summary { font-size: var(--text-body); }
     .lab-panel { padding: 24px; }
     .lab-panel h3 { font-size: 36px; }
     .lab-intro { margin-top: 20px; }
@@ -545,6 +566,6 @@ const copy = {
   }
   @media (prefers-reduced-motion: reduce) {
     .project-arrow { transition: none; }
-    a:hover .project-arrow { transform: none; }
+    a:is(:hover, :focus-visible) .project-arrow, .lab-link:is(:hover, :focus-visible) span { transform: none; }
   }
 </style>

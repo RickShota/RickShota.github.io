@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 import ProjectVisual from '../components/ProjectVisual.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { isEnglishProject, localePath, projectSlug, type Lang } from '../i18n';
@@ -65,7 +66,7 @@ const copy = {
     audienceLabel: '面向用户',
     stackLabel: '主要技术',
     domainAria: '行业场景',
-    backToList: '← 返回项目列表',
+    backToList: '返回项目列表',
     tocAria: '案例目录',
     tocLabel: '本页目录',
     businessTitle: '业务场景',
@@ -114,7 +115,7 @@ const copy = {
     audienceLabel: 'Audience',
     stackLabel: 'Main stack',
     domainAria: 'Industry scenarios',
-    backToList: '← Back to project list',
+    backToList: 'Back to project list',
     tocAria: 'Case contents',
     tocLabel: 'On this page',
     businessTitle: 'Business context',
@@ -194,7 +195,7 @@ const tocItems = [
           {domain.map((tag) => <li>{tag}</li>)}
         </ul>
       )}
-      <a class="back-link" href={localePath(lang, '/#projects')}>{copy.backToList}</a>
+      <a class="back-link" href={localePath(lang, '/#projects')}><Icon name="arrow-left" /> {copy.backToList}</a>
     </header>
 
     <div class="case-body">
