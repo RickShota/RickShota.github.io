@@ -32,7 +32,7 @@ export interface ExperienceItem {
 
 export const experience: ExperienceItem[] = [
   {
-    company: '某企业软件服务商',
+    company: '上海易**信息技术股份有限公司',
     role: '全栈开发工程师 · 前端方向',
     period: '2025.04 — 至今',
     summary: '负责企业级产品线全栈开发与团队工程化、容器化基建，推动 TypeScript、Composition API 与微前端落地；参与物流物资、CMS 与 AI 中台等 ToB 项目。',
@@ -45,7 +45,7 @@ export const experience: ExperienceItem[] = [
     keywords: ['全栈交付', '中后台', '工程化', '容器化'],
   },
   {
-    company: '某企业信息化服务公司',
+    company: '安徽三禾**信息科技有限公司',
     role: '前端开发工程师',
     period: '2023.02 — 2025.04',
     summary: '负责公共服务业务线前端架构，建设卡片编排系统与 Monorepo 工程体系；参与仓储现场跨端应用建设。',
